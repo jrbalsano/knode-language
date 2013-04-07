@@ -1,10 +1,20 @@
 knode-language
 ==============
+Compiler for knode, a language focused on making graph operations dead simple.
 
-The compiler for the knode language.
+Running
+=======
+In order to create the compiler, simply run the following command:
 
-1 Maria Jon
-2 Ruby
-3 Maria Jon
-4 Ruby
-5 Jon Krista Maria
+[INSERT SUPER SIMPLE ONE LINE COMMAND HERE]
+
+Grammar
+=======
+A high level view of the grammar
+
+Lexer & Parser
+==============
+
+
+etc
+===

@@ -15,3 +15,9 @@
 *.exe
 *.out
 *.app
+
+# text editor files
+*.swp
+
+# OS X's dumb file things
+.DS_Store
