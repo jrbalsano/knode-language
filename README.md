@@ -3,8 +3,8 @@ knode-language
 
 The compiler for the knode language.
 
-1
+1 Maria
 2
-3
+3 Maria
 4
-5
+5 Maria
