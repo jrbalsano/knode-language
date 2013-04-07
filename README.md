@@ -3,8 +3,8 @@ knode-language
 
 The compiler for the knode language.
 
-1
-2 Krista
-3
-4 Krista
-5 Krista
+1 Maria Jon
+2 Jon Krista
+3 Maria Jon
+4 Jon Krista
+5 Jon Krista Maria
