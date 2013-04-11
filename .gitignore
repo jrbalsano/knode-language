@@ -1,6 +1,9 @@
 # Object files
 *.o
 
+# Intermediate Files
+lex.yy.c
+
 # Libraries
 *.lib
 *.a
