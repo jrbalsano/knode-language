@@ -14,12 +14,14 @@
   /* don't call yywrap when finished */
 %option noyywrap
 
-new_block   ^[ ]{2}
+  /* new_block is incredibly hacky. Please be careful. */
+new_block   ^[ ]{2} 
 string      \"[^\n]*[^\\]\"
 
 %%
 
     /* Tokens & Actions */
+^[ ]*\n                         {/* Ignore blank lines. */}
 \n                              { printf("NEWLINE\n"); }
 "print"                         { printf("PRINT\n"); }
 "main"                          { printf("MAIN\n"); }
