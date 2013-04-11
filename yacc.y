@@ -6,6 +6,7 @@
      * int symtable[10] = 0
      *
      */
+void yyerror(char *s);
 %}
 
     /* Tokens & Associations
@@ -16,6 +17,14 @@
      * %left PLUS
      * 
      */
+%defines
+
+%token MAIN
+%token STRING_LITERAL
+%token NEWLINE
+%token BLOCK_START
+%token PRINT
+%token IDENTIFIER
 
 
     /* Grammar 
@@ -32,16 +41,51 @@
      */
 %%
 
+translationunit       : externaldeclaration
+                      | translationunit externaldeclaration
+                      ;
+externaldeclaration   : functiondefinition
+                      ;
+functiondefinition    : declarator compoundstatement
+                      ;
+declarator            : identifier
+                      | declarator '(' parameterlist ')'
+                      ;
+parameterlist         : parameterdeclaration
+                      ;
+parameterdeclaration  : 
+                      ;
+identifier            : IDENTIFIER
+                      | PRINT
+                      | MAIN
+                      ;
+compoundstatement     : BLOCK_START statementlist
+                      ;
+statementlist         : statement
+                      ;
+statement             : expressionstatement
+                      ;
+expressionstatement   : expression NEWLINE
+                      ;
+expression            : unaryexpression
+                      ;
+unaryexpression       : postfixexpression
+                      ;
+postfixexpression     : primaryexpression
+                      ;
+primaryexpression     : identifier '(' argumentexpressionlist ')'
+                      | STRING_LITERAL
+                      ;
+argumentexpressionlist : expression
+                       ;
 
 %%
 
-    /* Programmatic things go here
-    * ===========================
-    * Any code that we want to execute following the generation. 
-    * ie:
-    * int main() {
-    *      yylex()
-    *      return 0;
-    * }
-    * 
-    */
+void yyerror(char *s) {
+  fprintf(stderr, "%s\n", s);
+}
+
+int main(void) {
+  yyparse();
+  return 0;
+}
