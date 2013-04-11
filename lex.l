@@ -24,8 +24,8 @@ string      \"[^\n]*[^\\]\"
     /* Tokens & Actions */
 ^[ ]*\n                         ;
 \n                              printf("NEWLINE\n"); return NEWLINE;
-"print"                         printf("PRINT\n"); return PRINT;
-"main"                          printf("MAIN\n"); return MAIN;
+"print"                         printf("PRINT\n"); yylval.sval = yytext; return IDENTIFER;
+"main"                          printf("MAIN\n"); yylval.sval = yytext; return IDENTIFIER;
 "("                             printf("(\n"); return *yytext;
 ")"                             printf(")\n"); return *yytext; 
 ":"                             printf(":\n"); return *yytext;
