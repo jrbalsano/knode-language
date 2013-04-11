@@ -30,5 +30,10 @@ string      \"[^\n]*[^\\]\"
 ")"                             printf(")\n"); return *yytext; 
 ":"                             printf(":\n"); return *yytext;
 {new_block}                     printf("BLOCK_START\n"); return BLOCK_START;
-{string}                        printf("STRING_LITERAL\n"); return STRING_LITERAL; 
+{string}                        {
+                                  printf("STRING_LITERAL\n"); 
+                                  yylval.sval = yytext;
+                                  return STRING_LITERAL; 
+                                }
+
 %%

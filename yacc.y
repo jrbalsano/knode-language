@@ -19,7 +19,14 @@ void yyerror(char *s);
      * %left PLUS
      * 
      */
+
 %defines
+
+%union {
+  int ival;
+  char *sval;
+  char cval;
+}
 
 %token MAIN
 %token STRING_LITERAL
@@ -76,11 +83,10 @@ unaryexpression       : postfixexpression
 postfixexpression     : primaryexpression
                       ;
 primaryexpression     : identifier '(' argumentexpressionlist ')'
-                      | STRING_LITERAL
+                      | STRING_LITERAL      { printf("%s\n", yylval.sval); }
                       ;
 argumentexpressionlist : expression
                        ;
-
 %%
 
 void yyerror(char *s) {
