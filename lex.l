@@ -4,7 +4,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include "y.tab.h"
+#include "yacc.tab.h"
 
 %}
 
@@ -23,18 +23,12 @@ string      \"[^\n]*[^\\]\"
 
     /* Tokens & Actions */
 ^[ ]*\n                         ;
-\n                              return NEWLINE;
-"print"                         return PRINT;
-"main"                          return MAIN;
-"("                             return *yytext;
-")"                             return *yytext; 
-":"                             return *yytext;
-{new_block}                     return BLOCK_START;
-{string}                        return STRING_LITERAL; 
+\n                              printf("NEWLINE\n"); return NEWLINE;
+"print"                         printf("PRINT\n"); return PRINT;
+"main"                          printf("MAIN\n"); return MAIN;
+"("                             printf("(\n"); return *yytext;
+")"                             printf(")\n"); return *yytext; 
+":"                             printf(":\n"); return *yytext;
+{new_block}                     printf("BLOCK_START\n"); return BLOCK_START;
+{string}                        printf("STRING_LITERAL\n"); return STRING_LITERAL; 
 %%
-
-int main(int argc, char* argv[]) {
-  yylex();
-}
-
-

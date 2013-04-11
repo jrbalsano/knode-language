@@ -6,6 +6,8 @@
      * int symtable[10] = 0
      *
      */
+#include <stdio.h>
+
 void yyerror(char *s);
 %}
 
@@ -49,7 +51,7 @@ externaldeclaration   : functiondefinition
 functiondefinition    : declarator compoundstatement
                       ;
 declarator            : identifier
-                      | declarator '(' parameterlist ')'
+                      | declarator '(' parameterlist ')' ':' NEWLINE
                       ;
 parameterlist         : parameterdeclaration
                       ;
