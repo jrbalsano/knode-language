@@ -1,43 +1,38 @@
 %{
-    /* Declarations
-     * ============
-     */
+/* Declarations
+ * ============
+ */
+#include <stdio.h>
+#include <stdlib.h>
 
-     #include <stdio.h>
-     #include <stdlib.h>
-     #include "y.tab.h"
 %}
 
     /* Rules/Aliases
      * =============
      */
 
-    letter      [A-Za-z_]
-    word        (letter)+
-    new_block   \n\s\s
-    string      \"(word | \s)*\"
+  /* don't call yywrap when finished */
+%option noyywrap
+
+new_block   ^[ ]{2}
+string      \"[^\n]*[^\\]\"
 
 %%
 
     /* Tokens & Actions */
-
-    word                            {
-                                        yylval.sIndex = *yytext;
-                                        return IDENTIFIER;
-                                    }
-
-    "print"                         return PRINT;
-    "main"                          return MAIN;
-    "("                             return LPAR;
-    ")"                             return RPAR;
-    ":"                             return COLON;
-    new_block                       return NEWBLOCK;
-    string                          return(STRING_LITERAL);
-
+\n                              { printf("NEWLINE\n"); }
+"print"                         { printf("PRINT\n"); }
+"main"                          { printf("MAIN\n"); }
+"("                             { printf("LPAR\n"); }
+")"                             { printf("RPAR\n"); }
+":"                             { printf("COL\n"); }
+{new_block}                     { printf("NEW_BLOCK\n"); }
+{string}                        { printf("STRING_LITERAL: %s\n", yytext); }
+.                               { printf("Unmatched Pattern: %s\n", yytext); }
 %%
 
-int yywrap(void){
-    return 1;
+int main(int argc, char* argv[]) {
+  yylex();
 }
 
 
