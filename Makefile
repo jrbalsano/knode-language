@@ -1,17 +1,22 @@
 CC = gcc
 CFLAGS = -g -Wall $(INCLUDES)
 LDFLAGS = -g
-LEXER = lexer
+COMPILER = klc
 
 .PHONY: all
-all: $(LEXER)
+all: clean $(COMPILER)
 
-$(LEXER): lex.yy.c
-	$(CC) lex.yy.c -o $(LEXER)
+$(COMPILER): lex.yy.o yacc.tab.o absyn.o
+	$(CC) lex.yy.o yacc.tab.o absyn.o -o $(COMPILER)
 
-lex.yy.c: lex.l
+yacc.tab.o: yacc.tab.c
+
+lex.yy.c: lex.l yacc.tab.c
 	lex lex.l
+
+yacc.tab.c: yacc.y
+	bison -d yacc.y
 
 .PHONY: clean
 clean:
-	rm -f $(LEXER) lex.yy.c a.out
+	rm -f $(COMPILER) lex.yy.c a.out yacc.tab.* *.o
