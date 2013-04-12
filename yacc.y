@@ -38,6 +38,14 @@ void frnode(node *n);
 
 %union {
   char *sval;
+  Expression expression;
+  Identifier identifier;
+  Declarator declarator;
+  Statement statement;
+  FunctionDefinition functionDefinition;
+  CompoundStatement compoundStatement;
+  GrammarList grammarList;
+  TranslationUnit translationunit;
 }
 
 %defines
@@ -47,7 +55,17 @@ void frnode(node *n);
 %token BLOCK_START
 %token IDENTIFIER
 
-%type<n> expression unaryexpression postfixexpression primaryexpression argumentexpressionlist
+%type<sval> STRING_LITERAL IDENTIFIER
+%type<expression> postfixexpression primaryexpression unaryexpression expression
+%type<identifier> identifier
+%type<declarator> declarator
+%type<statement> expressionstatement statement
+%type<functionDefinition> functiondefinition externaldeclaration
+%type<compoundStatement> compoundstatement
+%type<grammarList> argumentexpressionlist parameterlist statementlist
+%type<translationUnit> translationunit
+
+
     /* Grammar 
      * =======
      * The grammar goes below the %%. This section is here b/c of the way yacc
@@ -62,28 +80,28 @@ void frnode(node *n);
      */
 %%
 
-translationunit : externaldeclaration { $$ = TranslationUnit($1); }
+translationunit : externaldeclaration { $$ = getTranslationUnit($1); }
   ;
 externaldeclaration : functiondefinition { $$ = $1; }
   ;
-functiondefinition : declarator compoundstatement { $$ = FunctionDefinition($1, $2); }
+functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($1, $2); }
   ;
-declarator  : identifier { $$ = DeclaratorId($1); }
-  | declarator '(' parameterlist ')' ':' NEWLINE { $$ = Declarator($1, $3); }
+declarator  : identifier { $$ = declaratorId($1); }
+  | declarator '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   ;
 parameterlist : parameterdeclaration
   ;
 parameterdeclaration : 
   ;
-identifier : IDENTIFIER { $$ = yylval.sval }
+identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval) }
   ;
-compoundstatement : BLOCK_START statementlist { $$ = CompoundStatement($1); }
+compoundstatement : BLOCK_START statementlist { $$ = newCompoundStatement($1); }
   ;
-statementlist : statement { $$ = StatementListFromSingle($1); }
+statementlist : statement { $$ = newStatementList($1); }
   ;
 statement : expressionstatement { $$ = $1 }
   ;
-expressionstatement : expression NEWLINE { $$ = ExpressionStatement($1); }
+expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
 expression : unaryexpression { $$ = $1; }
   ;
@@ -91,13 +109,12 @@ unaryexpression : postfixexpression { $$ = $1; }
   ;
 postfixexpression : primaryexpression { $$ = $1; }
   ;
-primaryexpression : identifier '(' argumentexpressionlist ')' { $$ = FunctionExpression($1, $3); }
-  | STRING_LITERAL { $$ = StringExpression(yylval.sval); }
+primaryexpression : identifier '(' argumentexpressionlist ')' { $$ = getFunctionExpression($1, $3); }
+  | STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
   ;
-argumentexpressionlist : expression { $$ = ArgumentExpressionList($1); }
+argumentexpressionlist : expression { $$ = newArgumentExpressionList($1); }
   ;
 %%
-
 void yyerror(char *s) {
   fprintf(stderr, "%s\n", s);
 }

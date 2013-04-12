@@ -13,8 +13,12 @@ typedef struct grammarNode_ *GrammarNode;
 typedef struct translationUnit_ *TranslationUnit;
 
 struct expression_ {
-  enum {function, unary, postfix, primary} type;
-  Identifier name;
+  enum {function, unary, postfix, primary, string} type;
+  union val {
+    Identifier i;
+    char *s;
+  };
+  GrammarList l; //ArgExpList for FunctionExpressions
 };
 struct identifier_ {
   char *symbol;
@@ -48,6 +52,7 @@ struct grammarNode_ {
   void *data;
 }
 
+void addFront(GrammarList g);
 TranslationUnit getTranslationUnit(FunctionDefinition fd);
 FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs);
 Declarator declaratorId(char *s);
@@ -55,6 +60,7 @@ Declarator getDeclarator(Declarator d, GrammarList pList);
 CompoundStatement newCompoundStatement(GrammarList sList);
 GrammarList newStatementList(Statement s);
 Statement getExpressionStatement(Expression e);
-Expression getFunctionExpression(char *id, GrammarList argExpList);
+Expression getFunctionExpression(Indentifier id, GrammarList argExpList);
 Expression getStringExpression(char *s);
 GrammarList newArgumentExpressionList(Expression e);
+Identifier getIdentifier(char *s);
