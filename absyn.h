@@ -1,3 +1,5 @@
+#ifndef __ABSYN_H__
+#define __ABSYN_H__
 /**
  * Abstract Syntax Tree for Knode
  * This code creates the structs used for our grammar.
@@ -14,53 +16,54 @@ typedef struct translationUnit_ *TranslationUnit;
 
 struct expression_ {
   enum {function, unary, postfix, primary, string} type;
-  union val {
+  union{
     Identifier i;
     char *s;
-  };
+  } val;
   GrammarList l; //ArgExpList for FunctionExpressions
 };
 struct identifier_ {
   char *symbol;
-}
+};
 struct declarator_ {
   Identifier name;
   GrammarList p; //A list of parameters
-}
+};
 struct statement_ {
   enum {expression} type;
   union {
     Expression e;
   } sub;
-}
+};
 struct functionDefinition_ {
   Declarator d;
   CompoundStatement cs;
-}
+};
 struct compoundStatement_ {
   GrammarList dlist; //A list of declarations
   GrammarList sList; //A list of statements
-}
+};
 struct translationUnit_ {
   FunctionDefinition f;
-}
+};
 struct grammarList_ {
   GrammarNode head;
-}
+};
 struct grammarNode_ {
   GrammarNode next;
   void *data;
-}
+};
 
-void addFront(GrammarList g);
+void addFront(GrammarList g, void *data);
 TranslationUnit getTranslationUnit(FunctionDefinition fd);
 FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs);
-Declarator declaratorId(char *s);
+Declarator declaratorId(Identifier id);
 Declarator getDeclarator(Declarator d, GrammarList pList);
 CompoundStatement newCompoundStatement(GrammarList sList);
 GrammarList newStatementList(Statement s);
 Statement getExpressionStatement(Expression e);
-Expression getFunctionExpression(Indentifier id, GrammarList argExpList);
+Expression getFunctionExpression(Identifier id, GrammarList argExpList);
 Expression getStringExpression(char *s);
 GrammarList newArgumentExpressionList(Expression e);
 Identifier getIdentifier(char *s);
+#endif

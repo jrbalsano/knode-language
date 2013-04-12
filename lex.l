@@ -4,6 +4,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include "absyn.h"
 #include "yacc.tab.h"
 
 %}
@@ -24,7 +25,7 @@ string      \"[^\n]*[^\\]\"
     /* Tokens & Actions */
 ^[ ]*\n                         ;
 \n                              printf("NEWLINE\n"); return NEWLINE;
-"print"                         printf("PRINT\n"); yylval.sval = yytext; return IDENTIFER;
+"print"                         printf("PRINT\n"); yylval.sval = yytext; return IDENTIFIER;
 "main"                          printf("MAIN\n"); yylval.sval = yytext; return IDENTIFIER;
 "("                             printf("(\n"); return *yytext;
 ")"                             printf(")\n"); return *yytext; 

@@ -7,23 +7,9 @@
      *
      */
 #include <stdio.h>
+#include "absyn.h"
 
-union val {
-  int ival;
-  char *sval;
-  char cval;
-};
-
-typedef struct node {
-  struct node *left;
-  struct node *right;
-  char *code;
-  union val lval;
-};
 void yyerror(char *s);
-node mknode(node *left, node *right, char *code);
-void frnode(node *n);
-
 
 %}
 
@@ -35,17 +21,16 @@ void frnode(node *n);
      * %left PLUS
      * 
      */
-
 %union {
   char *sval;
-  Expression expression;
   Identifier identifier;
   Declarator declarator;
   Statement statement;
   FunctionDefinition functionDefinition;
   CompoundStatement compoundStatement;
   GrammarList grammarList;
-  TranslationUnit translationunit;
+  TranslationUnit translationUnit;
+  Expression expression;
 }
 
 %defines
@@ -62,7 +47,7 @@ void frnode(node *n);
 %type<statement> expressionstatement statement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
-%type<grammarList> argumentexpressionlist parameterlist statementlist
+%type<grammarList> argumentexpressionlist parameterlist parameterdeclaration statementlist
 %type<translationUnit> translationunit
 
 
@@ -89,13 +74,13 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
 declarator  : identifier { $$ = declaratorId($1); }
   | declarator '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   ;
-parameterlist : parameterdeclaration
+parameterlist : parameterdeclaration { $$ = $1 }
   ;
-parameterdeclaration : 
+parameterdeclaration : { $$ = NULL }
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval) }
   ;
-compoundstatement : BLOCK_START statementlist { $$ = newCompoundStatement($1); }
+compoundstatement : BLOCK_START statementlist { $$ = newCompoundStatement($2); }
   ;
 statementlist : statement { $$ = newStatementList($1); }
   ;
@@ -122,20 +107,4 @@ void yyerror(char *s) {
 int main(void) {
   yyparse();
   return 0;
-}
-
-node *mknode(node *left, node *right, char *code) {
-  node newnode;
-  newnode.left = left;
-  newnode.right = right;
-  char *newcode = malloc(sizeof(char) * strlen(code));
-  strcpy(newcode, code);
-  newnode.code = newcode;
-}
-
-void frnode(node *n) {
-  char *code = n->code;
-  n->code = NULL;
-  free(code);
-  free(n);
 }
