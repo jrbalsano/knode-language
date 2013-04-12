@@ -3,6 +3,7 @@
 
 # Intermediate Files
 lex.yy.c
+absyn.h.gch
 
 # Libraries
 *.lib
