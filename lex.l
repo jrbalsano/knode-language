@@ -21,7 +21,6 @@ void fakeEOF();
   /* don't call yywrap when finished */
 %option noyywrap
 
-  /* new_block is incredibly hacky. Please be careful. */
 whtspc      ^[ ]+[^\n ] 
 string      \"[^\n]*[^\\]\"
 
