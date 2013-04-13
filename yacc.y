@@ -38,6 +38,7 @@ void yyerror(char *s);
 %token STRING_LITERAL
 %token NEWLINE
 %token BLOCK_START
+%token BLOCK_END
 %token IDENTIFIER
 
 %type<sval> STRING_LITERAL IDENTIFIER
@@ -80,7 +81,7 @@ parameterdeclaration : { $$ = NULL }
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval) }
   ;
-compoundstatement : BLOCK_START statementlist { $$ = newCompoundStatement($2); }
+compoundstatement : BLOCK_START statementlist BLOCK_END { $$ = newCompoundStatement($2); }
   ;
 statementlist : statement { $$ = newStatementList($1); }
   ;
