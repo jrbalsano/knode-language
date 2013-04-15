@@ -4,6 +4,8 @@
 # Intermediate Files
 lex.yy.c
 absyn.h.gch
+yacc.tab.h
+yacc.tab.c
 
 # Libraries
 *.lib
