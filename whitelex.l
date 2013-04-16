@@ -17,6 +17,7 @@
                 process_indent(yytext);
                 printf("%c", yytext[yyleng-1]);
               }
+#.*\          
 <<EOF>>       process_indent(""); yyterminate();
 %%
 
