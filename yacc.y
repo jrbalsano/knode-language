@@ -23,6 +23,7 @@ void yyerror(char *s);
      */
 %union {
   char *sval;
+  int iValue;
   Identifier identifier;
   Declarator declarator;
   Statement statement;
@@ -40,7 +41,14 @@ void yyerror(char *s);
 %token BLOCK_START
 %token BLOCK_END
 %token IDENTIFIER
-
+%token GE
+%token LE
+%token EQ
+%token WHILE
+%token IF
+%token ELSE
+%token INTEGER
+%token NE
 %type<sval> STRING_LITERAL IDENTIFIER
 %type<expression> postfixexpression primaryexpression unaryexpression expression
 %type<identifier> identifier
