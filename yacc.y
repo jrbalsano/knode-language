@@ -7,6 +7,7 @@
      *
      */
 #include <stdio.h>
+#include <string.h>
 #include "absyn.h"
 
 void yyerror(char *s);
@@ -23,7 +24,7 @@ void yyerror(char *s);
      */
 %union {
   char *sval;
-  int iValue;
+  int ival;
   Identifier identifier;
   Declarator declarator;
   Statement statement;
@@ -51,7 +52,8 @@ void yyerror(char *s);
 %token NE
 %left '+' '-'
 %left '*' '/' '%'
-%type<sval> STRING_LITERAL IDENTIFIER INTEGER
+%type<sval> STRING_LITERAL IDENTIFIER
+%type<ival> INTEGER
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression expression
 %type<identifier> identifier
 %type<declarator> declarator
@@ -99,24 +101,24 @@ statement : expressionstatement { $$ = $1 }
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-expression : additiveexpression { $$ = $1} 
+expression : additiveexpression 
   ;
-additiveexpression : multiplicativeexpression { $$ = $1}
-  | additiveexpression '+' multiplicativeexpression { $$ = $1 + $3 }
-  | additiveexpression '-' multiplicativeexpression { $$ = $1 - $3 }
+additiveexpression : multiplicativeexpression 
+  | additiveexpression '+' multiplicativeexpression 
+  | additiveexpression '-' multiplicativeexpression 
   ;
-multiplicativeexpression : unaryexpression { $$ = $1 }
-  | multiplicativeexpression '*' unaryexpression { $$ = $1 * $3}
-  | multiplicativeexpression '/' unaryexpression { $$ = $1 / $3}
-  | multiplicativeexpression '%' unaryexpression { $$ = $1 % $3}
+multiplicativeexpression : unaryexpression 
+  | multiplicativeexpression '*' unaryexpression 
+  | multiplicativeexpression '/' unaryexpression 
+  | multiplicativeexpression '%' unaryexpression 
   ;
-unaryexpression : postfixexpression { $$ = $1; }
+unaryexpression : postfixexpression 
   ;
-postfixexpression : primaryexpression { $$ = $1; }
+postfixexpression : primaryexpression 
   ;
 primaryexpression : identifier '(' argumentexpressionlist ')' { $$ = getFunctionExpression($1, $3); }
   | STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
-  | INTEGER
+  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getStringExpression(x); } 
   ;
 argumentexpressionlist : expression { $$ = newArgumentExpressionList($1); }
   ;
