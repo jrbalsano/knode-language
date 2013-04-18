@@ -49,8 +49,10 @@ void yyerror(char *s);
 %token ELSE
 %token INTEGER
 %token NE
-%type<sval> STRING_LITERAL IDENTIFIER
-%type<expression> postfixexpression primaryexpression unaryexpression expression
+%left '+' '-'
+%left '*' '/' '%'
+%type<sval> STRING_LITERAL IDENTIFIER INTEGER
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression expression
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement
@@ -97,7 +99,16 @@ statement : expressionstatement { $$ = $1 }
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-expression : unaryexpression { $$ = $1; }
+expression : additiveexpression { $$ = $1} 
+  ;
+additiveexpression : multiplicativeexpression { $$ = $1}
+  | additiveexpression '+' multiplicativeexpression { $$ = $1 + $3 }
+  | additiveexpression '-' multiplicativeexpression { $$ = $1 - $3 }
+  ;
+multiplicativeexpression : unaryexpression { $$ = $1 }
+  | multiplicativeexpression '*' unaryexpression { $$ = $1 * $3}
+  | multiplicativeexpression '/' unaryexpression { $$ = $1 / $3}
+  | multiplicativeexpression '%' unaryexpression { $$ = $1 % $3}
   ;
 unaryexpression : postfixexpression { $$ = $1; }
   ;
@@ -105,6 +116,7 @@ postfixexpression : primaryexpression { $$ = $1; }
   ;
 primaryexpression : identifier '(' argumentexpressionlist ')' { $$ = getFunctionExpression($1, $3); }
   | STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
+  | INTEGER
   ;
 argumentexpressionlist : expression { $$ = newArgumentExpressionList($1); }
   ;
