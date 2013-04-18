@@ -31,8 +31,8 @@ string    \"[^\n]*[^\\]\"
 "while"                         printf("WHILE\n"); return WHILE;
 "if"                            printf("IF\n"); return IF;
 "else"                          printf("ELSE\n"); return ELSE;
-{operator}                        printf("%s\n", *yytext); return *yytext;
-{integer}                      printf("INTEGER\n");  yylval.ival = atoi(yytext); return INTEGER;
+{operator}                      printf("%s\n", yytext); return *yytext;
+{integer}                       printf("INTEGER\n");  yylval.ival = atoi(yytext); return INTEGER;
 ^[ ]*\n                         ;
 \n                              printf("NEWLINE\n"); return NEWLINE;
 "print"                         printf("PRINT\n"); yylval.sval = yytext; return IDENTIFIER;

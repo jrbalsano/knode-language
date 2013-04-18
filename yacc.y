@@ -87,17 +87,18 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
 declarator  : identifier { $$ = declaratorId($1); }
   | declarator '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   ;
-parameterlist : parameterdeclaration { $$ = $1 }
+parameterlist : parameterdeclaration { $$ = $1; }
   ;
-parameterdeclaration : { $$ = NULL }
+parameterdeclaration : { $$ = NULL; }
   ;
-identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval) }
+identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;
 compoundstatement : BLOCK_START statementlist BLOCK_END { $$ = newCompoundStatement($2); }
   ;
 statementlist : statement { $$ = newStatementList($1); }
+  | statementlist statement
   ;
-statement : expressionstatement { $$ = $1 }
+statement : expressionstatement { $$ = $1; }
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
