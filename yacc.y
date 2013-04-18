@@ -46,6 +46,7 @@ void yyerror(char *s);
 %token LE
 %token EQ
 %token WHILE
+%token FOR
 %token IF
 %token ELSE
 %token INTEGER
@@ -57,11 +58,13 @@ void yyerror(char *s);
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression expression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement
+%type<statement> expressionstatement statement selectionstatement iterationstatement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist parameterdeclaration statementlist
 %type<translationUnit> translationunit
+%nonassoc IFX
+%nonassoc ELSE
 
 
     /* Grammar 
@@ -99,6 +102,14 @@ statementlist : statement { $$ = newStatementList($1); }
   | statementlist statement
   ;
 statement : expressionstatement { $$ = $1; }
+  | iterationstatement
+  | selectionstatement
+  ;
+selectionstatement : IF '(' expression ')' statement %prec IFX
+  | IF '(' expression ')' statement ELSE statement 
+  ;
+iterationstatement : WHILE '(' expression ')' statement
+  | FOR '(' expression ';' expression ';' expression ')' statement
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
