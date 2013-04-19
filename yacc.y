@@ -50,6 +50,7 @@ void yyerror(char *s);
 %token ELSE
 %token INTEGER
 %token NE
+%token NODE
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER

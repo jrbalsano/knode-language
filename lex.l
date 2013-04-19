@@ -36,6 +36,7 @@ string    \"[^\n]*[^\\]\"
 ^[ ]*\n                         ;
 \n                              printf("NEWLINE\n"); return NEWLINE;
 "print"                         printf("PRINT\n"); yylval.sval = yytext; return IDENTIFIER;
+"node"\ .*\n                    printf("NODE\n"); return NODE;
 "main"                          printf("MAIN\n"); yylval.sval = yytext; return IDENTIFIER;
 "("                             printf("(\n"); return *yytext;
 ")"                             printf(")\n"); return *yytext; 
