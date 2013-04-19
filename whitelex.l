@@ -40,7 +40,7 @@ void process_indent(char* line) {
     return;
   }
 
-  while (indent >= (level - 1) * 2) {
+  while (indent < level * 2) {
     level--;
     printf("}");
   }
