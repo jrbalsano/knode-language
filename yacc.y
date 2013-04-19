@@ -56,6 +56,8 @@ void yyerror(char *s);
 %token MULTEQ
 %token DIVEQ
 %token MODEQ
+%token PLUSPLUS
+%token MINUSMINUS
 %right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
 %nonassoc EQ NE
 %nonassoc '<' '>' LE GE
@@ -154,7 +156,14 @@ multiplicativeexpression : unaryexpression
   | multiplicativeexpression '/' unaryexpression 
   | multiplicativeexpression '%' unaryexpression 
   ;
-unaryexpression : postfixexpression 
+unaryexpression : postfixexpression
+  | PLUSPLUS unaryexpression
+  | MINUSMINUS unaryexpression
+  | unaryoperator unaryexpression
+  ;
+unaryoperator : '+'
+  | '-'
+  | '!'
   ;
 postfixexpression : primaryexpression 
   ;

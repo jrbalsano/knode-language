@@ -22,7 +22,8 @@ operator  [-+*/=%!<>]
 string    \"[^\n]*[^\\]\"
 
 %%
-
+"++"                            printf("PLUSPLUS\n"); return PLUSPLUS;
+"--"                            printf("MINUSMINUS\n"); return MINUSMINUS;
 "+="                            printf("+=\n"); return PLUSEQ;
 "-="                            printf("==\n"); return MINUSEQ;
 "/="                            printf("/=\n"); return DIVEQ;
