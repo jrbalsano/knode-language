@@ -31,6 +31,7 @@ string    \"[^\n]*[^\\]\"
 "while"                         printf("WHILE\n"); return WHILE;
 "if"                            printf("IF\n"); return IF;
 "else"                          printf("ELSE\n"); return ELSE;
+"for"                           printf("FOR\n"); return FOR;
 {operator}                      printf("%s\n", yytext); return *yytext;
 {integer}                       printf("INTEGER\n");  yylval.ival = atoi(yytext); return INTEGER;
 ^[ ]*\n                         ;
@@ -42,6 +43,7 @@ string    \"[^\n]*[^\\]\"
 ":"                             printf(":\n"); return *yytext;
 "{"                             printf("BLOCK_START\n"); return BLOCK_START;
 "}"                             printf("BLOCK_END\n"); return BLOCK_END;
+";"                             printf(";\n"); return *yytext;
 {string}                        {
                                   printf("STRING_LITERAL\n"); 
                                   yylval.sval = yytext;
