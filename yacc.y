@@ -50,6 +50,10 @@ void yyerror(char *s);
 %token ELSE
 %token INTEGER
 %token NE
+%left AND
+%left OR
+%left NOT
+%token BOOLEAN
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
@@ -103,6 +107,7 @@ statement : expressionstatement { $$ = $1; }
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
 expression : additiveexpression 
+  | conditionalexpression
   ;
 additiveexpression : multiplicativeexpression 
   | additiveexpression '+' multiplicativeexpression 
@@ -113,6 +118,17 @@ multiplicativeexpression : unaryexpression
   | multiplicativeexpression '/' unaryexpression 
   | multiplicativeexpression '%' unaryexpression 
   ;
+/*AND GRAMMAR*/
+conditionalexpression : orexpression
+;
+logicalorexpression :
+  |logicalandexpression
+  |logicalorexpression 'or' logicialandexpression
+;
+logicalandexpression:
+  |equalityexpression
+  |logicalandexpression 'and' equalityexpression
+;
 unaryexpression : postfixexpression 
   ;
 postfixexpression : primaryexpression 
