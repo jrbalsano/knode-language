@@ -105,11 +105,11 @@ statement : expressionstatement { $$ = $1; }
   | iterationstatement
   | selectionstatement
   ;
-selectionstatement : IF '(' expression ')' statement %prec IFX
-  | IF '(' expression ')' statement ELSE statement 
+selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX
+  | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement 
   ;
-iterationstatement : WHILE '(' expression ')' statement
-  | FOR '(' expression ';' expression ';' expression ')' statement
+iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
+  | FOR '(' expression ';' expression ';' expression ')' NEWLINE compoundstatement
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
