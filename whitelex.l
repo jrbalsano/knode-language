@@ -5,19 +5,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "whitelex.h"
+//^[ ]*#.*\n
 %}
 
 %option noyywrap
 
 %%
-
+^[ ]*"#".*
+[#]*"#".*
 ^[ ]*\n       ;
-
 ^[ ]*[^\n ]   {
                 process_indent(yytext);
                 printf("%c", yytext[yyleng-1]);
               }
-#.*\          
 <<EOF>>       process_indent(""); yyterminate();
 %%
 
