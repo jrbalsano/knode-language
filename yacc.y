@@ -7,6 +7,7 @@
      *
      */
 #include <stdio.h>
+#include <string.h>
 #include "absyn.h"
 
 void yyerror(char *s);
@@ -23,6 +24,7 @@ void yyerror(char *s);
      */
 %union {
   char *sval;
+  int ival;
   Identifier identifier;
   Declarator declarator;
   Statement statement;
@@ -40,9 +42,19 @@ void yyerror(char *s);
 %token BLOCK_START
 %token BLOCK_END
 %token IDENTIFIER
-
+%token GE
+%token LE
+%token EQ
+%token WHILE
+%token IF
+%token ELSE
+%token INTEGER
+%token NE
+%left '+' '-'
+%left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
-%type<expression> postfixexpression primaryexpression unaryexpression expression
+%type<ival> INTEGER
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression expression
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement
@@ -75,28 +87,39 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
 declarator  : identifier { $$ = declaratorId($1); }
   | declarator '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   ;
-parameterlist : parameterdeclaration { $$ = $1 }
+parameterlist : parameterdeclaration { $$ = $1; }
   ;
-parameterdeclaration : { $$ = NULL }
+parameterdeclaration : { $$ = NULL; }
   ;
-identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval) }
+identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;
 compoundstatement : BLOCK_START statementlist BLOCK_END { $$ = newCompoundStatement($2); }
   ;
 statementlist : statement { $$ = newStatementList($1); }
+  | statementlist statement
   ;
-statement : expressionstatement { $$ = $1 }
+statement : expressionstatement { $$ = $1; }
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-expression : unaryexpression { $$ = $1; }
+expression : additiveexpression 
   ;
-unaryexpression : postfixexpression { $$ = $1; }
+additiveexpression : multiplicativeexpression 
+  | additiveexpression '+' multiplicativeexpression 
+  | additiveexpression '-' multiplicativeexpression 
   ;
-postfixexpression : primaryexpression { $$ = $1; }
+multiplicativeexpression : unaryexpression 
+  | multiplicativeexpression '*' unaryexpression 
+  | multiplicativeexpression '/' unaryexpression 
+  | multiplicativeexpression '%' unaryexpression 
+  ;
+unaryexpression : postfixexpression 
+  ;
+postfixexpression : primaryexpression 
   ;
 primaryexpression : identifier '(' argumentexpressionlist ')' { $$ = getFunctionExpression($1, $3); }
   | STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
+  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getStringExpression(x); } 
   ;
 argumentexpressionlist : expression { $$ = newArgumentExpressionList($1); }
   ;
