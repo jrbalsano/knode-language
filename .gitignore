@@ -3,6 +3,10 @@
 
 # Intermediate Files
 lex.yy.c
+whitelex.yy.c
+absyn.h.gch
+yacc.tab.h
+yacc.tab.c
 
 # Libraries
 *.lib
@@ -18,6 +22,8 @@ lex.yy.c
 *.exe
 *.out
 *.app
+klc
+klp
 
 # text editor files
 *.swp
