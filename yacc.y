@@ -58,6 +58,7 @@ void yyerror(char *s);
 %token MODEQ
 %right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
 %nonassoc EQ NE
+%nonassoc '<' '>' LE GE
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
@@ -134,9 +135,15 @@ assignmentoperator : '='
   | DIVEQ
   | MODEQ
   ;
-equalityexpression : additiveexpression
-  | equalityexpression EQ additiveexpression
-  | equalityexpression NE additiveexpression 
+equalityexpression : relationalexpression
+  | equalityexpression EQ relationalexpression
+  | equalityexpression NE relationalexpression 
+  ;
+relationalexpression : additiveexpression
+  | relationalexpression '<' additiveexpression
+  | relationalexpression '>' additiveexpression
+  | relationalexpression LE additiveexpression
+  | relationalexpression GE additiveexpression
   ;
 additiveexpression : multiplicativeexpression 
   | additiveexpression '+' multiplicativeexpression 

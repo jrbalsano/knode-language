@@ -18,7 +18,7 @@
 
 
 integer   [1-9][0-9]*|0
-operator  [-+*/=%!]
+operator  [-+*/=%!<>]
 string    \"[^\n]*[^\\]\"
 
 %%
