@@ -1,3 +1,5 @@
-main():
-  print("Hello World!")
-  node watsgood
+# I'm before the function call
+main(): # I'm the same line as a function declaration
+  print("Hello World!") #I'm inline 
+  #I'm indented 
+# I'm at the end of the file

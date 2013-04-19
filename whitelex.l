@@ -9,10 +9,14 @@
 
 %option noyywrap
 
+comment #.*\n
+
 %%
-
+^[ ]*{comment}
 ^[ ]*\n       ;
-
+{comment}     {
+                printf("\n");
+              }
 ^[ ]*[^\n ]   {
                 process_indent(yytext);
                 printf("%c", yytext[yyleng-1]);
