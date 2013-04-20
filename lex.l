@@ -21,7 +21,7 @@ integer   [1-9][0-9]*|0
 operator  [-+*/=%!]
 string    \"[^\n]*[^\\]\"
 boolean   "TRUE"|"FALSE"
-bool_op   'and'|'or'
+bool_op   "and"|"or"
 
 %%
 
@@ -30,6 +30,8 @@ bool_op   'and'|'or'
 "<="                            printf("<=\n"); return LE;
 "=="                            printf("==\n"); return EQ;
 "!="                            printf("!=\n"); return NE;
+">"				printf(">\n"); return GT;
+"<"				printf("<\n"); return LT;
 "while"                         printf("WHILE\n"); return WHILE;
 "if"                            printf("IF\n"); return IF;
 "else"                          printf("ELSE\n"); return ELSE;

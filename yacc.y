@@ -45,6 +45,8 @@ void yyerror(char *s);
 %token GE
 %token LE
 %token EQ
+%token GT
+%token LT
 %token WHILE
 %token FOR
 %token IF
@@ -128,15 +130,16 @@ multiplicativeexpression : unaryexpression
   | multiplicativeexpression '/' unaryexpression 
   | multiplicativeexpression '%' unaryexpression 
   ;
-/*AND GRAMMAR*/
+/*CONDITONAL GRAMMAR*/
 conditionalexpression : orexpression
 ;
-orexpression : andexpression
+orexpression :
   | orexpression 'or' andexpression
-;
-andexpression :
   | andexpression
-  | orexpression 'and' equalityexpression
+;
+andexpression : 
+  | andexpression 'and' equalityexpression
+  | equalityexpression
 ;
 equalityexpression :
   | relationalexpression
@@ -145,8 +148,8 @@ equalityexpression :
 ;
 relationalexpression:
   | additiveexpression
-  | relationalexpression '<' additiveexpression
-  | relationalexpression '>' additiveexpression
+  | relationalexpression LT additiveexpression
+  | relationalexpression GT additiveexpression
   | relationalexpression LE additiveexpression
   | relationalexpression GE additiveexpression
 ;
