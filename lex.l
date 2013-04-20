@@ -49,6 +49,13 @@ string    \"[^\n]*[^\\]\"
 "{"                             printf("BLOCK_START\n"); return BLOCK_START;
 "}"                             printf("BLOCK_END\n"); return BLOCK_END;
 ";"                             printf(";\n"); return *yytext;
+"int"                           printf("INT\n"); return INT;
+"double"                        printf("DOUBLE\n"); return DOUBLE;
+"char"                          printf("CHAR\n"); return CHAR;
+"string"                        printf("STRING\n"); return STRING;
+"node"                          printf("NODE\n"); return NODE;
+"dict"                          printf("DICT\n"); return DICT;
+"edge"                          printf("EDGE\n"); return EDGE;
 {string}                        {
                                   printf("STRING_LITERAL\n"); 
                                   yylval.sval = yytext;

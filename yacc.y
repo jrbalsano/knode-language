@@ -58,6 +58,13 @@ void yyerror(char *s);
 %token MODEQ
 %token PLUSPLUS
 %token MINUSMINUS
+%token INT
+%token DOUBLE
+%token CHAR
+%token STRING
+%token NODE
+%token DICT
+%token EDGE
 %right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
 %nonassoc EQ NE
 %nonassoc '<' '>' LE GE
@@ -65,7 +72,7 @@ void yyerror(char *s);
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
 %type<ival> INTEGER
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement
@@ -151,10 +158,21 @@ additiveexpression : multiplicativeexpression
   | additiveexpression '+' multiplicativeexpression 
   | additiveexpression '-' multiplicativeexpression 
   ;
-multiplicativeexpression : unaryexpression 
-  | multiplicativeexpression '*' unaryexpression 
-  | multiplicativeexpression '/' unaryexpression 
-  | multiplicativeexpression '%' unaryexpression 
+multiplicativeexpression : castexpression 
+  | multiplicativeexpression '*' castexpression 
+  | multiplicativeexpression '/' castexpression 
+  | multiplicativeexpression '%' castexpression 
+  ;
+castexpression : unaryexpression
+  | '(' typename ')' castexpression
+  ;
+typename : INT
+  | DOUBLE
+  | CHAR
+  | STRING
+  | NODE
+  | DICT
+  | EDGE
   ;
 unaryexpression : postfixexpression
   | PLUSPLUS unaryexpression
