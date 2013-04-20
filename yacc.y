@@ -59,7 +59,7 @@ void yyerror(char *s);
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression expression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement
+%type<statement> expressionstatement statement selectionstatement iterationstatement nodestatement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist parameterdeclaration statementlist
@@ -105,6 +105,9 @@ statementlist : statement { $$ = newStatementList($1); }
 statement : expressionstatement { $$ = $1; }
   | iterationstatement
   | selectionstatement
+  | nodestatement
+  ;
+nodestatement : NODE NEWLINE
   ;
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX
   | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement 

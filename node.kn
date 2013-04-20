@@ -1,2 +1,3 @@
 main():
-  node watsgood
+  node test_node
+  print("why don't you work")
