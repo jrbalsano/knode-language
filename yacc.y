@@ -51,9 +51,8 @@ void yyerror(char *s);
 %token ELSE
 %token INTEGER
 %token NE
-%left AND
-%left OR
-%left NOT
+%left 'and'
+%left 'or'
 %token BOOLEAN
 %left '+' '-'
 %left '*' '/' '%'
@@ -132,13 +131,24 @@ multiplicativeexpression : unaryexpression
 /*AND GRAMMAR*/
 conditionalexpression : orexpression
 ;
-logicalorexpression :
-  |logicalandexpression
-  |logicalorexpression 'or' logicialandexpression
+orexpression : andexpression
+  | orexpression 'or' andexpression
 ;
-logicalandexpression:
-  |equalityexpression
-  |logicalandexpression 'and' equalityexpression
+andexpression :
+  | andexpression
+  | orexpression 'and' equalityexpression
+;
+equalityexpression :
+  | relationalexpression
+  | equalityexpression EQ relationalexpression
+  | equalityexpression NE relationalexpression
+;
+relationalexpression:
+  | additiveexpression
+  | relationalexpression '<' additiveexpression
+  | relationalexpression '>' additiveexpression
+  | relationalexpression LE additiveexpression
+  | relationalexpression GE additiveexpression
 ;
 unaryexpression : postfixexpression 
   ;
