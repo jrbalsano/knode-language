@@ -3,6 +3,9 @@ main():
   6 and 3 or 4 and 5
   if(6 - 4 and 7 * 5 or 6 / 4)
     print ("Hello World")
+  else
+    if(6 * 7 + 9 and 5 - 6)
+      print("Hi")
 
 
 

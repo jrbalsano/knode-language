@@ -132,12 +132,10 @@ multiplicativeexpression : unaryexpression
 /*CONDITONAL GRAMMAR*/
 conditionalexpression : orexpression
 ;
-orexpression :
-  | orexpression OR andexpression
+orexpression : orexpression OR andexpression
   | andexpression
 ;
-andexpression : 
-  | andexpression AND additiveexpression
+andexpression : andexpression AND additiveexpression
   | additiveexpression
 ;
 unaryexpression : postfixexpression 
