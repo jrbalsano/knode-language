@@ -49,6 +49,8 @@ string    \"[^\n]*[^\\]\"
 "{"                             printf("BLOCK_START\n"); return BLOCK_START;
 "}"                             printf("BLOCK_END\n"); return BLOCK_END;
 ";"                             printf(";\n"); return *yytext;
+"["                             printf("[\n"); return *yytext;
+"]"                             printf("]\n"); return *yytext;
 "int"                           printf("INT\n"); return INT;
 "double"                        printf("DOUBLE\n"); return DOUBLE;
 "char"                          printf("CHAR\n"); return CHAR;

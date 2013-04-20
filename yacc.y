@@ -183,7 +183,13 @@ unaryoperator : '+'
   | '-'
   | '!'
   ;
-postfixexpression : primaryexpression 
+
+//still needs argexpressionlist
+postfixexpression : primaryexpression
+  | postfixexpression '[' expression ']' 
+// need to fix identifier  | postfixexpression '.' identifier 
+  | postfixexpression PLUSPLUS 
+  | postfixexpression MINUSMINUS
   ;
 primaryexpression : identifier '(' argumentexpressionlist ')' { $$ = getFunctionExpression($1, $3); }
   | STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
