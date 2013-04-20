@@ -60,7 +60,7 @@ void yyerror(char *s);
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
 %type<ival> INTEGER
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression expression
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression andexpression orexpression conditionalexpression expression 
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement

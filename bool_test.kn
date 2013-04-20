@@ -1,7 +1,7 @@
 main():
-  6 <= 9 or 4 or 3
+  6 <= 9 or 4 + 3
   6 and 3 or 4 and 5
-  if(6 >= 4 and 7 > 5 or 6 == 4)
+  if(6 >= 4 and 7 == 5 or 6 == 4)
     print ("Hello World")
 
 
