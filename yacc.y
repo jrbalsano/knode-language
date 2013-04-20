@@ -56,11 +56,18 @@ void yyerror(char *s);
 %left AND
 %left OR
 %token BOOLEAN
+%token PLUSEQ
+%token MINUSEQ
+%token MULTEQ
+%token DIVEQ
+%token MODEQ
 %left '+' '-'
 %left '*' '/' '%'
+%right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
 %type<sval> STRING_LITERAL IDENTIFIER
 %type<ival> INTEGER
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression andexpression orexpression conditionalexpression expression 
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression expression
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement
@@ -118,7 +125,19 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-expression : conditionalexpression
+expression : assignmentexpression
+  | expression ',' assignmentexpression
+  ;
+
+assignmentexpression : additiveexpression
+  | unaryexpression assignmentoperator assignmentexpression
+  ;
+assignmentoperator : '='
+  | PLUSEQ
+  | MINUSEQ
+  | MULTEQ
+  | DIVEQ
+  | MODEQ
   ;
 additiveexpression : multiplicativeexpression 
   | additiveexpression '+' multiplicativeexpression 
