@@ -23,7 +23,11 @@ string    \"[^\n]*[^\\]\"
 
 %%
 
-
+"+="                            printf("+=\n"); return PLUSEQ;
+"-="                            printf("==\n"); return MINUSEQ;
+"/="                            printf("/=\n"); return DIVEQ;
+"%="                            printf("%%=\n"); return MODEQ;
+"*="                            printf("*=\n"); return MULTEQ;  
 ">="                            printf(">=\n"); return GE;
 "<="                            printf("<=\n"); return LE;
 "=="                            printf("==\n"); return EQ;
