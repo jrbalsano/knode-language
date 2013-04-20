@@ -53,8 +53,8 @@ void yyerror(char *s);
 %token ELSE
 %token INTEGER
 %token NE
-%left 'and'
-%left 'or'
+%left AND
+%left OR
 %token BOOLEAN
 %left '+' '-'
 %left '*' '/' '%'
@@ -118,8 +118,7 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-expression : additiveexpression 
-  | conditionalexpression
+expression : conditionalexpression
   ;
 additiveexpression : multiplicativeexpression 
   | additiveexpression '+' multiplicativeexpression 
@@ -134,24 +133,12 @@ multiplicativeexpression : unaryexpression
 conditionalexpression : orexpression
 ;
 orexpression :
-  | orexpression 'or' andexpression
+  | orexpression OR andexpression
   | andexpression
 ;
 andexpression : 
-  | andexpression 'and' equalityexpression
-  | equalityexpression
-;
-equalityexpression :
-  | relationalexpression
-  | equalityexpression EQ relationalexpression
-  | equalityexpression NE relationalexpression
-;
-relationalexpression:
+  | andexpression AND additiveexpression
   | additiveexpression
-  | relationalexpression LT additiveexpression
-  | relationalexpression GT additiveexpression
-  | relationalexpression LE additiveexpression
-  | relationalexpression GE additiveexpression
 ;
 unaryexpression : postfixexpression 
   ;

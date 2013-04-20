@@ -21,7 +21,7 @@ integer   [1-9][0-9]*|0
 operator  [-+*/=%!]
 string    \"[^\n]*[^\\]\"
 boolean   "TRUE"|"FALSE"
-bool_op   "and"|"or"
+
 
 %%
 
@@ -38,8 +38,9 @@ bool_op   "and"|"or"
 "for"                           printf("FOR\n"); return FOR;
 {operator}                      printf("%s\n", yytext); return *yytext;
 {integer}                       printf("INTEGER\n");  yylval.ival = atoi(yytext); return INTEGER;
-{boolean}                       printf("BOOLEAN\n");  yylval.ival = yytext[0] == 't' ? 1 : 0; return BOOLEAN;
-{bool_op}                       printf("%s\n", yytext);  yylval.sval = yytext; return *yytext; 
+{boolean}                       printf("BOOLEAN\n");  yylval.ival = yytext[0] == 'T' ? 1 : 0; return BOOLEAN;
+"and"                       	printf("AND\n");  return AND; 
+"or"                      	printf("OR\n");  return OR; 
 ^[ ]*\n                         ;
 \n                              printf("NEWLINE\n"); return NEWLINE;
 "print"                         printf("PRINT\n"); yylval.sval = yytext; return IDENTIFIER;
