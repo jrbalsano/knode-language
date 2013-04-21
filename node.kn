@@ -1,3 +1,5 @@
 main():
   node test_node
+  # assignment test won't work yet, as assignment isn't working yet
+  # ie, node test_node = another_node
   print("why don't you work")

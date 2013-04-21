@@ -107,7 +107,9 @@ statement : expressionstatement { $$ = $1; }
   | selectionstatement
   | nodestatement
   ;
-nodestatement : NODE NEWLINE
+nodestatement : NODE IDENTIFIER NEWLINE
+  | NODE IDENTIFIER EQ IDENTIFIER
+  | NODE IDENTIFIER NEWLINE compoundstatement
   ;
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX
   | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement 
