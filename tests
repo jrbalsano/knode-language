@@ -1,8 +1,0 @@
-main():
-  (int) (double) 3
-  (char) 4
-  (string) (node) (dict) 3
-  (edge) 3
-  # this next line should cause a syntax errr 
-  #(int) string 3
-
