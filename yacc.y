@@ -51,6 +51,9 @@ void yyerror(char *s);
 %token ELSE
 %token INTEGER
 %token NE
+%left AND
+%left OR
+%token BOOLEAN
 %token PLUSEQ
 %token MINUSEQ
 %token MULTEQ
@@ -65,7 +68,7 @@ void yyerror(char *s);
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
 %type<ival> INTEGER
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression andexpression orexpression conditionalexpression assignmentexpression equalityexpression relationalexpression expression 
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement
@@ -127,7 +130,7 @@ expression : assignmentexpression
   | expression ',' assignmentexpression
   ;
 
-assignmentexpression : equalityexpression
+assignmentexpression : conditionalexpression
   | unaryexpression assignmentoperator assignmentexpression
   ;
 assignmentoperator : '='
@@ -160,6 +163,13 @@ unaryexpression : postfixexpression
   | PLUSPLUS unaryexpression
   | MINUSMINUS unaryexpression
   | unaryoperator unaryexpression
+conditionalexpression : orexpression
+  ;
+orexpression : orexpression OR andexpression
+  | andexpression
+  ;
+andexpression : andexpression AND equalityexpression  
+  | equalityexpression
   ;
 unaryoperator : '+'
   | '-'
