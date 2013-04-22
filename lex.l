@@ -34,8 +34,6 @@ boolean   "TRUE"|"FALSE"
 "<="                            printf("<=\n"); return LE;
 "=="                            printf("==\n"); return EQ;
 "!="                            printf("!=\n"); return NE;
-">"				printf(">\n"); return GT;
-"<"				printf("<\n"); return LT;
 "while"                         printf("WHILE\n"); return WHILE;
 "if"                            printf("IF\n"); return IF;
 "else"                          printf("ELSE\n"); return ELSE;
