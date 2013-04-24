@@ -26,6 +26,9 @@ test_output.txt
 klc
 klp
 
+# Testing files
+test_output.txt
+
 # text editor files
 *.swp
 
