@@ -18,13 +18,14 @@
 
 
 integer   [1-9][0-9]*|0
-operator  [-+*/=%!]
+operator  [-+*/=%!<>]
 string    \"[^\n]*[^\\]\"
 boolean   "TRUE"|"FALSE"
 
 
 %%
-
+"++"                            printf("PLUSPLUS\n"); return PLUSPLUS;
+"--"                            printf("MINUSMINUS\n"); return MINUSMINUS;
 "+="                            printf("+=\n"); return PLUSEQ;
 "-="                            printf("==\n"); return MINUSEQ;
 "/="                            printf("/=\n"); return DIVEQ;
@@ -41,8 +42,8 @@ boolean   "TRUE"|"FALSE"
 {operator}                      printf("%s\n", yytext); return *yytext;
 {integer}                       printf("INTEGER\n");  yylval.ival = atoi(yytext); return INTEGER;
 {boolean}                       printf("BOOLEAN\n");  yylval.ival = yytext[0] == 'T' ? 1 : 0; return BOOLEAN;
-"and"                       	printf("AND\n");  return AND; 
-"or"                      	printf("OR\n");  return OR; 
+"and"                         	printf("AND\n");  return AND; 
+"or"                      	    printf("OR\n");  return OR; 
 ^[ ]*\n                         ;
 \n                              printf("NEWLINE\n"); return NEWLINE;
 "print"                         printf("PRINT\n"); yylval.sval = yytext; return IDENTIFIER;

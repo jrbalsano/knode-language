@@ -59,13 +59,16 @@ void yyerror(char *s);
 %token MULTEQ
 %token DIVEQ
 %token MODEQ
+%token PLUSPLUS
+%token MINUSMINUS
 %right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
 %nonassoc EQ NE
+%nonassoc '<' '>' LE GE
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
 %type<ival> INTEGER
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression andexpression orexpression conditionalexpression expression 
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression andexpression orexpression conditionalexpression assignmentexpression equalityexpression relationalexpression expression 
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement
@@ -137,9 +140,15 @@ assignmentoperator : '='
   | DIVEQ
   | MODEQ
   ;
-equalityexpression : additiveexpression
-  | equalityexpression EQ additiveexpression
-  | equalityexpression NE additiveexpression 
+equalityexpression : relationalexpression
+  | equalityexpression EQ relationalexpression
+  | equalityexpression NE relationalexpression 
+  ;
+relationalexpression : additiveexpression
+  | relationalexpression '<' additiveexpression
+  | relationalexpression '>' additiveexpression
+  | relationalexpression LE additiveexpression
+  | relationalexpression GE additiveexpression
   ;
 additiveexpression : multiplicativeexpression 
   | additiveexpression '+' multiplicativeexpression 
@@ -150,7 +159,10 @@ multiplicativeexpression : unaryexpression
   | multiplicativeexpression '/' unaryexpression 
   | multiplicativeexpression '%' unaryexpression 
   ;
-/*CONDITONAL GRAMMAR*/
+unaryexpression : postfixexpression
+  | PLUSPLUS unaryexpression
+  | MINUSMINUS unaryexpression
+  | unaryoperator unaryexpression
 conditionalexpression : orexpression
   ;
 orexpression : orexpression OR andexpression
@@ -159,7 +171,9 @@ orexpression : orexpression OR andexpression
 andexpression : andexpression AND equalityexpression  
   | equalityexpression
   ;
-unaryexpression : postfixexpression 
+unaryoperator : '+'
+  | '-'
+  | '!'
   ;
 postfixexpression : primaryexpression 
   ;
