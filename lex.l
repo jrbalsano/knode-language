@@ -47,6 +47,7 @@ boolean   "TRUE"|"FALSE"
 ^[ ]*\n                         ;
 \n                              printf("NEWLINE\n"); return NEWLINE;
 "print"                         printf("PRINT\n"); yylval.sval = yytext; return IDENTIFIER;
+"node"                          printf("NODE\n"); yylval.sval = yytext; return NODE;
 "main"                          printf("MAIN\n"); yylval.sval = yytext; return IDENTIFIER;
 "("                             printf("(\n"); return *yytext;
 ")"                             printf(")\n"); return *yytext; 
@@ -69,4 +70,26 @@ boolean   "TRUE"|"FALSE"
 
                                   return STRING_LITERAL; 
                                 }
+[a-z_][a-zA-Z0-9_]*             {
+                                    /*
+                                     * NOTE: THIS IS A SUPER HACKY WAY TO
+                                     * RECOGNIZE IDENTIFIERS, AND IS ONLY A
+                                     * STOPGAP SOLUTION FOR NOW. IT ONLY WORKS
+                                     * BECAUSE IT'S IN THE LAST POSITION
+                                     * TODO: fix this by moving identifier
+                                     * recognition into symbol table with used
+                                     * variables/keywords
+                                     */
+                                    if (checkSymbolTable() == 0) {
+                                        printf("IDENTIFIER\n");
+                                        return IDENTIFIER;
+                                    }
+                                }
 %%
+
+int checkSymbolTable() {
+    /* this function should theoretically check the symbol table and return the
+     * index of whatever it looks up
+     */
+    return 0;
+}

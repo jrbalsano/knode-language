@@ -34,3 +34,6 @@ test_output.txt
 
 # OS X's dumb file things
 .DS_Store
+
+# test shell script
+run.sh
