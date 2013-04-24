@@ -45,8 +45,6 @@ void yyerror(char *s);
 %token GE
 %token LE
 %token EQ
-%token GT
-%token LT
 %token WHILE
 %token FOR
 %token IF
@@ -61,13 +59,13 @@ void yyerror(char *s);
 %token MULTEQ
 %token DIVEQ
 %token MODEQ
+%right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
+%nonassoc EQ NE
 %left '+' '-'
 %left '*' '/' '%'
-%right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
 %type<sval> STRING_LITERAL IDENTIFIER
 %type<ival> INTEGER
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression andexpression orexpression conditionalexpression expression 
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression expression
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement
@@ -129,7 +127,7 @@ expression : assignmentexpression
   | expression ',' assignmentexpression
   ;
 
-assignmentexpression : additiveexpression
+assignmentexpression : conditionalexpression
   | unaryexpression assignmentoperator assignmentexpression
   ;
 assignmentoperator : '='
@@ -138,6 +136,10 @@ assignmentoperator : '='
   | MULTEQ
   | DIVEQ
   | MODEQ
+  ;
+equalityexpression : additiveexpression
+  | equalityexpression EQ additiveexpression
+  | equalityexpression NE additiveexpression 
   ;
 additiveexpression : multiplicativeexpression 
   | additiveexpression '+' multiplicativeexpression 
@@ -150,13 +152,13 @@ multiplicativeexpression : unaryexpression
   ;
 /*CONDITONAL GRAMMAR*/
 conditionalexpression : orexpression
-;
+  ;
 orexpression : orexpression OR andexpression
   | andexpression
-;
-andexpression : andexpression AND additiveexpression
-  | additiveexpression
-;
+  ;
+andexpression : andexpression AND equalityexpression  
+  | equalityexpression
+  ;
 unaryexpression : postfixexpression 
   ;
 postfixexpression : primaryexpression 
