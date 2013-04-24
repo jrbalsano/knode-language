@@ -1,6 +1,0 @@
-main():
-  if(4 ==5)
-    print("here")
-  else
-    if(5 == 3)
-      5 += 3
