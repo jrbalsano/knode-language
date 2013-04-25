@@ -48,7 +48,6 @@ boolean   "TRUE"|"FALSE"
 ^[ ]*\n                         ;
 \n                              printf("NEWLINE\n"); return NEWLINE;
 "print"                         printf("PRINT\n"); yylval.sval = yytext; return IDENTIFIER;
-"node"                          printf("NODE\n"); yylval.sval = yytext; return NODE;
 "main"                          printf("MAIN\n"); yylval.sval = yytext; return IDENTIFIER;
 "("                             printf("(\n"); return *yytext;
 ")"                             printf(")\n"); return *yytext; 
@@ -62,7 +61,7 @@ boolean   "TRUE"|"FALSE"
 "double"                        printf("DOUBLE\n"); return DOUBLE;
 "char"                          printf("CHAR\n"); return CHAR;
 "string"                        printf("STRING\n"); return STRING;
-"node"                          printf("NODE\n"); return NODE;
+"node"                          printf("NODE\n"); yylval.sval = yytext; return NODE;
 "dict"                          printf("DICT\n"); return DICT;
 "edge"                          printf("EDGE\n"); return EDGE;
 {string}                        {
