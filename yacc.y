@@ -78,7 +78,7 @@ void yyerror(char *s);
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement nodestatement
+%type<statement> expressionstatement statement selectionstatement iterationstatement nodestatement dictstatement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist parameterdeclaration statementlist
@@ -125,6 +125,13 @@ statement : expressionstatement { $$ = $1; }
   | iterationstatement
   | selectionstatement
   | nodestatement
+  | dictstatement
+  | dictlist
+  ;
+dictstatement : DICT IDENTIFIER NEWLINE
+  | DICT IDENTIFIER '[' INTEGER ']' NEWLINE
+  | DICT IDENTIFIER '[' INTEGER ']' NEWLINE compoundstatement
+  | DICT IDENTIFIER compoundstatement 
   ;
 nodestatement : NODE IDENTIFIER NEWLINE
   | NODE IDENTIFIER EQ IDENTIFIER
@@ -137,6 +144,8 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
   | FOR '(' expression ';' expression ';' expression ')' NEWLINE compoundstatement
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
+  ;
+dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE
   ;
 expression : assignmentexpression
   | expression ',' assignmentexpression

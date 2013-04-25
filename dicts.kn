@@ -1,8 +1,6 @@
-main();
-  # time to declare some dicts son
+main():
   dict firstDict
-  #dict secondDict[4]
-  #dict thirdDict[2]
-    #hi : "Hello"
+  dict secondDict[4]
+    hi : hello
   #thirdDict.bye = "adios"
   #thirdDict["greeting"] = "Hola Muchachos"

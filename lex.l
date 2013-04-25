@@ -61,7 +61,7 @@ boolean   "TRUE"|"FALSE"
 "char"                          printf("CHAR\n"); return CHAR;
 "string"                        printf("STRING\n"); return STRING;
 "node"                          printf("NODE\n"); yylval.sval = yytext; return NODE;
-"dict"                          printf("DICT\n"); return DICT;
+"dict"                          printf("DICT\n"); yylval.sval = yytext; return DICT;
 "edge"                          printf("EDGE\n"); return EDGE;
 {string}                        {
                                   printf("STRING_LITERAL\n"); 
