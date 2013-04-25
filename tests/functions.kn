@@ -1,0 +1,17 @@
+main():
+  print("Hi")
+
+functionOne():
+  print("Hi")
+
+node functionTwo(int a):
+  print("Hi")
+
+String functionThree(int a, int b, int c):
+  print("Hi")
+
+int functionFour(int a, String b, node c):
+  print("Hi")
+
+functionFive(int a, String b, node c):
+  print("Hi")
