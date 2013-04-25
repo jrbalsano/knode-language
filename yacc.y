@@ -51,14 +51,34 @@ void yyerror(char *s);
 %token ELSE
 %token INTEGER
 %token NE
+%left AND
+%left OR
+%token BOOLEAN
+%token PLUSEQ
+%token MINUSEQ
+%token MULTEQ
+%token DIVEQ
+%token MODEQ
+%token PLUSPLUS
+%token MINUSMINUS
+%token INT
+%token DOUBLE
+%token CHAR
+%token STRING
+%token NODE
+%token DICT
+%token EDGE
+%right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
+%nonassoc EQ NE
+%nonassoc '<' '>' LE GE
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
 %type<ival> INTEGER
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression expression
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement
+%type<statement> expressionstatement statement selectionstatement iterationstatement nodestatement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist parameterdeclaration statementlist
@@ -104,6 +124,11 @@ statementlist : statement { $$ = newStatementList($1); }
 statement : expressionstatement { $$ = $1; }
   | iterationstatement
   | selectionstatement
+  | nodestatement
+  ;
+nodestatement : NODE IDENTIFIER NEWLINE
+  | NODE IDENTIFIER EQ IDENTIFIER
+  | NODE IDENTIFIER NEWLINE compoundstatement
   ;
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX
   | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement 
@@ -113,20 +138,73 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-expression : additiveexpression 
+expression : assignmentexpression
+  | expression ',' assignmentexpression
+  ;
+
+assignmentexpression : conditionalexpression
+  | unaryexpression assignmentoperator assignmentexpression
+  ;
+assignmentoperator : '='
+  | PLUSEQ
+  | MINUSEQ
+  | MULTEQ
+  | DIVEQ
+  | MODEQ
+  ;
+equalityexpression : relationalexpression
+  | equalityexpression EQ relationalexpression
+  | equalityexpression NE relationalexpression 
+  ;
+relationalexpression : additiveexpression
+  | relationalexpression '<' additiveexpression
+  | relationalexpression '>' additiveexpression
+  | relationalexpression LE additiveexpression
+  | relationalexpression GE additiveexpression
   ;
 additiveexpression : multiplicativeexpression 
   | additiveexpression '+' multiplicativeexpression 
   | additiveexpression '-' multiplicativeexpression 
   ;
-multiplicativeexpression : unaryexpression 
-  | multiplicativeexpression '*' unaryexpression 
-  | multiplicativeexpression '/' unaryexpression 
-  | multiplicativeexpression '%' unaryexpression 
+multiplicativeexpression : castexpression 
+  | multiplicativeexpression '*' castexpression 
+  | multiplicativeexpression '/' castexpression 
+  | multiplicativeexpression '%' castexpression 
   ;
-unaryexpression : postfixexpression 
+castexpression : unaryexpression
+  | '(' typename ')' castexpression
   ;
-postfixexpression : primaryexpression 
+typename : INT
+  | DOUBLE
+  | CHAR
+  | STRING
+  | NODE
+  | DICT
+  | EDGE
+  ;
+unaryexpression : postfixexpression
+  | PLUSPLUS unaryexpression
+  | MINUSMINUS unaryexpression
+  | unaryoperator unaryexpression
+conditionalexpression : orexpression
+  ;
+orexpression : orexpression OR andexpression
+  | andexpression
+  ;
+andexpression : andexpression AND equalityexpression  
+  | equalityexpression
+  ;
+unaryoperator : '+'
+  | '-'
+  | '!'
+  ;
+
+//still needs argexpressionlist
+postfixexpression : primaryexpression
+  | postfixexpression '[' expression ']' 
+// need to fix identifier  | postfixexpression '.' identifier 
+  | postfixexpression PLUSPLUS 
+  | postfixexpression MINUSMINUS
   ;
 primaryexpression : identifier '(' argumentexpressionlist ')' { $$ = getFunctionExpression($1, $3); }
   | STRING_LITERAL { $$ = getStringExpression(yylval.sval); }

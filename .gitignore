@@ -26,8 +26,14 @@ test_output.txt
 klc
 klp
 
+# Testing files
+test_output.txt
+
 # text editor files
 *.swp
 
 # OS X's dumb file things
 .DS_Store
+
+# test shell script
+run.sh
