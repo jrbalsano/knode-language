@@ -146,6 +146,9 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
 dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE
+  | IDENTIFIER ':' STRING_LITERAL NEWLINE
+  | IDENTIFIER ':' INTEGER NEWLINE
+  | IDENTIFIER ':' BOOLEAN NEWLINE
   ;
 expression : assignmentexpression
   | expression ',' assignmentexpression
