@@ -204,6 +204,7 @@ andexpression : andexpression AND equalityexpression
 unaryoperator : '+'
   | '-'
   | '!'
+  | '*'
   ;
 
 postfixexpression : primaryexpression
