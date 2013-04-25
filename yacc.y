@@ -103,6 +103,7 @@ void yyerror(char *s);
 %%
 
 translationunit : externaldeclaration { $$ = getTranslationUnit($1); }
+  | translationunit externaldeclaration
   ;
 externaldeclaration : functiondefinition { $$ = $1; }
   ;
