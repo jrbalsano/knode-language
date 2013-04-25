@@ -108,13 +108,15 @@ translationunit : externaldeclaration { $$ = getTranslationUnit($1); }
 externaldeclaration : functiondefinition { $$ = $1; }
   ;
 functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($1, $2); }
+  | typename declarator compoundstatement
   ;
-declarator  : identifier { $$ = declaratorId($1); }
-  | declarator '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
+declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
+  | identifier '(' ')' ':' NEWLINE
   ;
-parameterlist : parameterdeclaration { $$ = $1; }
+parameterlist : parameterlist ',' parameterdeclaration { printf("HERE"); }
+  | parameterdeclaration {printf("HERE2");}
   ;
-parameterdeclaration : { $$ = NULL; }
+parameterdeclaration : typename identifier{ $$ = NULL; }
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;

@@ -7,11 +7,11 @@ functionOne():
 node functionTwo(int a):
   print("Hi")
 
-String functionThree(int a, int b, int c):
+string functionThree(int a, int b, int c):
   print("Hi")
 
-int functionFour(int a, String b, node c):
+int functionFour(int a, string b, node c):
   print("Hi")
 
-functionFive(int a, String b, node c):
+functionFive(int a, string b, node c):
   print("Hi")
