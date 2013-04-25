@@ -58,6 +58,7 @@ boolean   "TRUE"|"FALSE"
 "["                             printf("[\n"); return *yytext;
 "]"                             printf("]\n"); return *yytext;
 ","                             printf(",\n"); return *yytext;
+"."                             printf(".\n"); return *yytext;
 "int"                           printf("INT\n"); return INT;
 "double"                        printf("DOUBLE\n"); return DOUBLE;
 "char"                          printf("CHAR\n"); return CHAR;

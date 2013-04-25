@@ -113,8 +113,8 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE
   ;
-parameterlist : parameterlist ',' parameterdeclaration { printf("HERE"); }
-  | parameterdeclaration {printf("HERE2");}
+parameterlist : parameterlist ',' parameterdeclaration
+  | parameterdeclaration
   ;
 parameterdeclaration : typename identifier{ $$ = NULL; }
   ;
@@ -206,19 +206,23 @@ unaryoperator : '+'
   | '!'
   ;
 
-//still needs argexpressionlist
 postfixexpression : primaryexpression
   | postfixexpression '[' expression ']' 
-// need to fix identifier  | postfixexpression '.' identifier 
+  | postfixexpression '.' identifier 
   | postfixexpression PLUSPLUS 
   | postfixexpression MINUSMINUS
+  | postfixexpression '(' ')'
+  | postfixexpression '(' argumentexpressionlist ')'
   ;
-primaryexpression : identifier '(' argumentexpressionlist ')' { $$ = getFunctionExpression($1, $3); }
-  | STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
-  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getStringExpression(x); } 
+primaryexpression : STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
+  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getStringExpression(x); }
+  | identifier
+  | '(' expression ')' 
   ;
-argumentexpressionlist : expression { $$ = newArgumentExpressionList($1); }
+argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
+  | argumentexpressionlist ',' assignmentexpression
   ;
+
 %%
 void yyerror(char *s) {
   fprintf(stderr, "%s\n", s);

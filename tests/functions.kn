@@ -3,6 +3,13 @@ main():
 
 functionOne():
   print("Hi")
+  a = method()
+  b = object.attribute
+  c = object.method()
+  d = object.method(a, "Hello", 3)
+  e = array[4]
+  f = array[i++]
+  #int g = 3
 
 node functionTwo(int a):
   print("Hi")
