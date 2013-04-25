@@ -39,6 +39,7 @@ boolean   "TRUE"|"FALSE"
 "if"                            printf("IF\n"); return IF;
 "else"                          printf("ELSE\n"); return ELSE;
 "for"                           printf("FOR\n"); return FOR;
+"break"                         printf("BREAK\n"); return BREAK;
 {operator}                      printf("%s\n", yytext); return *yytext;
 {integer}                       printf("INTEGER\n");  yylval.ival = atoi(yytext); return INTEGER;
 {boolean}                       printf("BOOLEAN\n");  yylval.ival = yytext[0] == 'T' ? 1 : 0; return BOOLEAN;

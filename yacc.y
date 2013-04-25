@@ -68,6 +68,7 @@ void yyerror(char *s);
 %token NODE
 %token DICT
 %token EDGE
+%token BREAK
 %right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
 %nonassoc EQ NE
 %nonassoc '<' '>' LE GE
@@ -78,7 +79,7 @@ void yyerror(char *s);
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement nodestatement
+%type<statement> expressionstatement statement selectionstatement iterationstatement nodestatement breakstatement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist parameterdeclaration statementlist
@@ -125,6 +126,9 @@ statement : expressionstatement { $$ = $1; }
   | iterationstatement
   | selectionstatement
   | nodestatement
+  | breakstatement
+  ;
+breakstatement : BREAK NEWLINE
   ;
 nodestatement : NODE IDENTIFIER NEWLINE
   | NODE IDENTIFIER EQ IDENTIFIER
