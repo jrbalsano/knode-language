@@ -168,6 +168,7 @@ multiplicativeexpression : castexpression
   ;
 castexpression : unaryexpression
   | '(' typename ')' castexpression
+  | '(' NODE ')' castexpression
   ;
 typename : INT
   | DOUBLE
