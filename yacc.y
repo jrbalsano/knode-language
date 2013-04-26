@@ -112,7 +112,7 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
   | NODE declarator compoundstatement
   ;
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
-  | identifier '(' ')' ':' NEWLINE
+  | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
   ;
 parameterlist : parameterlist ',' parameterdeclaration
   | parameterdeclaration
