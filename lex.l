@@ -39,6 +39,7 @@ boolean   "TRUE"|"FALSE"
 "if"                            printf("IF\n"); return IF;
 "else"                          printf("ELSE\n"); return ELSE;
 "for"                           printf("FOR\n"); return FOR;
+"break"                         printf("BREAK\n"); return BREAK;
 {operator}                      printf("%s\n", yytext); return *yytext;
 {integer}                       printf("INTEGER\n");  yylval.ival = atoi(yytext); return INTEGER;
 {boolean}                       printf("BOOLEAN\n");  yylval.ival = yytext[0] == 'T' ? 1 : 0; return BOOLEAN;
@@ -54,11 +55,15 @@ boolean   "TRUE"|"FALSE"
 "{"                             printf("BLOCK_START\n"); return BLOCK_START;
 "}"                             printf("BLOCK_END\n"); return BLOCK_END;
 ";"                             printf(";\n"); return *yytext;
+"["                             printf("[\n"); return *yytext;
+"]"                             printf("]\n"); return *yytext;
+","                             printf(",\n"); return *yytext;
+"."                             printf(".\n"); return *yytext;
 "int"                           printf("INT\n"); return INT;
 "double"                        printf("DOUBLE\n"); return DOUBLE;
 "char"                          printf("CHAR\n"); return CHAR;
 "string"                        printf("STRING\n"); return STRING;
-"node"                          printf("NODE\n"); return NODE;
+"node"                          printf("NODE\n"); yylval.sval = yytext; return NODE;
 "dict"                          printf("DICT\n"); return DICT;
 "edge"                          printf("EDGE\n"); return EDGE;
 {string}                        {
@@ -67,4 +72,27 @@ boolean   "TRUE"|"FALSE"
 
                                   return STRING_LITERAL; 
                                 }
+[a-z_][a-zA-Z0-9_]*             {
+                                    /*
+                                     * NOTE: THIS IS A SUPER HACKY WAY TO
+                                     * RECOGNIZE IDENTIFIERS, AND IS ONLY A
+                                     * STOPGAP SOLUTION FOR NOW. IT ONLY WORKS
+                                     * BECAUSE IT'S IN THE LAST POSITION
+                                     * TODO: fix this by moving identifier
+                                     * recognition into symbol table with used
+                                     * variables/keywords
+                                     */
+                                    if (checkSymbolTable() == 0) {
+                                        printf("IDENTIFIER\n");
+                                        printf("%s\n", yytext);
+                                        return IDENTIFIER;
+                                    }
+                                }
 %%
+
+int checkSymbolTable() {
+    /* this function should theoretically check the symbol table and return the
+     * index of whatever it looks up
+     */
+    return 0;
+}

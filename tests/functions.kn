@@ -1,0 +1,24 @@
+main():
+  print("Hi")
+
+functionOne():
+  print("Hi")
+  a = method()
+  b = object.attribute
+  c = object.method()
+  d = object.method(a, "Hello", 3)
+  e = array[4]
+  f = array[i++]
+  int g = 3
+
+node functionTwo(int a):
+  print("Hi")
+
+string functionThree(int a, int b, int c):
+  print("Hi")
+
+int functionFour(int a, string b, node c):
+  print("Hi")
+
+functionFive(int a, string b, node c):
+  print("Hi")
