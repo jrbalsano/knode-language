@@ -68,6 +68,7 @@ void yyerror(char *s);
 %token NODE
 %token DICT
 %token EDGE
+%token BREAK
 %right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
 %nonassoc EQ NE
 %nonassoc '<' '>' LE GE
@@ -75,10 +76,10 @@ void yyerror(char *s);
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
 %type<ival> INTEGER
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement nodestatement
+%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist parameterdeclaration statementlist
@@ -102,17 +103,22 @@ void yyerror(char *s);
 %%
 
 translationunit : externaldeclaration { $$ = getTranslationUnit($1); }
+  | translationunit externaldeclaration
   ;
 externaldeclaration : functiondefinition { $$ = $1; }
   ;
 functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($1, $2); }
+  | typename declarator compoundstatement
+  | NODE declarator compoundstatement
   ;
-declarator  : identifier { $$ = declaratorId($1); }
-  | declarator '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
+declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
+  | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
   ;
-parameterlist : parameterdeclaration { $$ = $1; }
+parameterlist : parameterlist ',' parameterdeclaration
+  | parameterdeclaration
   ;
-parameterdeclaration : { $$ = NULL; }
+parameterdeclaration : typename identifier{ $$ = NULL; }
+  | NODE identifier
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;
@@ -125,7 +131,11 @@ statement : expressionstatement { $$ = $1; }
   | iterationstatement
   | selectionstatement
   | nodestatement
+  | breakstatement
   ;
+breakstatement : BREAK NEWLINE
+  ;
+
 nodestatement : NODE IDENTIFIER NEWLINE
   | NODE IDENTIFIER EQ IDENTIFIER
   | NODE IDENTIFIER NEWLINE compoundstatement
@@ -144,6 +154,7 @@ expression : assignmentexpression
 
 assignmentexpression : conditionalexpression
   | unaryexpression assignmentoperator assignmentexpression
+  | typename identifier '=' assignmentexpression
   ;
 assignmentoperator : '='
   | PLUSEQ
@@ -178,7 +189,6 @@ typename : INT
   | DOUBLE
   | CHAR
   | STRING
-  | NODE
   | DICT
   | EDGE
   ;
@@ -197,21 +207,26 @@ andexpression : andexpression AND equalityexpression
 unaryoperator : '+'
   | '-'
   | '!'
+  | '*'
   ;
 
-//still needs argexpressionlist
 postfixexpression : primaryexpression
   | postfixexpression '[' expression ']' 
-// need to fix identifier  | postfixexpression '.' identifier 
+  | postfixexpression '.' identifier 
   | postfixexpression PLUSPLUS 
   | postfixexpression MINUSMINUS
+  | postfixexpression '(' ')'
+  | postfixexpression '(' argumentexpressionlist ')'
   ;
-primaryexpression : identifier '(' argumentexpressionlist ')' { $$ = getFunctionExpression($1, $3); }
-  | STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
-  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getStringExpression(x); } 
+primaryexpression : STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
+  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getStringExpression(x); }
+  | identifier
+  | '(' expression ')' 
   ;
-argumentexpressionlist : expression { $$ = newArgumentExpressionList($1); }
+argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
+  | argumentexpressionlist ',' assignmentexpression
   ;
+
 %%
 void yyerror(char *s) {
   fprintf(stderr, "%s\n", s);
