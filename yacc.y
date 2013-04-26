@@ -196,6 +196,7 @@ unaryexpression : postfixexpression
   | PLUSPLUS unaryexpression
   | MINUSMINUS unaryexpression
   | unaryoperator unaryexpression
+  ;
 conditionalexpression : orexpression
   ;
 orexpression : orexpression OR andexpression
