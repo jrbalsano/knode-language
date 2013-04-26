@@ -77,11 +77,8 @@ Check() {
     echo 1>&2
     echo "###### Testing $basename" 1>&2
 
-    generatedfiles=""
-
-    generatedfiles="$generatedfiles ${basename}.kn.out" &&
-    Run "$KNODE" "-i" "<" $1 ">" tests/${basename}.kn.out &&
-    Compare tests/${basename}.kn.out ${reffile}.out ${basename}.i.diff
+    
+    Run "$KNODE" "$1" > "$1.out"
 
     # Report the status and clean up the generated files
 

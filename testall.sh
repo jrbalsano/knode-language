@@ -1,6 +1,7 @@
 #!/bin/bash
 KNODE="./knode"
 
+
 # Set time limit for all operations
 ulimit -t 30
 # Log file, file that contains a list of events which have been "logged" by a computer
@@ -30,6 +31,7 @@ echo "  $1"
 Run() {
 #report into log if one faile or had an error
 echo $* 1>&2
+#if the first command succeeds the second will not be evaluated
 eval $* || {
 SignalError "$1 failed on $*"
 return 1
@@ -49,10 +51,6 @@ Check() {
     echo "###### Testing $basename" 1>&2
 	
 	Run "$KNODE" "$1" > "$1.out"
-	
-	if [ "$?" != "0" ]; then
-	SignalError "$1 has error"
-	fi
 
     # Report the status and clean up the generated files
 
