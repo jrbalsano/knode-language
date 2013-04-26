@@ -174,7 +174,6 @@ typename : INT
   | DOUBLE
   | CHAR
   | STRING
-  | NODE
   | DICT
   | EDGE
   ;
