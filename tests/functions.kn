@@ -9,7 +9,7 @@ functionOne():
   d = object.method(a, "Hello", 3)
   e = array[4]
   f = array[i++]
-  #int g = 3
+  int g = 3
 
 node functionTwo(int a):
   print("Hi")
