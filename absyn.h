@@ -21,6 +21,9 @@ struct expression_ {
     char *s;
   } val;
   GrammarList l; //ArgExpList for FunctionExpressions
+  Expression e1; //Subexpressions in an expression.
+  Expression e2;
+  Identifier i; //For postfix expressions - different from having a value identifier.
 };
 struct identifier_ {
   char *symbol;
@@ -67,4 +70,6 @@ Expression getPrimaryStringExpression(char *s);
 GrammarList newArgumentExpressionList(Expression e);
 Identifier getIdentifier(char *s);
 Expression getPrimaryIdentifierExpression(Identifier id);
+Expression getPostfixExpression(Expression e1, Expression e2);
+Expression getPostfixIdentifierExpression(Expression e, Identifier id);
 #endif

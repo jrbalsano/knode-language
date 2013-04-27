@@ -228,11 +228,11 @@ unaryoperator : '+'
   | '*'
   ;
 postfixexpression : primaryexpression { $$ = $1; }
-  | postfixexpression '[' expression ']'
-  | postfixexpression '.' identifier 
+  | postfixexpression '[' expression ']' { $$ = getPostfixExpression($1, $3); } 
+  | postfixexpression '.' identifier { $$ = getPostfixIdentifierExpression($1, $3); }
   | postfixexpression PLUSPLUS 
   | postfixexpression MINUSMINUS
-  | postfixexpression '(' ')'
+  | postfixexpression '(' ')' { $$ = $1; }
   | postfixexpression '(' argumentexpressionlist ')'
   ;
 primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }

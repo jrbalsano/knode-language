@@ -83,7 +83,23 @@ Identifier getIdentifier(char *s) {
   return i;
 }
 
-//Expression getPostfixExpression(
+Expression getPostfixExpression(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  e1->type = postfix;
+  e2->type = expression;
+  ret->e1 = e1;
+  ret->e2 = e2;
+  ret->type = postfix;
+  return ret;
+}
+
+Expression getPostfixIdentifierExpression(Expression e, Identifier id){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = postfix;
+  ret->i = id;
+  ret->e1 = e;
+  return ret;
+}
 
 void addFront(GrammarList g, void *data) {
   GrammarNode n = (GrammarNode)malloc(sizeof(struct grammarNode_));
