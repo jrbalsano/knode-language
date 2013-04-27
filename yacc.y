@@ -11,6 +11,7 @@
 #include "absyn.h"
 
 void yyerror(char *s);
+int errorHad = 0;
 
 %}
 
@@ -232,9 +233,13 @@ argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($
 %%
 void yyerror(char *s) {
   fprintf(stderr, "%s\n", s);
+  errorHad = 1;
 }
 
 int main(void) {
   yyparse();
-  return 0;
+  if(errorHad)
+    return 1;
+  else
+    return 0;
 }
