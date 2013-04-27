@@ -28,6 +28,8 @@ klp
 
 # Testing files
 test_output.txt
+testall.log
+tests/*.out
 
 # text editor files
 *.swp
