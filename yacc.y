@@ -201,6 +201,7 @@ multiplicativeexpression : castexpression
 castexpression : unaryexpression
   | '(' typename ')' castexpression
   | '(' NODE ')' castexpression
+  | '(' DICT ')' castexpression
   ;
 typename : INT
   | DOUBLE
