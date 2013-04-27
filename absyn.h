@@ -58,7 +58,7 @@ void addFront(GrammarList g, void *data);
 TranslationUnit getTranslationUnit(FunctionDefinition fd);
 FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs);
 Declarator declaratorId(Identifier id);
-Declarator getDeclarator(Declarator d, GrammarList pList);
+Declarator getDeclarator(Identifier id, GrammarList pList);
 CompoundStatement newCompoundStatement(GrammarList sList);
 GrammarList newStatementList(Statement s);
 Statement getExpressionStatement(Expression e);

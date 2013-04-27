@@ -20,7 +20,9 @@ Declarator declaratorId(Identifier id) {
   return d;
 }
 
-Declarator getDeclarator(Declarator d, GrammarList pList) {
+Declarator getDeclarator(Identifier id, GrammarList pList) {
+  Declarator d = (Declarator)malloc(sizeof(struct declarator_));
+  d->name = id;
   d->p = pList;
   return d;
 }
@@ -80,6 +82,8 @@ Identifier getIdentifier(char *s) {
   i->symbol = s;
   return i;
 }
+
+//Expression getPostfixExpression(
 
 void addFront(GrammarList g, void *data) {
   GrammarNode n = (GrammarNode)malloc(sizeof(struct grammarNode_));

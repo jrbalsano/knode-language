@@ -115,7 +115,7 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
   | typename declarator compoundstatement
   | NODE declarator compoundstatement
   ;
-declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator(declaratorId($1), $3); }
+declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
   ;
 parameterlist : parameterlist ',' parameterdeclaration
@@ -227,8 +227,8 @@ unaryoperator : '+'
   | '!'
   | '*'
   ;
-postfixexpression : primaryexpression
-  | postfixexpression '[' expression ']' 
+postfixexpression : primaryexpression { $$ = $1; }
+  | postfixexpression '[' expression ']'
   | postfixexpression '.' identifier 
   | postfixexpression PLUSPLUS 
   | postfixexpression MINUSMINUS
