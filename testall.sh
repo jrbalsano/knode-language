@@ -19,51 +19,44 @@ keep=0
 #always end if then else construct with a fi
 # $1 means first argument on command line
 SignalError() {
-if [ $error -eq 0 ] ; then
-echo "FAILED"
-error=1
-fi
-echo "  $1"
+  if [ $error -eq 0 ] ; then
+    error=1
+  fi
+  echo "$1" >> $globallog
 }
 
 # Run <args>
 # Report the command, run it, and report any errors
 Run() {
 #report into log if one faile or had an error
-echo $* 1>&2
+  echo $* >> $globallog
 #if the first command succeeds the second will not be evaluated
-eval $* || {
-SignalError "$1 failed on $*"
-return 1
-}
+  eval $* || {
+    SignalError "$1 failed on $*"
+    return 1
+  }
 }
 
 Check() {
-    error=0
-    basename=`echo $1 | sed 's/.*\\///
-                             s/.kn//'`
-							 
-    basedir="`echo $1 | sed 's/\/[^\/]*$//'`/."
-
-    echo -n "$basename..."
-
-    echo 1>&2
-    echo "###### Testing $basename" 1>&2
-	
+  error=0
+  basename=`echo $1 | sed 's/.*\\///
+                             s/.kn//'`							 
+  basedir="`echo $1 | sed 's/\/[^\/]*$//'`/."
+  echo -n "$basename..."
+  echo >> $globallog
+  echo "###### Testing $basename" >> $globallog
+	rm -f "$1.out"
 	Run "$KNODE" "$1" > "$1.out"
-
     # Report the status and clean up the generated files
-
-    if [ $error -eq 0 ] ; then
-	if [ $keep -eq 0 ] ; then
-	    echo "Done testing"
-	fi
-	echo "OK"
-	echo "###### SUCCESS" 1>&2
-    else
-	echo "###### FAILED" 1>&2
-	globalerror=$error
-    fi
+	echo "Done testing"
+  if [ $error -eq 0 ] ; then
+	  echo -e "\033[32mOK\033[37m"
+	  echo "###### SUCCESS" >> $globallog
+  else
+    echo -e "\033[31mFAILED\033[37m"
+	  echo "###### FAILED" >> $globallog
+	  globalerror=$error
+  fi
 }
 #Get all of the test scripts and store their names in $files
 files="tests/test-*.kn"
@@ -71,5 +64,5 @@ files="tests/test-*.kn"
 #for each file in files, run them and print them to .out files
 for f in $files
 do
-  Check $f 2>> $globallog
+  Check $f
 done
