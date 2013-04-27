@@ -66,5 +66,5 @@ Expression getFunctionExpression(Identifier id, GrammarList argExpList);
 Expression getStringExpression(char *s);
 GrammarList newArgumentExpressionList(Expression e);
 Identifier getIdentifier(char *s);
-Expression getPrimaryExpression(Expression e);
+Expression getPrimaryExpression(Identifier id);
 #endif

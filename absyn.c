@@ -42,7 +42,7 @@ GrammarList newStatementList(Statement s) {
 Statement getExpressionStatement(Expression e) {
   Statement s = (Statement)malloc(sizeof(struct statement_));
   s->type = expression;
-//  s->sub.e = e;
+  s->sub.e = e;
   return s;
 }
 
@@ -54,9 +54,10 @@ Expression getFunctionExpression(Identifier id, GrammarList argExpList) {
   return ret;
 }
 
-Expression getPrimaryExpression(Expression e){
+Expression getPrimaryExpression(Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = primary;
+  ret->val.i = id;
   return ret;
 }
 
