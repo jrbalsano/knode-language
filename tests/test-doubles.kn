@@ -1,5 +1,6 @@
 main():
-  #check these dubs
+  # check these dubs
+  int a = 23
   double a = 23.24
   double c = 0.24 
   int b = 4
