@@ -115,7 +115,7 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
   | typename declarator compoundstatement
   | NODE declarator compoundstatement
   ;
-declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
+declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator(declaratorId($1), $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
   ;
 parameterlist : parameterlist ',' parameterdeclaration
@@ -238,8 +238,8 @@ postfixexpression : primaryexpression
 primaryexpression : STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
   | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getStringExpression(x); }
   | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getStringExpression(x); }
-  | identifier
-  | '(' expression ')' 
+  | identifier { $$ = getPrimaryExpression($1); }
+  | '(' expression ')' { $$ = $2} 
   ;
 argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
   | argumentexpressionlist ',' assignmentexpression
