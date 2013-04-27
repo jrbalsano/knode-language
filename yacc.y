@@ -235,10 +235,10 @@ postfixexpression : primaryexpression
   | postfixexpression '(' ')'
   | postfixexpression '(' argumentexpressionlist ')'
   ;
-primaryexpression : STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
-  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getStringExpression(x); }
-  | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getStringExpression(x); }
-  | identifier { $$ = getPrimaryExpression($1); }
+primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }
+  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
+  | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getPrimaryStringExpression(x); }
+  | identifier { $$ = getPrimaryIdentifierExpression($1); }
   | '(' expression ')' { $$ = $2} 
   ;
 argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }

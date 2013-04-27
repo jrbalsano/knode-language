@@ -54,14 +54,14 @@ Expression getFunctionExpression(Identifier id, GrammarList argExpList) {
   return ret;
 }
 
-Expression getPrimaryExpression(Identifier id){
+Expression getPrimaryIdentifierExpression(Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = primary;
   ret->val.i = id;
   return ret;
 }
 
-Expression getStringExpression(char *s) {
+Expression getPrimaryStringExpression(char *s) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = string;
   ret->val.s = s;

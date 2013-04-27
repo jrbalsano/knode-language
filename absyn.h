@@ -63,8 +63,8 @@ CompoundStatement newCompoundStatement(GrammarList sList);
 GrammarList newStatementList(Statement s);
 Statement getExpressionStatement(Expression e);
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
-Expression getStringExpression(char *s);
+Expression getPrimaryStringExpression(char *s);
 GrammarList newArgumentExpressionList(Expression e);
 Identifier getIdentifier(char *s);
-Expression getPrimaryExpression(Identifier id);
+Expression getPrimaryIdentifierExpression(Identifier id);
 #endif
