@@ -24,8 +24,8 @@ lex.yy.c: lex.l yacc.tab.c
 	lex lex.l
 
 yacc.tab.c: yacc.y
-	bison -d yacc.y
+	bison -d yacc.y --debug --verbose
 
 .PHONY: clean
 clean:
-	rm -f $(COMPILER) $(PREPROCESSOR) whitelex.yy.c lex.yy.c a.out yacc.tab.* *.o testall.log tests/*.out
+	rm -f $(COMPILER) $(PREPROCESSOR) whitelex.yy.c lex.yy.c a.out yacc.tab.* yacc.output *.o testall.log tests/*.out

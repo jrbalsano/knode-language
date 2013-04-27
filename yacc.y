@@ -123,6 +123,7 @@ parameterlist : parameterlist ',' parameterdeclaration
   ;
 parameterdeclaration : typename identifier{ $$ = NULL; }
   | NODE identifier
+  | DICT identifier
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;
@@ -200,12 +201,12 @@ multiplicativeexpression : castexpression
 castexpression : unaryexpression
   | '(' typename ')' castexpression
   | '(' NODE ')' castexpression
+  | '(' DICT ')' castexpression
   ;
 typename : INT
   | DOUBLE
   | CHAR
   | STRING
-  | DICT
   | EDGE
   ;
 unaryexpression : postfixexpression
