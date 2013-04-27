@@ -237,8 +237,8 @@ postfixexpression : primaryexpression
 primaryexpression : STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
   | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getStringExpression(x); }
   | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getStringExpression(x); }
-  | identifier
-  | '(' expression ')' 
+  | identifier { $$ = getPrimaryExpression($1); }
+  | '(' expression ')' { $$ = $2} 
   ;
 argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
   | argumentexpressionlist ',' assignmentexpression
