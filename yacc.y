@@ -26,6 +26,7 @@ int errorHad = 0;
 %union {
   char *sval;
   int ival;
+  float fval;
   Identifier identifier;
   Declarator declarator;
   Statement statement;
@@ -51,6 +52,7 @@ int errorHad = 0;
 %token IF
 %token ELSE
 %token INTEGER
+%token DOUBLEVAL
 %token NE
 %left AND
 %left OR
@@ -77,6 +79,7 @@ int errorHad = 0;
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
 %type<ival> INTEGER
+%type<fval> DOUBLEVAL
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
 %type<identifier> identifier
 %type<declarator> declarator
@@ -233,6 +236,7 @@ postfixexpression : primaryexpression
   ;
 primaryexpression : STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
   | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getStringExpression(x); }
+  | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getStringExpression(x); }
   | identifier
   | '(' expression ')' 
   ;
