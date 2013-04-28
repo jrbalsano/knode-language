@@ -30,7 +30,7 @@ struct expression_ {
     Identifier i;
     GrammarList l;
   } sub2;
-  enum{increment, decrement} operator;
+  enum {increment, decrement, positive = '+', negative = '-', negate = '!', clone = '*'} operator;
 };
 
 struct identifier_ {
@@ -87,4 +87,5 @@ Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
 Expression getUnaryExpression(Expression e);
 Expression getUnaryIncr(Expression e);
 Expression getUnaryDecr(Expression e);
+Expression getUnarySingleOp(char c, Expression e);
 #endif

@@ -25,6 +25,7 @@ int errorHad = 0;
      */
 %union {
   char *sval;
+  char cval;
   int ival;
   float fval;
   Identifier identifier;
@@ -80,7 +81,8 @@ int errorHad = 0;
 %type<sval> STRING_LITERAL IDENTIFIER
 %type<ival> INTEGER
 %type<fval> DOUBLEVAL
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
+%type<cval> unaryoperator '-' '+' '!' '*'
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement
@@ -209,10 +211,10 @@ typename : INT
   | STRING
   | EDGE
   ;
-unaryexpression : postfixexpression { $$ = getUnaryExpression($$); }
-  | PLUSPLUS unaryexpression { $$ = getUnaryIncr($$); }
-  | MINUSMINUS unaryexpression { $$ = getUnaryDecr($$); }
-  | unaryoperator unaryexpression {$$ = getUnarySingleOp(getUnaryOp($1), $2); }
+unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
+  | PLUSPLUS unaryexpression { $$ = getUnaryIncr($2); }
+  | MINUSMINUS unaryexpression { $$ = getUnaryDecr($2); }
+  | unaryoperator unaryexpression {$$ = getUnarySingleOp($1, $2); }
   ;
 conditionalexpression : orexpression
   ;
@@ -222,10 +224,10 @@ orexpression : orexpression OR andexpression
 andexpression : andexpression AND equalityexpression  
   | equalityexpression
   ;
-unaryoperator : '+'
-  | '-'
-  | '!'
-  | '*'
+unaryoperator : '+' { $$ = $1; }
+  | '-' { $$ = $1; }
+  | '!' { $$ = $1; }
+  | '*' { $$ = $1; }
   ;
 postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
   | postfixexpression '[' expression ']' { $$ = getPostfixBracketExpression($1, $3); } 

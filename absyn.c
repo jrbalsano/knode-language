@@ -138,6 +138,14 @@ Expression getUnaryIncr(Expression e){
   return ret;
 }
 
+Expression getUnarySingleOp(char op, Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->operator = op;
+  ret->sub1.e = e;
+  return ret;
+}
+
 Expression getUnaryDecr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = unary;
