@@ -79,7 +79,7 @@ int errorHad = 0;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
-%type<ival> INTEGER
+%type<ival> INTEGER typename INT DOUBLE CHAR STRING DICT
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*'
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
@@ -201,15 +201,14 @@ multiplicativeexpression : castexpression
   | multiplicativeexpression '%' castexpression 
   ;
 castexpression : unaryexpression { $$ = getCastExpression($1); }
-  | '(' typename ')' castexpression
-  | '(' NODE ')' castexpression
-  | '(' DICT ')' castexpression
+  | '(' typename ')' castexpression { $$ = getTypedCast($2, $4); }
+  | '(' NODE ')' castexpression { $$ = getTypedCast(NODE, $4); }
+  | '(' DICT ')' castexpression { $$ = getTypedCast(DICT, $4); }
   ;
-typename : INT
-  | DOUBLE
-  | CHAR
-  | STRING
-  | EDGE
+typename : INT { $$ = $1; }
+  | DOUBLE { $$ = $1; }
+  | CHAR { $$ = $1; }
+  | STRING {$$ = $1; }
   ;
 unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
   | PLUSPLUS unaryexpression { $$ = getUnaryIncr($2); }

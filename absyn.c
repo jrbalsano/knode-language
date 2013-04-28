@@ -159,6 +159,14 @@ Expression getCastExpression(Expression e){
   return ret;
 }
 
+Expression getTypedCast(int token, Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cast;
+  ret->sub1.typnam = token;
+  ret->sub2.e = e;
+  return ret;
+}
+
 void addFront(GrammarList g, void *data) {
   GrammarNode n = (GrammarNode)malloc(sizeof(struct grammarNode_));
   n->data = data;
