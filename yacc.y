@@ -71,6 +71,10 @@ int errorHad = 0;
 %token NODE
 %token DICT
 %token EDGE
+%token ALLEDGE
+%token LEFTEDGE
+%token RIGHTEDGE
+%token BOTHEDGE
 %token BREAK
 %right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
 %nonassoc EQ NE
@@ -83,7 +87,7 @@ int errorHad = 0;
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement
+%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement alledgestatement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist parameterdeclaration statementlist
@@ -114,6 +118,7 @@ externaldeclaration : functiondefinition { $$ = $1; }
 functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($1, $2); }
   | typename declarator compoundstatement
   | NODE declarator compoundstatement
+  | EDGE declarator compoundstatement
   ;
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator(declaratorId($1), $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
@@ -124,6 +129,7 @@ parameterlist : parameterlist ',' parameterdeclaration
 parameterdeclaration : typename identifier{ $$ = NULL; }
   | NODE identifier
   | DICT identifier
+  | EDGE identifier
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;
@@ -139,6 +145,7 @@ statement : expressionstatement { $$ = $1; }
   | breakstatement
   | dictstatement
   | dictlist
+  | edgestatement
   ;
 dictstatement : DICT IDENTIFIER NEWLINE
   | DICT IDENTIFIER '[' INTEGER ']' NEWLINE
@@ -164,6 +171,15 @@ dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE
   | IDENTIFIER ':' STRING_LITERAL NEWLINE
   | IDENTIFIER ':' INTEGER NEWLINE
   | IDENTIFIER ':' BOOLEAN NEWLINE
+  ;
+edgestatement: EDGE IDENTIFIER '=' '[' IDENTIFIER alledgestatement IDENTIFIER ']' NEWLINE
+  | IDENTIFIER alledgestatement IDENTIFIER NEWLINE
+  | IDENTIFIER alledgestatement IDENTIFIER '['INTEGER']' NEWLINE
+  ;
+alledgestatement: ALLEDGE
+  | BOTHEDGE
+  | LEFTEDGE
+  | RIGHTEDGE
   ;
 expression : assignmentexpression
   | expression ',' assignmentexpression
