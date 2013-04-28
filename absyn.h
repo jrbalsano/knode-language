@@ -24,13 +24,14 @@ struct expression_ {
     Expression e;
     Identifier i;
     GrammarList l;
+    int typnam;
   } sub1;
   union {
     Expression e;
     Identifier i;
     GrammarList l;
   } sub2;
-  enum {increment, decrement, positive = '+', negative = '-', negate = '!', clone = '*'} operator;
+  enum {increment, decrement, positive = '+', negative = '-', negate = '!', clone = '*'} op;
 };
 
 struct identifier_ {

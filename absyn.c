@@ -107,13 +107,13 @@ Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
 }
 
 Expression getPostfixIncr(Expression e){
-  e->operator = increment;
+  e->op= increment;
   return e;
 }
 
 
 Expression getPostfixDecr(Expression e){
-  e->operator = decrement;
+  e->op= decrement;
   return e;
 }
 
@@ -134,14 +134,14 @@ Expression getUnaryExpression(Expression e){
 Expression getUnaryIncr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = unary;
-  ret->operator = increment;
+  ret->op= increment;
   return ret;
 }
 
 Expression getUnarySingleOp(char op, Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = unary;
-  ret->operator = op;
+  ret->op= op;
   ret->sub1.e = e;
   return ret;
 }
@@ -149,7 +149,7 @@ Expression getUnarySingleOp(char op, Expression e){
 Expression getUnaryDecr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = unary;
-  ret->operator = decrement;
+  ret->op= decrement;
   return ret;
 }
 
