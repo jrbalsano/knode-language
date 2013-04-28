@@ -227,13 +227,13 @@ unaryoperator : '+'
   | '!'
   | '*'
   ;
-postfixexpression : primaryexpression { $$ = $1; }
-  | postfixexpression '[' expression ']' { $$ = getPostfixExpression($1, $3); } 
+postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
+  | postfixexpression '[' expression ']' { $$ = getPostfixBracketExpression($1, $3); } 
   | postfixexpression '.' identifier { $$ = getPostfixIdentifierExpression($1, $3); }
-  | postfixexpression PLUSPLUS 
-  | postfixexpression MINUSMINUS
+  | postfixexpression PLUSPLUS { $$ = getPostfixIncr($1); }
+  | postfixexpression MINUSMINUS { $$ = getPostfixDecr($1); }
   | postfixexpression '(' ')' { $$ = $1; }
-  | postfixexpression '(' argumentexpressionlist ')'
+  | postfixexpression '(' argumentexpressionlist ')' { $$ = getPostfixArgumentExpression($1, $3); }
   ;
 primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }
   | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }

@@ -20,11 +20,19 @@ struct expression_ {
     Identifier i;
     char *s;
   } val;
-  GrammarList l; //ArgExpList for FunctionExpressions
-  Expression e1; //Subexpressions in an expression.
-  Expression e2;
-  Identifier i; //For postfix expressions - different from having a value identifier.
+  union {
+    Expression e;
+    Identifier i;
+    GrammarList l;
+  } sub1;
+  union {
+    Expression e;
+    Identifier i;
+    GrammarList l;
+  } sub2;
+  enum{increment, decrement} operator;
 };
+
 struct identifier_ {
   char *symbol;
 };
@@ -70,6 +78,10 @@ Expression getPrimaryStringExpression(char *s);
 GrammarList newArgumentExpressionList(Expression e);
 Identifier getIdentifier(char *s);
 Expression getPrimaryIdentifierExpression(Identifier id);
-Expression getPostfixExpression(Expression e1, Expression e2);
+Expression getPostfixExpression(Expression e1);
+Expression getPostfixBracketExpression(Expression e1, Expression e2);
 Expression getPostfixIdentifierExpression(Expression e, Identifier id);
+Expression getPostfixIncr(Expression e);
+Expression getPostfixDecr(Expression e);
+Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
 #endif
