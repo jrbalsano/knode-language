@@ -15,7 +15,7 @@ typedef struct grammarNode_ *GrammarNode;
 typedef struct translationUnit_ *TranslationUnit;
 
 struct expression_ {
-  enum {function, unary, postfix, primary, string} type;
+  enum {function, unary, postfix, primary, string, cast} type;
   union{
     Identifier i;
     char *s;
