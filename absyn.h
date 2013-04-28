@@ -84,4 +84,7 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id);
 Expression getPostfixIncr(Expression e);
 Expression getPostfixDecr(Expression e);
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
+Expression getUnaryExpression(Expression e);
+Expression getUnaryIncr(Expression e);
+Expression getUnaryDecr(Expression e);
 #endif

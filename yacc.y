@@ -209,10 +209,10 @@ typename : INT
   | STRING
   | EDGE
   ;
-unaryexpression : postfixexpression
-  | PLUSPLUS unaryexpression
-  | MINUSMINUS unaryexpression
-  | unaryoperator unaryexpression
+unaryexpression : postfixexpression { $$ = getUnaryExpression($$); }
+  | PLUSPLUS unaryexpression { $$ = getUnaryIncr($$); }
+  | MINUSMINUS unaryexpression { $$ = getUnaryDecr($$); }
+  | unaryoperator unaryexpression {$$ = getUnarySingleOp(getUnaryOp($1), $2); }
   ;
 conditionalexpression : orexpression
   ;
