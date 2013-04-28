@@ -200,7 +200,7 @@ multiplicativeexpression : castexpression
   | multiplicativeexpression '/' castexpression 
   | multiplicativeexpression '%' castexpression 
   ;
-castexpression : unaryexpression
+castexpression : unaryexpression { $$ = getCastExpression($1); }
   | '(' typename ')' castexpression
   | '(' NODE ')' castexpression
   | '(' DICT ')' castexpression

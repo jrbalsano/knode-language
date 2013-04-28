@@ -153,6 +153,12 @@ Expression getUnaryDecr(Expression e){
   return ret;
 }
 
+Expression getCastExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cast;
+  return ret;
+}
+
 void addFront(GrammarList g, void *data) {
   GrammarNode n = (GrammarNode)malloc(sizeof(struct grammarNode_));
   n->data = data;

@@ -88,4 +88,5 @@ Expression getUnaryExpression(Expression e);
 Expression getUnaryIncr(Expression e);
 Expression getUnaryDecr(Expression e);
 Expression getUnarySingleOp(char c, Expression e);
+Expression getCastExpression(Expression e);
 #endif
