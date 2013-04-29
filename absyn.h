@@ -57,6 +57,7 @@ struct translationUnit_ {
   FunctionDefinition f;
 };
 struct grammarList_ {
+  enum {argument, statement} type;
   GrammarNode head;
 };
 struct grammarNode_ {
@@ -83,4 +84,12 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id);
 Expression getPostfixIncr(Expression e);
 Expression getPostfixDecr(Expression e);
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
+void freeTranslationUnit(TranslationUnit t); 
+void freeFunctionDefinition(FunctionDefinition f);
+void freeDeclarator(Declarator d);
+void freeCompoundStatement(CompoundStatement c);
+void freeGrammarList(GrammarList g);
+void freeStatement(Statement s);
+void freeExpression(Expression e);
+void freeIdentifier(Identifier i);
 #endif

@@ -97,7 +97,7 @@ CompoundStatement newCompoundStatement(GrammarList sList) {
  * Recursively free the compound statement and its children in postorder.
  */
 void freeCompoundStatement(CompoundStatement c) {
-  freeGrammartList(c->sList);
+  freeGrammarList(c->sList);
   free(c);
 }
 /*****************
@@ -110,6 +110,7 @@ void freeCompoundStatement(CompoundStatement c) {
  */
 GrammarList newStatementList(Statement s) {
   GrammarList sList = (GrammarList)malloc(sizeof(struct grammarList_));
+  sList->type = statement;
   sList->head = 0;
   addFront(sList, s);
   return sList;
@@ -121,6 +122,7 @@ GrammarList newStatementList(Statement s) {
  */
 GrammarList newArgumentExpressionList(Expression e) {
   GrammarList aeList = (GrammarList)malloc(sizeof(struct grammarList_));
+  aeList->type = argument;
   aeList->head = 0;
   addFront(aeList, e);
   return aeList;
@@ -134,6 +136,36 @@ void addFront(GrammarList g, void *data) {
   n->data = data;
   n->next = g->head;
   g->head = n;
+}
+
+/**
+ * pops the first node off the front of the list and returns the data stored therein.
+ */
+void *popFront(GrammarList g) {
+  if(g->head) {
+    GrammarNode n = g->head;
+    g->head = n->next;
+    void *d = n->data;
+    free(n);
+    return d;
+  }
+  else
+    return NULL;
+}
+
+void freeGrammarList(GrammarList g) {
+  while(g->head) {
+    void *d = popFront(g);
+    switch(g->type) {
+      case argument:
+        freeExpression((Expression)d);
+        break;
+      case statement:
+        freeStatement((Statement)d);
+        break;
+    }
+  }
+  free(g);
 }
 
 /************
@@ -154,7 +186,7 @@ Statement getExpressionStatement(Expression e) {
  * Recursively free the Statement and its children in postorder.
  */
 void freeStatement(Statement s) {
-  switch s->type {
+  switch(s->type) {
     case expression:
       freeExpression(s->sub.e);
       break;
@@ -275,10 +307,10 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
 /**
  * Recursively free an expression and its children in postorder
  */
-freeExpression(Expression e) {
-  switch e->type {
+void freeExpression(Expression e) {
+  switch (e->type) {
     case postfix:
-      switch e->deriv.postfix {
+      switch (e->deriv.postfix) {
         case identifier:
           freeIdentifier(e->sub2.i);
           freeExpression(e->sub1.e);
@@ -331,7 +363,7 @@ Identifier getIdentifier(char *s) {
 /**
  * free an identifier and its children
  */
-freeIdentifier(Identifier i) {
+void freeIdentifier(Identifier i) {
   free(i->s);
   free(i);
 }
