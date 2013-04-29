@@ -84,9 +84,10 @@ struct symtab *symtable = NULL;
 %nonassoc '<' '>' LE GE
 %left '+' '-'
 %left '*' '/' '%'
-%type<sval> STRING_LITERAL IDENTIFIER
+%type<sval> STRING_LITERAL
 %type<ival> INTEGER
 %type<fval> DOUBLEVAL
+%type<symp> IDENTIFIER
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
 %type<identifier> identifier
 %type<declarator> declarator

@@ -2,10 +2,13 @@
 #define __SYMTABLE_H__
 
 #include "./libs/uthash.h"
+#include "absyn.h"
+
+typedef struct symtab symtab;
 
 struct symtab {
     char *name;
-    double value;
+    void *value;
     UT_hash_handle hh;
 };
 
