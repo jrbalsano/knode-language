@@ -329,7 +329,7 @@ void freeExpression(Expression e) {
           freeExpression(e->sub1.e);
           freeExpression(e->sub2.e);
           break;
-        case none:
+        case 0:
           freeExpression(e->sub1.e);
           break;
       }
@@ -340,6 +340,8 @@ void freeExpression(Expression e) {
     case function:
       freeIdentifier(e->sub1.i);
       freeGrammarList(e->sub2.l);
+      break;
+    default:
       break;
   }
   free(e);
@@ -364,6 +366,6 @@ Identifier getIdentifier(char *s) {
  * free an identifier and its children
  */
 void freeIdentifier(Identifier i) {
-  free(i->s);
+  free(i->symbol);
   free(i);
 }
