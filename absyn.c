@@ -85,6 +85,7 @@ Identifier getIdentifier(char *s) {
 
 Expression getPostfixExpression(Expression e1){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->deriv.postfix = 0;
   ret->sub1.e = e1;
   ret->type = postfix;
   return ret;
