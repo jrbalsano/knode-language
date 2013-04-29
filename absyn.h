@@ -1,5 +1,7 @@
 #ifndef __ABSYN_H__
 #define __ABSYN_H__
+
+#include <stdio.h>
 /**
  * Abstract Syntax Tree for Knode
  * This code creates the structs used for our grammar.

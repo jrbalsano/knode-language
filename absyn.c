@@ -18,8 +18,14 @@ TranslationUnit getTranslationUnit(FunctionDefinition fd) {
  * Recursively free the translation unit and its children.
  */
 void freeTranslationUnit(TranslationUnit t) {
+  if(t == NULL) {
+    fprintf(stderr, "Null child TranslationUnit\n");
+    return;
+  }  
+  printf("Freeing TranslationUnit\n");
   freeFunctionDefinition(t->f);
   free(t);
+  printf("TranslationUnit Freed\n");
 }
 
 /*********************
@@ -41,9 +47,15 @@ FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs) {
  * Recursively free the function definition and its children.
  */
 void freeFunctionDefinition(FunctionDefinition f) {
+  if(f == NULL) {
+    fprintf(stderr, "Null child FunctionDefinition\n");
+    return;
+  }  
+  printf("Freeing FunctionDefinition\n");
   freeDeclarator(f->d);
   freeCompoundStatement(f->cs);
   free(f);
+  printf("FunctionDefinition Freed\n");
 }
 
 /*************
@@ -57,6 +69,7 @@ void freeFunctionDefinition(FunctionDefinition f) {
 Declarator declaratorId(Identifier id) {
   Declarator d = (Declarator)malloc(sizeof(struct declarator_));
   d->name = id;
+  d->p = NULL;
   return d;
 }
 
@@ -74,10 +87,16 @@ Declarator getDeclarator(Identifier id, GrammarList pList) {
  * Recursively free the declarator and its children.
  */
 void freeDeclarator(Declarator d) {
+  if(d == NULL) {
+    fprintf(stderr, "Null child Declarator\n");
+    return;
+  }  
+  printf("Freeing Declarator\n");
   if(d->p)
     freeGrammarList(d->p);
   freeIdentifier(d->name);
   free(d);
+  printf("Declarator Freed\n");
 }
 
 /*********************
@@ -97,8 +116,14 @@ CompoundStatement newCompoundStatement(GrammarList sList) {
  * Recursively free the compound statement and its children in postorder.
  */
 void freeCompoundStatement(CompoundStatement c) {
+  if(c == NULL) {
+    fprintf(stderr, "Null child CompoundStatement\n");
+    return;
+  }
+  printf("Freeing CompoundStatment\n");
   freeGrammarList(c->sList);
   free(c);
+  printf("CompoundStatment Freed\n");
 }
 /*****************
  * Grammar Lists
@@ -154,6 +179,11 @@ void *popFront(GrammarList g) {
 }
 
 void freeGrammarList(GrammarList g) {
+  if(g == NULL) {
+    fprintf(stderr, "Null child GrammarList\n");
+    return;
+  }  
+  printf("Freeing GrammarList\n");
   while(g->head) {
     void *d = popFront(g);
     switch(g->type) {
@@ -166,6 +196,7 @@ void freeGrammarList(GrammarList g) {
     }
   }
   free(g);
+  printf("GrammarList Freed\n");
 }
 
 /************
@@ -186,12 +217,18 @@ Statement getExpressionStatement(Expression e) {
  * Recursively free the Statement and its children in postorder.
  */
 void freeStatement(Statement s) {
+  if(s == NULL) {
+    fprintf(stderr, "Null child Statement\n");
+    return;
+  }  
+  printf("Freeing Statement\n");
   switch(s->type) {
     case expression:
       freeExpression(s->sub.e);
       break;
   }
   free(s);
+  printf("Statement Freed\n");
 }
 
 /*************
@@ -274,6 +311,7 @@ Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
  */
 Expression getPostfixIncr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = postfix;
   ret->deriv.postfix = increment;
   ret->sub1.e = e;
   return ret;
@@ -285,6 +323,7 @@ Expression getPostfixIncr(Expression e){
  */
 Expression getPostfixDecr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type=postfix;
   ret->deriv.postfix = decrement;
   ret->sub1.e = e;
   return ret;
@@ -308,6 +347,11 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
  * Recursively free an expression and its children in postorder
  */
 void freeExpression(Expression e) {
+  printf("Freeing Expression\n");
+  if(e == NULL) {
+    fprintf(stderr, "Null child Expression\n");
+    return;
+  }
   switch (e->type) {
     case postfix:
       switch (e->deriv.postfix) {
@@ -345,6 +389,7 @@ void freeExpression(Expression e) {
       break;
   }
   free(e);
+  printf("Expression Freed\n");
 }
 
 
@@ -366,6 +411,11 @@ Identifier getIdentifier(char *s) {
  * free an identifier and its children
  */
 void freeIdentifier(Identifier i) {
-  free(i->symbol);
+  if(i == NULL) {
+    fprintf(stderr, "Null child Identifier\n");
+    return;
+  }  
+  printf("Freeing identifier\n");
   free(i);
+  printf("Identifier freed\n");
 }
