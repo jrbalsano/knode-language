@@ -31,7 +31,7 @@ struct expression_ {
     GrammarList l;
   } sub2;
   union {
-    enum{increment, decrement, bracket, identifier, arg} postfix;
+    enum{increment, decrement, bracket, identifier, arg, none = 0} postfix;
   } deriv;
 };
 
