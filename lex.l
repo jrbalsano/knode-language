@@ -72,7 +72,6 @@ boolean   "TRUE"|"FALSE"
 {string}                        {
                                   printf("STRING_LITERAL\n"); 
                                   yylval.sval = yytext;
-
                                   return STRING_LITERAL; 
                                 }
 [a-z_][a-zA-Z0-9_]*             {
@@ -85,17 +84,12 @@ boolean   "TRUE"|"FALSE"
                                      * recognition into symbol table with used
                                      * variables/keywords
                                      */
-                                    if (checkSymbolTable() == 0) {
-                                        printf("IDENTIFIER\n");
-                                        printf("%s\n", yytext);
-                                        return IDENTIFIER;
-                                    }
+                                    printf("IDENTIFIER\n");
+                                    printf("%s\n", yytext);
+                                    //check the symbol table with symlook and return a pointer to the symbol table
+                                    struct symtab *sp = symlook(yytext);
+                                    yylval.symp = sp;
+                                    return IDENTIFIER;
                                 }
 %%
 
-int checkSymbolTable() {
-    /* this function should theoretically check the symbol table and return the
-     * index of whatever it looks up
-     */
-    return 0;
-}

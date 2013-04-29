@@ -29,6 +29,7 @@ struct symtab *symtable = NULL;
   char *sval;
   int ival;
   float fval;
+  struct symtab *symp;
   Identifier identifier;
   Declarator declarator;
   Statement statement;
@@ -172,7 +173,7 @@ expression : assignmentexpression
   ;
 assignmentexpression : conditionalexpression
   | unaryexpression assignmentoperator assignmentexpression
-  | typename identifier '=' assignmentexpression
+  | typename IDENTIFIER '=' assignmentexpression
   ;
 assignmentoperator : '='
   | PLUSEQ
