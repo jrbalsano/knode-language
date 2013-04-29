@@ -39,7 +39,7 @@ GrammarList newStatementList(Statement s) {
   return sList;
 }
 
-GrammarList newParameterList(Statement s) {
+GrammarList newParameterList(Parameter s) {
 	GrammarList sList = (GrammarList)malloc(sizeof(struct grammarList_));
 	sList->head = 0;
 	addFront(sList, s);

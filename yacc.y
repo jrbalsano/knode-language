@@ -129,7 +129,7 @@ parameterlist : parameterlist ',' parameterdeclaration
 parameterdeclaration : typename identifier{ $$ = NULL; }
   | NODE identifier 
   | DICT identifier
-  | EDGE identifier
+  | EDGE identifier 
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;

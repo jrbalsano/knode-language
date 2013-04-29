@@ -35,6 +35,10 @@ struct statement_ {
     Expression e;
   } sub;
 };
+struct parameterDeclarator_ {
+	enum {NODE,DICT,EDGE,DOUBLE,CHAR,STRING} type;
+	
+};
 struct functionDefinition_ {
   Declarator d;
   CompoundStatement cs;
@@ -61,7 +65,7 @@ Declarator declaratorId(Identifier id);
 Declarator getDeclarator(Declarator d, GrammarList pList);
 CompoundStatement newCompoundStatement(GrammarList sList);
 GrammarList newStatementList(Statement s);
-GrammarList newParameterList(Statement s);
+GrammarList newParameterList(Parameter s);
 Statement getExpressionStatement(Expression e);
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
 Expression getStringExpression(char *s);
