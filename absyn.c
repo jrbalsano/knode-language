@@ -240,3 +240,7 @@ Identifier getIdentifier(char *s) {
   return i;
 }
 
+freeIdentifier(Identifier i) {
+  free(i->s);
+  free(i);
+}
