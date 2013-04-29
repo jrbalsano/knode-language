@@ -35,6 +35,7 @@ int errorHad = 0;
   GrammarList grammarList;
   TranslationUnit translationUnit;
   Expression expression;
+  Parameter parameter;
 }
 
 %defines
@@ -90,8 +91,9 @@ int errorHad = 0;
 %type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement alledgestatement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
-%type<grammarList> argumentexpressionlist parameterlist parameterdeclaration statementlist
+%type<grammarList> argumentexpressionlist parameterlist statementlist
 %type<translationUnit> translationunit
+%type<parameter> parameterdeclaration
 %nonassoc IFX
 %nonassoc ELSE
 

@@ -50,7 +50,7 @@ GrammarList newParameterList(Parameter p) {
 
 Parameter getTypedParameter(int typname, Identifier i){
 	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-	ret->type = typename;
+	//sret->type = typename;
 	ret->i = i;
 	return ret;
 }
