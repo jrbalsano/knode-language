@@ -22,10 +22,8 @@ void freeTranslationUnit(TranslationUnit t) {
     fprintf(stderr, "Null child TranslationUnit\n");
     return;
   }  
-  printf("Freeing TranslationUnit\n");
   freeFunctionDefinition(t->f);
   free(t);
-  printf("TranslationUnit Freed\n");
 }
 
 /*********************
@@ -51,11 +49,9 @@ void freeFunctionDefinition(FunctionDefinition f) {
     fprintf(stderr, "Null child FunctionDefinition\n");
     return;
   }  
-  printf("Freeing FunctionDefinition\n");
   freeDeclarator(f->d);
   freeCompoundStatement(f->cs);
   free(f);
-  printf("FunctionDefinition Freed\n");
 }
 
 /*************
@@ -91,12 +87,10 @@ void freeDeclarator(Declarator d) {
     fprintf(stderr, "Null child Declarator\n");
     return;
   }  
-  printf("Freeing Declarator\n");
   if(d->p)
     freeGrammarList(d->p);
   freeIdentifier(d->name);
   free(d);
-  printf("Declarator Freed\n");
 }
 
 /*********************
@@ -120,10 +114,8 @@ void freeCompoundStatement(CompoundStatement c) {
     fprintf(stderr, "Null child CompoundStatement\n");
     return;
   }
-  printf("Freeing CompoundStatment\n");
   freeGrammarList(c->sList);
   free(c);
-  printf("CompoundStatment Freed\n");
 }
 /*****************
  * Grammar Lists
@@ -183,7 +175,6 @@ void freeGrammarList(GrammarList g) {
     fprintf(stderr, "Null child GrammarList\n");
     return;
   }  
-  printf("Freeing GrammarList\n");
   while(g->head) {
     void *d = popFront(g);
     switch(g->type) {
@@ -196,7 +187,6 @@ void freeGrammarList(GrammarList g) {
     }
   }
   free(g);
-  printf("GrammarList Freed\n");
 }
 
 /************
@@ -221,14 +211,12 @@ void freeStatement(Statement s) {
     fprintf(stderr, "Null child Statement\n");
     return;
   }  
-  printf("Freeing Statement\n");
   switch(s->type) {
     case expression:
       freeExpression(s->sub.e);
       break;
   }
   free(s);
-  printf("Statement Freed\n");
 }
 
 /*************
@@ -347,7 +335,6 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
  * Recursively free an expression and its children in postorder
  */
 void freeExpression(Expression e) {
-  printf("Freeing Expression\n");
   if(e == NULL) {
     fprintf(stderr, "Null child Expression\n");
     return;
@@ -389,7 +376,6 @@ void freeExpression(Expression e) {
       break;
   }
   free(e);
-  printf("Expression Freed\n");
 }
 
 
@@ -415,7 +401,5 @@ void freeIdentifier(Identifier i) {
     fprintf(stderr, "Null child Identifier\n");
     return;
   }  
-  printf("Freeing identifier\n");
   free(i);
-  printf("Identifier freed\n");
 }
