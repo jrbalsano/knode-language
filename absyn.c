@@ -85,6 +85,7 @@ Identifier getIdentifier(char *s) {
 
 Expression getPostfixExpression(Expression e1){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->sub1.e = e1;
   ret->type = postfix;
   return ret;
 }
@@ -94,6 +95,7 @@ Expression getPostfixBracketExpression(Expression e1, Expression e2){
   ret->type = postfix;
   ret->sub1.e = e1;
   ret->sub2.e = e2;
+  ret->deriv.postfix = bracket;
   return ret;
 }
 
@@ -102,18 +104,19 @@ Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
   ret->type = postfix;
   ret->sub1.e = e1;
   ret->sub2.l = argList;
+  ret->deriv.postfix = arg;
   return ret;
 
 }
 
 Expression getPostfixIncr(Expression e){
-  e->operator = increment;
+  e->deriv.postfix = increment;
   return e;
 }
 
 
 Expression getPostfixDecr(Expression e){
-  e->operator = decrement;
+  e->deriv.postfix = decrement;
   return e;
 }
 
@@ -122,6 +125,7 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
   ret->type = postfix;
   ret->sub1.e = e;
   ret->sub2.i = id;
+  ret->deriv.postfix = identifier;
   return ret;
 }
 

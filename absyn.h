@@ -30,7 +30,9 @@ struct expression_ {
     Identifier i;
     GrammarList l;
   } sub2;
-  enum{increment, decrement} operator;
+  union {
+    enum{increment, decrement, bracket, identifier, arg} postfix;
+  } deriv;
 };
 
 struct identifier_ {
