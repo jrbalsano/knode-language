@@ -118,11 +118,11 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator(declaratorId($1), $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
   ;
-parameterlist : parameterlist ',' parameterdeclaration
-  | parameterdeclaration
+parameterlist : parameterlist ',' parameterdeclaration 
+  | parameterdeclaration {$$ = newParameterList($1)}
   ;
 parameterdeclaration : typename identifier{ $$ = NULL; }
-  | NODE identifier
+  | NODE identifier 
   | DICT identifier
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }

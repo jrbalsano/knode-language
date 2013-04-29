@@ -61,6 +61,7 @@ Declarator declaratorId(Identifier id);
 Declarator getDeclarator(Declarator d, GrammarList pList);
 CompoundStatement newCompoundStatement(GrammarList sList);
 GrammarList newStatementList(Statement s);
+GrammarList newParameterList(Statement s);
 Statement getExpressionStatement(Expression e);
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
 Expression getStringExpression(char *s);

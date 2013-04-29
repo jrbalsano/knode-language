@@ -39,6 +39,13 @@ GrammarList newStatementList(Statement s) {
   return sList;
 }
 
+GrammarList newParameterList(Statement s) {
+	GrammarList sList = (GrammarList)malloc(sizeof(struct grammarList_));
+	sList->head = 0;
+	addFront(sList, s);
+	return sList;
+}
+
 Statement getExpressionStatement(Expression e) {
   Statement s = (Statement)malloc(sizeof(struct statement_));
   s->type = expression;
