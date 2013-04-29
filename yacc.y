@@ -218,12 +218,12 @@ castexpression : unaryexpression
   | '(' typename ')' castexpression
   | '(' NODE ')' castexpression
   | '(' DICT ')' castexpression
+  | '(' EDGE ')' castexpression
   ;
 typename : INT
   | DOUBLE
   | CHAR
   | STRING
-  | EDGE
   ;
 unaryexpression : postfixexpression
   | PLUSPLUS unaryexpression
