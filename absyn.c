@@ -14,6 +14,14 @@ TranslationUnit getTranslationUnit(FunctionDefinition fd) {
   return ret;
 }
 
+/**
+ * Recursively free the translation unit and its children.
+ */
+void freeTranslationUnit(TranslationUnit t) {
+  freeFunctionDefinition(t->f);
+  free(t);
+}
+
 /*********************
  * Function Definition 
  *********************/
@@ -27,6 +35,15 @@ FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs) {
   ret->d = d;
   ret->cs = cs;
   return ret;
+}
+
+/**
+ * Recursively free the function definition and its children.
+ */
+void freeFunctionDefinition(FunctionDefinition f) {
+  freeDeclarator(f->d);
+  freeCompoundStatement(f->cs);
+  free(f);
 }
 
 /*************
@@ -53,6 +70,16 @@ Declarator getDeclarator(Identifier id, GrammarList pList) {
   return d;
 }
 
+/**
+ * Recursively free the declarator and its children.
+ */
+void freeDeclarator(Declarator d) {
+  if(d->p)
+    freeGrammarList(d->p);
+  freeIdentifier(d->name);
+  free(d);
+}
+
 /*********************
  * Compound Statements
  *********************/
@@ -66,6 +93,13 @@ CompoundStatement newCompoundStatement(GrammarList sList) {
   return ret;
 }
 
+/**
+ * Recursively free the compound statement and its children in postorder.
+ */
+void freeCompoundStatement(CompoundStatement c) {
+  freeGrammartList(c->sList);
+  free(c);
+}
 /*****************
  * Grammar Lists
  *****************/
@@ -116,6 +150,18 @@ Statement getExpressionStatement(Expression e) {
   return s;
 }
 
+/**
+ * Recursively free the Statement and its children in postorder.
+ */
+void freeStatement(Statement s) {
+  switch s->type {
+    case expression:
+      freeExpression(s->sub.e);
+      break;
+  }
+  free(s);
+}
+
 /*************
  * Expressions
  *************/
@@ -127,8 +173,8 @@ Statement getExpressionStatement(Expression e) {
 Expression getFunctionExpression(Identifier id, GrammarList argExpList) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = function;
-  ret->val.i = id;
-  ret->sub1.l = argExpList;
+  ret->sub1.i = id;
+  ret->sub2.l = argExpList;
   return ret;
 }
 
@@ -138,7 +184,7 @@ Expression getFunctionExpression(Identifier id, GrammarList argExpList) {
 Expression getPrimaryIdentifierExpression(Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = primary;
-  ret->val.i = id;
+  ret->sub1.i = id;
   return ret;
 }
 
@@ -148,7 +194,7 @@ Expression getPrimaryIdentifierExpression(Identifier id){
 Expression getPrimaryStringExpression(char *s) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = string;
-  ret->val.s = s;
+  ret->sub1.s = s;
   return ret;
 }
 
@@ -226,6 +272,48 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
   return ret;
 }
 
+/**
+ * Recursively free an expression and its children in postorder
+ */
+freeExpression(Expression e) {
+  switch e->type {
+    case postfix:
+      switch e->deriv.postfix {
+        case identifier:
+          freeIdentifier(e->sub2.i);
+          freeExpression(e->sub1.e);
+          break;
+        case decrement:
+          freeExpression(e->sub1.e);
+          break;
+        case increment:
+          freeExpression(e->sub1.e);
+          break;
+        case arg:
+          freeExpression(e->sub1.e);
+          freeGrammarList(e->sub2.l);
+          break;
+        case bracket:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+        case none:
+          freeExpression(e->sub1.e);
+          break;
+      }
+      break;
+    case primary:
+      freeIdentifier(e->sub1.i);
+      break;
+    case function:
+      freeIdentifier(e->sub1.i);
+      freeGrammarList(e->sub2.l);
+      break;
+  }
+  free(e);
+}
+
+
 /*************
  * Identifiers
  *************/
@@ -240,6 +328,9 @@ Identifier getIdentifier(char *s) {
   return i;
 }
 
+/**
+ * free an identifier and its children
+ */
 freeIdentifier(Identifier i) {
   free(i->s);
   free(i);

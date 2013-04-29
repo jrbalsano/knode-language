@@ -16,14 +16,11 @@ typedef struct translationUnit_ *TranslationUnit;
 
 struct expression_ {
   enum {function, unary, postfix, primary, string} type;
-  union{
-    Identifier i;
-    char *s;
-  } val;
   union {
     Expression e;
     Identifier i;
     GrammarList l;
+    char *s;
   } sub1;
   union {
     Expression e;
