@@ -110,14 +110,16 @@ Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
 }
 
 Expression getPostfixIncr(Expression e){
-  e->deriv.postfix = increment;
-  return e;
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->deriv.postfix = increment;
+  return ret;
 }
 
 
 Expression getPostfixDecr(Expression e){
-  e->deriv.postfix = decrement;
-  return e;
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->deriv.postfix = decrement;
+  return ret;
 }
 
 Expression getPostfixIdentifierExpression(Expression e, Identifier id){
