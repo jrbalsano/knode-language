@@ -41,12 +41,46 @@ GrammarList newStatementList(Statement s) {
   return sList;
 }
 
-GrammarList newParameterList(Parameter s) {
-	GrammarList sList = (GrammarList)malloc(sizeof(struct grammarList_));
-	sList->head = 0;
-	addFront(sList, s);
-	return sList;
+GrammarList newParameterList(Parameter p) {
+	GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
+	pList->head = 0;
+	addFront(pList, p);
+	return pList;
 }
+
+Parameter getTypedParameter(int typname, Identifier i){
+	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
+	ret->type = typename;
+	ret->i = i;
+	return ret;
+}
+
+Parameter getNodeParameter(Identifier i){
+	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
+	ret->type = node;
+	ret->i = i;
+	return ret;
+}
+
+Parameter getDictParameter(Identifier i){
+	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
+	ret->type = dict;
+	ret->i = i;
+	return ret;
+}
+
+Parameter getEdgeParameter(Identifier i){
+	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
+	ret->type = edge;
+	ret->i = i;
+	return ret;
+}
+
+GrammarList appendToPList(GrammarList pList,Parameter param) {
+	addFront(pList, param);
+	return pList;
+}
+
 
 Statement getExpressionStatement(Expression e) {
   Statement s = (Statement)malloc(sizeof(struct statement_));

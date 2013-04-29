@@ -82,7 +82,7 @@ int errorHad = 0;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
-%type<ival> INTEGER
+%type<ival> INTEGER typename
 %type<fval> DOUBLEVAL
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
 %type<identifier> identifier
@@ -123,13 +123,13 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
   ;
-parameterlist : parameterlist ',' parameterdeclaration 
+parameterlist : parameterlist ',' parameterdeclaration {$$ = appendToPList($1,$3);}
   | parameterdeclaration {$$ = newParameterList($1)}
   ;
-parameterdeclaration : typename identifier{ $$ = NULL; }
-  | NODE identifier 
-  | DICT identifier
-  | EDGE identifier 
+parameterdeclaration : typename identifier { $$ = getTypedParameter($1, $2); }
+  | NODE identifier { $$ = getNodeParameter($2); }
+  | DICT identifier { $$ = getDictParameter($2); }
+  | EDGE identifier { $$ = getEdgeParameter($2); }
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;
