@@ -20,7 +20,9 @@ Declarator declaratorId(Identifier id) {
   return d;
 }
 
-Declarator getDeclarator(Declarator d, GrammarList pList) {
+Declarator getDeclarator(Identifier id, GrammarList pList) {
+  Declarator d = (Declarator)malloc(sizeof(struct declarator_));
+  d->name = id;
   d->p = pList;
   return d;
 }
@@ -57,18 +59,18 @@ Expression getFunctionExpression(Identifier id, GrammarList argExpList) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = function;
   ret->val.i = id;
-  ret->l = argExpList;
+  ret->sub1.l = argExpList;
   return ret;
 }
 
-Expression getPrimaryExpression(Identifier id){
+Expression getPrimaryIdentifierExpression(Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = primary;
   ret->val.i = id;
   return ret;
 }
 
-Expression getStringExpression(char *s) {
+Expression getPrimaryStringExpression(char *s) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = string;
   ret->val.s = s;
@@ -86,6 +88,57 @@ Identifier getIdentifier(char *s) {
   Identifier i = (Identifier)malloc(sizeof(struct identifier_));
   i->symbol = s;
   return i;
+}
+
+Expression getPostfixExpression(Expression e1){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->deriv.postfix = none;
+  ret->sub1.e = e1;
+  ret->type = postfix;
+  return ret;
+}
+
+Expression getPostfixBracketExpression(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = postfix;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  ret->deriv.postfix = bracket;
+  return ret;
+}
+
+Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = postfix;
+  ret->sub1.e = e1;
+  ret->sub2.l = argList;
+  ret->deriv.postfix = arg;
+  return ret;
+
+}
+
+Expression getPostfixIncr(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->deriv.postfix = increment;
+  ret->sub1.e = e;
+  return ret;
+}
+
+
+Expression getPostfixDecr(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->deriv.postfix = decrement;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getPostfixIdentifierExpression(Expression e, Identifier id){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = postfix;
+  ret->sub1.e = e;
+  ret->sub2.i = id;
+  ret->deriv.postfix = identifier;
+  return ret;
 }
 
 void addFront(GrammarList g, void *data) {

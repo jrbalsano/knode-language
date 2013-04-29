@@ -20,8 +20,21 @@ struct expression_ {
     Identifier i;
     char *s;
   } val;
-  GrammarList l; //ArgExpList for FunctionExpressions
+  union {
+    Expression e;
+    Identifier i;
+    GrammarList l;
+  } sub1;
+  union {
+    Expression e;
+    Identifier i;
+    GrammarList l;
+  } sub2;
+  union {
+    enum{increment, decrement, bracket, identifier, arg, none = 0} postfix;
+  } deriv;
 };
+
 struct identifier_ {
   char *symbol;
 };
@@ -62,14 +75,20 @@ void addFront(GrammarList g, void *data);
 TranslationUnit getTranslationUnit(FunctionDefinition fd);
 FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs);
 Declarator declaratorId(Identifier id);
-Declarator getDeclarator(Declarator d, GrammarList pList);
+Declarator getDeclarator(Identifier id, GrammarList pList);
 CompoundStatement newCompoundStatement(GrammarList sList);
 GrammarList newStatementList(Statement s);
 GrammarList newParameterList(Parameter s);
 Statement getExpressionStatement(Expression e);
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
-Expression getStringExpression(char *s);
+Expression getPrimaryStringExpression(char *s);
 GrammarList newArgumentExpressionList(Expression e);
 Identifier getIdentifier(char *s);
-Expression getPrimaryExpression(Identifier id);
+Expression getPrimaryIdentifierExpression(Identifier id);
+Expression getPostfixExpression(Expression e1);
+Expression getPostfixBracketExpression(Expression e1, Expression e2);
+Expression getPostfixIdentifierExpression(Expression e, Identifier id);
+Expression getPostfixIncr(Expression e);
+Expression getPostfixDecr(Expression e);
+Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
 #endif
