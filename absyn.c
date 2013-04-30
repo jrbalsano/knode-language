@@ -300,7 +300,7 @@ Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
 Expression getPostfixIncr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = postfix;
-  ret->deriv.postfix = increment;
+  ret->deriv.postfix = postincr;
   ret->sub1.e = e;
   return ret;
 }
@@ -312,7 +312,7 @@ Expression getPostfixIncr(Expression e){
 Expression getPostfixDecr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type=postfix;
-  ret->deriv.postfix = decrement;
+  ret->deriv.postfix = postdecr;
   ret->sub1.e = e;
   return ret;
 }
@@ -331,6 +331,37 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
   return ret;
 }
 
+Expression getUnaryExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->deriv.unary = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getUnaryIncr(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->sub1.e = e;
+  ret->deriv.unary = preincr;
+  return ret;
+}
+
+Expression getUnarySingleOp(char op, Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->sub1.e = e;
+  ret->deriv.unary = op;
+  return ret;
+}
+
+Expression getUnaryDecr(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->deriv.unary = predecr;
+  ret->sub1.e = e;
+  return ret;
+}
+
 /**
  * Recursively free an expression and its children in postorder
  */
@@ -346,10 +377,10 @@ void freeExpression(Expression e) {
           freeIdentifier(e->sub2.i);
           freeExpression(e->sub1.e);
           break;
-        case decrement:
+        case postdecr:
           freeExpression(e->sub1.e);
           break;
-        case increment:
+        case postincr:
           freeExpression(e->sub1.e);
           break;
         case arg:
@@ -364,6 +395,9 @@ void freeExpression(Expression e) {
           freeExpression(e->sub1.e);
           break;
       }
+      break;
+    case unary:
+      freeExpression(e->sub1.e);
       break;
     case primary:
       freeIdentifier(e->sub1.i);
