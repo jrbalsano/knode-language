@@ -124,7 +124,7 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
   | NODE declarator compoundstatement
   | EDGE declarator compoundstatement
   ;
-declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator(declaratorId($1), $3); }
+declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
   ;
 parameterlist : parameterlist ',' parameterdeclaration
@@ -247,18 +247,18 @@ unaryoperator : '+'
   | '!'
   | '*'
   ;
-postfixexpression : primaryexpression
-  | postfixexpression '[' expression ']' 
-  | postfixexpression '.' identifier 
-  | postfixexpression PLUSPLUS 
-  | postfixexpression MINUSMINUS
-  | postfixexpression '(' ')'
-  | postfixexpression '(' argumentexpressionlist ')'
+postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
+  | postfixexpression '[' expression ']' { $$ = getPostfixBracketExpression($1, $3); } 
+  | postfixexpression '.' identifier { $$ = getPostfixIdentifierExpression($1, $3); }
+  | postfixexpression PLUSPLUS { $$ = getPostfixIncr($1); }
+  | postfixexpression MINUSMINUS { $$ = getPostfixDecr($1); }
+  | postfixexpression '(' ')' { $$ = $1; }
+  | postfixexpression '(' argumentexpressionlist ')' { $$ = getPostfixArgumentExpression($1, $3); }
   ;
-primaryexpression : STRING_LITERAL { $$ = getStringExpression(yylval.sval); }
-  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getStringExpression(x); }
-  | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getStringExpression(x); }
-  | identifier { $$ = getPrimaryExpression($1); }
+primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }
+  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
+  | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getPrimaryStringExpression(x); }
+  | identifier { $$ = getPrimaryIdentifierExpression($1); }
   | '(' expression ')' { $$ = $2} 
   ;
 argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
