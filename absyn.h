@@ -1,5 +1,7 @@
 #ifndef __ABSYN_H__
 #define __ABSYN_H__
+
+#include <stdio.h>
 /**
  * Abstract Syntax Tree for Knode
  * This code creates the structs used for our grammar.
@@ -16,14 +18,11 @@ typedef struct translationUnit_ *TranslationUnit;
 
 struct expression_ {
   enum {function, unary, postfix, primary, string} type;
-  union{
-    Identifier i;
-    char *s;
-  } val;
   union {
     Expression e;
     Identifier i;
     GrammarList l;
+    char *s;
   } sub1;
   union {
     Expression e;
@@ -31,8 +30,8 @@ struct expression_ {
     GrammarList l;
   } sub2;
   union {
-    enum{postincr, postdecr, bracket, identifier, arg, none = 0} postfix;
-    enum{preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*', node = 0} unary;
+    enum{none = 0, postincr, postdecr, bracket, identifier, arg} postfix;
+    enum{node = 0, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
   } deriv;
 };
 
@@ -61,6 +60,7 @@ struct translationUnit_ {
   FunctionDefinition f;
 };
 struct grammarList_ {
+  enum {argument, statement} type;
   GrammarNode head;
 };
 struct grammarNode_ {
@@ -91,4 +91,12 @@ Expression getUnaryExpression(Expression e);
 Expression getUnaryIncr(Expression e);
 Expression getUnaryDecr(Expression e);
 Expression getUnarySingleOp(char c, Expression e);
+void freeTranslationUnit(TranslationUnit t); 
+void freeFunctionDefinition(FunctionDefinition f);
+void freeDeclarator(Declarator d);
+void freeCompoundStatement(CompoundStatement c);
+void freeGrammarList(GrammarList g);
+void freeStatement(Statement s);
+void freeExpression(Expression e);
+void freeIdentifier(Identifier i);
 #endif
