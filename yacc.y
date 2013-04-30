@@ -86,8 +86,6 @@ TranslationUnit root = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER
-%type<sval> STRING_LITERAL IDENTIFIER
 %type<ival> INTEGER typename INT DOUBLE CHAR STRING DICT
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*'
