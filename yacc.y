@@ -86,7 +86,7 @@ TranslationUnit root = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER
+%type<ival> INTEGER typename INT DOUBLE CHAR STRING DICT
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*'
 %type<symp> IDENTIFIER
@@ -220,11 +220,11 @@ multiplicativeexpression : castexpression
   | multiplicativeexpression '/' castexpression 
   | multiplicativeexpression '%' castexpression 
   ;
-castexpression : unaryexpression
-  | '(' typename ')' castexpression
-  | '(' NODE ')' castexpression
-  | '(' DICT ')' castexpression
-  | '(' EDGE ')' castexpression
+castexpression : unaryexpression { $$ = getCastExpression($1); }
+  | '(' typename ')' castexpression { $$ = getTypedCast($2, $4); }
+  | '(' NODE ')' castexpression { $$ = getTypedCast(NODE, $4); }
+  | '(' DICT ')' castexpression { $$ = getTypedCast(DICT, $4); }
+  | '(' EDGE ')' castexpression { $$ = getTypedCast(EDGE, $4); }
   ;
 typename : INT
   | DOUBLE

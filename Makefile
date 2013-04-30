@@ -1,6 +1,8 @@
 CC = gcc
 CFLAGS = -g -Wall $(INCLUDES)
 LDFLAGS = -g
+# CFLAGS = -g -Wall -DMEMTRACE $(INCLUDES)
+# LDFLAGS = -g -DMEMTRACE
 COMPILER = klc
 PREPROCESSOR = klp
 
