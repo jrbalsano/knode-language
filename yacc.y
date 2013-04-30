@@ -9,9 +9,11 @@
 #include <stdio.h>
 #include <string.h>
 #include "absyn.h"
+#include "symtable.h"
 
 void yyerror(char *s);
 int errorHad = 0;
+TranslationUnit root = NULL;
 
 %}
 
@@ -28,6 +30,7 @@ int errorHad = 0;
   char cval;
   int ival;
   float fval;
+  struct symtab *symp;
   Identifier identifier;
   Declarator declarator;
   Statement statement;
@@ -72,20 +75,25 @@ int errorHad = 0;
 %token NODE
 %token DICT
 %token EDGE
+%token ALLEDGE
+%token LEFTEDGE
+%token RIGHTEDGE
+%token BOTHEDGE
 %token BREAK
 %right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
 %nonassoc EQ NE
 %nonassoc '<' '>' LE GE
 %left '+' '-'
 %left '*' '/' '%'
-%type<sval> STRING_LITERAL IDENTIFIER
+%type<sval> STRING_LITERAL
 %type<ival> INTEGER
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*'
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
+%type<symp> IDENTIFIER
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement
+%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement alledgestatement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist parameterdeclaration statementlist
@@ -108,7 +116,7 @@ int errorHad = 0;
      */
 %%
 
-translationunit : externaldeclaration { $$ = getTranslationUnit($1); }
+translationunit : externaldeclaration { $$ = getTranslationUnit($1); root = $$; }
   | translationunit externaldeclaration
   ;
 externaldeclaration : functiondefinition { $$ = $1; }
@@ -116,6 +124,7 @@ externaldeclaration : functiondefinition { $$ = $1; }
 functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($1, $2); }
   | typename declarator compoundstatement
   | NODE declarator compoundstatement
+  | EDGE declarator compoundstatement
   ;
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
@@ -126,6 +135,7 @@ parameterlist : parameterlist ',' parameterdeclaration
 parameterdeclaration : typename identifier{ $$ = NULL; }
   | NODE identifier
   | DICT identifier
+  | EDGE identifier
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;
@@ -135,14 +145,15 @@ statementlist : statement { $$ = newStatementList($1); }
   | statementlist statement
   ;
 statement : expressionstatement { $$ = $1; }
-  | iterationstatement
-  | selectionstatement
-  | nodestatement
-  | breakstatement
-  | dictstatement
-  | dictlist
+  | iterationstatement { $$ = NULL; }
+  | selectionstatement { $$ = NULL; }
+  | nodestatement { $$ = NULL; }
+  | breakstatement { $$ = NULL; }
+  | dictstatement { $$ = NULL; }
+  | dictlist { $$ = NULL; }
+  | edgestatement { $$ = NULL; }
   ;
-dictstatement : DICT IDENTIFIER NEWLINE
+dictstatement : DICT IDENTIFIER NEWLINE {}
   | DICT IDENTIFIER '[' INTEGER ']' NEWLINE
   | DICT IDENTIFIER '[' INTEGER ']' NEWLINE compoundstatement
   | DICT IDENTIFIER compoundstatement 
@@ -163,9 +174,18 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
 dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE
-  | IDENTIFIER ':' STRING_LITERAL NEWLINE
-  | IDENTIFIER ':' INTEGER NEWLINE
-  | IDENTIFIER ':' BOOLEAN NEWLINE
+  | IDENTIFIER ':' STRING_LITERAL NEWLINE { $1->value = $3; printf("%s\n", (char *)$1->value);}
+  | IDENTIFIER ':' INTEGER NEWLINE { /*$1->value = $3; printf("%d\n", (int *)$1->value);*/}
+  | IDENTIFIER ':' BOOLEAN NEWLINE { /*$1->value = $3; printf("%d\n", (int *)$1->value);*/}
+  ;
+edgestatement: EDGE IDENTIFIER '=' '[' IDENTIFIER alledgestatement IDENTIFIER ']' NEWLINE
+  | IDENTIFIER alledgestatement IDENTIFIER NEWLINE
+  | IDENTIFIER alledgestatement IDENTIFIER '['INTEGER']' NEWLINE
+  ;
+alledgestatement: ALLEDGE
+  | BOTHEDGE
+  | LEFTEDGE
+  | RIGHTEDGE
   ;
 expression : assignmentexpression
   | expression ',' assignmentexpression
@@ -204,12 +224,12 @@ castexpression : unaryexpression
   | '(' typename ')' castexpression
   | '(' NODE ')' castexpression
   | '(' DICT ')' castexpression
+  | '(' EDGE ')' castexpression
   ;
 typename : INT
   | DOUBLE
   | CHAR
   | STRING
-  | EDGE
   ;
 unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
   | PLUSPLUS unaryexpression { $$ = getUnaryIncr($2); }
@@ -239,6 +259,7 @@ postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
   ;
 primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }
   | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
+  | BOOLEAN { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
   | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getPrimaryStringExpression(x); }
   | identifier { $$ = getPrimaryIdentifierExpression($1); }
   | '(' expression ')' { $$ = $2} 
@@ -254,6 +275,7 @@ void yyerror(char *s) {
 
 int main(void) {
   yyparse();
+  freeTranslationUnit(root);
   if(errorHad)
     return 1;
   else

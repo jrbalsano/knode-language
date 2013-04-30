@@ -50,10 +50,10 @@ Check() {
     # Report the status and clean up the generated files
 	echo "Done testing"
   if [ $error -eq 0 ] ; then
-	  echo -e "\033[32mOK\033[37m"
+	  echo -e "\033[32mOK\033[0m"
 	  echo "###### SUCCESS" >> $globallog
   else
-    echo -e "\033[31mFAILED\033[37m"
+    echo -e "\033[31mFAILED\033[0m"
 	  echo "###### FAILED" >> $globallog
 	  globalerror=$error
   fi

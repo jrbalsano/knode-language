@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "absyn.h"
 #include "yacc.tab.h"
+#include "symtable.h"
 
 %}
 
@@ -36,6 +37,10 @@ boolean   "TRUE"|"FALSE"
 "<="                            printf("<=\n"); return LE;
 "=="                            printf("==\n"); return EQ;
 "!="                            printf("!=\n"); return NE;
+"<=>"				            printf("ALLEDGE\n"); return ALLEDGE;
+"<->"				            printf("BOTHEDGE\n"); return BOTHEDGE;
+"<-"				            printf("LEFTEDGE\n"); return LEFTEDGE;
+"->"				            printf("RIGHTEDGE\n"); return RIGHTEDGE;
 "while"                         printf("WHILE\n"); return WHILE;
 "if"                            printf("IF\n"); return IF;
 "else"                          printf("ELSE\n"); return ELSE;
@@ -44,7 +49,12 @@ boolean   "TRUE"|"FALSE"
 {operator}                      printf("%s\n", yytext); return *yytext;
 {integer}                       printf("INTEGER\n");  yylval.ival = atoi(yytext); return INTEGER;
 {double}                        printf("DOUBLEVAL\n");  yylval.fval = atof(yytext); return DOUBLEVAL;
-{boolean}                       printf("BOOLEAN\n");  yylval.ival = yytext[0] == 'T' ? 1 : 0; return BOOLEAN;
+{boolean}                       {
+                                    printf("BOOLEAN\n");  
+                                    yylval.ival = yytext[0] == 'T' ? 1 : 0; 
+                                    printf("BOOL'S TRUE COLORS: %d\n", yylval.ival);
+                                    return BOOLEAN;
+                                }
 "and"                         	printf("AND\n");  return AND; 
 "or"                      	    printf("OR\n");  return OR; 
 ^[ ]*\n                         ;
@@ -71,7 +81,6 @@ boolean   "TRUE"|"FALSE"
 {string}                        {
                                   printf("STRING_LITERAL\n"); 
                                   yylval.sval = yytext;
-
                                   return STRING_LITERAL; 
                                 }
 [a-z_][a-zA-Z0-9_]*             {
@@ -84,17 +93,12 @@ boolean   "TRUE"|"FALSE"
                                      * recognition into symbol table with used
                                      * variables/keywords
                                      */
-                                    if (checkSymbolTable() == 0) {
-                                        printf("IDENTIFIER\n");
-                                        printf("%s\n", yytext);
-                                        return IDENTIFIER;
-                                    }
+                                    printf("IDENTIFIER\n");
+                                    //printf("%s\n", yytext);
+                                    //check the symbol table with symlook and return a pointer to the symbol table
+                                    struct symtab *sp = symlook(yytext);
+                                    yylval.symp = sp;
+                                    return IDENTIFIER;
                                 }
 %%
 
-int checkSymbolTable() {
-    /* this function should theoretically check the symbol table and return the
-     * index of whatever it looks up
-     */
-    return 0;
-}
