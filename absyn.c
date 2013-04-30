@@ -461,7 +461,6 @@ void freeExpression(Expression e) {
     case cast:
       switch(e->deriv.cast){
         case typed:
-          printf("TYPED\n");
           freeExpression(e->sub2.e);
           break;
         case 0:
