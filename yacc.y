@@ -27,6 +27,7 @@ TranslationUnit root = NULL;
      */
 %union {
   char *sval;
+  char cval;
   int ival;
   float fval;
   struct symtab *symp;
@@ -87,6 +88,7 @@ TranslationUnit root = NULL;
 %type<sval> STRING_LITERAL
 %type<ival> INTEGER
 %type<fval> DOUBLEVAL
+%type<cval> unaryoperator '-' '+' '!' '*'
 %type<symp> IDENTIFIER
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
 %type<identifier> identifier
@@ -229,10 +231,10 @@ typename : INT
   | CHAR
   | STRING
   ;
-unaryexpression : postfixexpression
-  | PLUSPLUS unaryexpression
-  | MINUSMINUS unaryexpression
-  | unaryoperator unaryexpression
+unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
+  | PLUSPLUS unaryexpression { $$ = getUnaryIncr($2); }
+  | MINUSMINUS unaryexpression { $$ = getUnaryDecr($2); }
+  | unaryoperator unaryexpression {$$ = getUnarySingleOp($1, $2); }
   ;
 conditionalexpression : orexpression
   ;
@@ -242,10 +244,10 @@ orexpression : orexpression OR andexpression
 andexpression : andexpression AND equalityexpression  
   | equalityexpression
   ;
-unaryoperator : '+'
-  | '-'
-  | '!'
-  | '*'
+unaryoperator : '+' { $$ = $1; }
+  | '-' { $$ = $1; }
+  | '!' { $$ = $1; }
+  | '*' { $$ = $1; }
   ;
 postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
   | postfixexpression '[' expression ']' { $$ = getPostfixBracketExpression($1, $3); } 
