@@ -4,7 +4,7 @@
 #include "./libs/uthash.h"
 #include "absyn.h"
 
-typedef struct symtab symtab;
+typedef struct symtab *symtab;
 
 struct symtab {
     char *name;
