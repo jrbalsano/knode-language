@@ -32,7 +32,8 @@ struct expression_ {
   } sub2;
   union {
     enum{none = 0, postincr, postdecr, bracket, identifier, arg} postfix;
-    enum{node = 0, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
+    enum{unary_none, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
+    enum{cast_none, typed} cast;
   } deriv;
 };
 

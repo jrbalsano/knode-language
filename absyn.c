@@ -333,6 +333,7 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
 
 Expression getUnaryExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
   ret->deriv.unary = none;
   ret->sub1.e = e;
   return ret;
@@ -365,12 +366,15 @@ Expression getUnaryDecr(Expression e){
 Expression getCastExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = cast;
+  ret->deriv.cast = none;
+  ret->sub1.e = e;
   return ret;
 }
 
 Expression getTypedCast(int token, Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = cast;
+  ret->deriv.cast = typed;
   ret->sub1.typnam = token;
   ret->sub2.e = e;
   return ret;
@@ -381,6 +385,9 @@ Expression getTypedCast(int token, Expression e){
  * Recursively free an expression and its children in postorder
  */
 void freeExpression(Expression e) {
+  #ifdef MEMTRACE
+  printf("Freeing expression\n");
+  #endif
   if(e == NULL) {
     fprintf(stderr, "Null child Expression\n");
     return;
@@ -414,6 +421,17 @@ void freeExpression(Expression e) {
     case unary:
       freeExpression(e->sub1.e);
       break;
+    case cast:
+      switch(e->deriv.cast){
+        case typed:
+          printf("TYPED\n");
+          freeExpression(e->sub2.e);
+          break;
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+      }
+      break;
     case primary:
       freeIdentifier(e->sub1.i);
       break;
@@ -425,6 +443,9 @@ void freeExpression(Expression e) {
       break;
   }
   free(e);
+  #ifdef MEMTRACE
+  printf("Expression freed\n");
+  #endif
 }
 
 
@@ -446,9 +467,15 @@ Identifier getIdentifier(char *s) {
  * free an identifier and its children
  */
 void freeIdentifier(Identifier i) {
+  #ifdef MEMTRACE
+  printf("Freeing identifier\n");
+  #endif
   if(i == NULL) {
     fprintf(stderr, "Null child Identifier\n");
     return;
   }  
   free(i);
+  #ifdef MEMTRACE
+  printf("Identifier freed\n");
+  #endif
 }
