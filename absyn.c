@@ -112,7 +112,7 @@ Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
 
 Expression getPostfixIncr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
-  ret->deriv.postfix = increment;
+  ret->deriv.postfix = postincr;
   ret->sub1.e = e;
   return ret;
 }
@@ -120,7 +120,7 @@ Expression getPostfixIncr(Expression e){
 
 Expression getPostfixDecr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
-  ret->deriv.postfix = decrement;
+  ret->deriv.postfix = postdecr;
   ret->sub1.e = e;
   return ret;
 }
@@ -131,6 +131,38 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
   ret->sub1.e = e;
   ret->sub2.i = id;
   ret->deriv.postfix = identifier;
+  return ret;
+}
+
+Expression getUnaryExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->deriv.unary = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getUnaryIncr(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->sub1.e = e;
+  ret->deriv.unary = preincr;
+  return ret;
+}
+
+Expression getUnarySingleOp(char op, Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->sub1.e = e;
+  ret->deriv.unary = op;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getUnaryDecr(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->deriv.unary = predecr;
+  ret->sub1.e = e;
   return ret;
 }
 
