@@ -12,6 +12,7 @@
 
 void yyerror(char *s);
 int errorHad = 0;
+TranslationUnit root = NULL;
 
 %}
 
@@ -72,6 +73,10 @@ int errorHad = 0;
 %token NODE
 %token DICT
 %token EDGE
+%token ALLEDGE
+%token LEFTEDGE
+%token RIGHTEDGE
+%token BOTHEDGE
 %token BREAK
 %right '=' PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ
 %nonassoc EQ NE
@@ -85,7 +90,7 @@ int errorHad = 0;
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement
+%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement alledgestatement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist parameterdeclaration statementlist
@@ -108,7 +113,7 @@ int errorHad = 0;
      */
 %%
 
-translationunit : externaldeclaration { $$ = getTranslationUnit($1); }
+translationunit : externaldeclaration { $$ = getTranslationUnit($1); root = $$; }
   | translationunit externaldeclaration
   ;
 externaldeclaration : functiondefinition { $$ = $1; }
@@ -116,6 +121,7 @@ externaldeclaration : functiondefinition { $$ = $1; }
 functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($1, $2); }
   | typename declarator compoundstatement
   | NODE declarator compoundstatement
+  | EDGE declarator compoundstatement
   ;
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
@@ -126,6 +132,7 @@ parameterlist : parameterlist ',' parameterdeclaration
 parameterdeclaration : typename identifier{ $$ = NULL; }
   | NODE identifier
   | DICT identifier
+  | EDGE identifier
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;
@@ -135,12 +142,13 @@ statementlist : statement { $$ = newStatementList($1); }
   | statementlist statement
   ;
 statement : expressionstatement { $$ = $1; }
-  | iterationstatement
-  | selectionstatement
-  | nodestatement
-  | breakstatement
-  | dictstatement
-  | dictlist
+  | iterationstatement { $$ = NULL; }
+  | selectionstatement { $$ = NULL; }
+  | nodestatement { $$ = NULL; }
+  | breakstatement { $$ = NULL; }
+  | dictstatement { $$ = NULL; }
+  | dictlist { $$ = NULL; }
+  | edgestatement { $$ = NULL; }
   ;
 dictstatement : DICT IDENTIFIER NEWLINE
   | DICT IDENTIFIER '[' INTEGER ']' NEWLINE
@@ -166,6 +174,15 @@ dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE
   | IDENTIFIER ':' STRING_LITERAL NEWLINE
   | IDENTIFIER ':' INTEGER NEWLINE
   | IDENTIFIER ':' BOOLEAN NEWLINE
+  ;
+edgestatement: EDGE IDENTIFIER '=' '[' IDENTIFIER alledgestatement IDENTIFIER ']' NEWLINE
+  | IDENTIFIER alledgestatement IDENTIFIER NEWLINE
+  | IDENTIFIER alledgestatement IDENTIFIER '['INTEGER']' NEWLINE
+  ;
+alledgestatement: ALLEDGE
+  | BOTHEDGE
+  | LEFTEDGE
+  | RIGHTEDGE
   ;
 expression : assignmentexpression
   | expression ',' assignmentexpression
@@ -204,11 +221,12 @@ castexpression : unaryexpression { $$ = getCastExpression($1); }
   | '(' typename ')' castexpression { $$ = getTypedCast($2, $4); }
   | '(' NODE ')' castexpression { $$ = getTypedCast(NODE, $4); }
   | '(' DICT ')' castexpression { $$ = getTypedCast(DICT, $4); }
+  | '(' EDGE ')' castexpression { $$ = getTypedCast(EDGE, $4); }
   ;
-typename : INT { $$ = $1; }
-  | DOUBLE { $$ = $1; }
-  | CHAR { $$ = $1; }
-  | STRING {$$ = $1; }
+typename : INT
+  | DOUBLE
+  | CHAR
+  | STRING
   ;
 unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
   | PLUSPLUS unaryexpression { $$ = getUnaryIncr($2); }
@@ -253,6 +271,7 @@ void yyerror(char *s) {
 
 int main(void) {
   yyparse();
+  freeTranslationUnit(root);
   if(errorHad)
     return 1;
   else

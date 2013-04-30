@@ -1,5 +1,6 @@
 #ifndef __ABSYN_H__
 #define __ABSYN_H__
+
 #include <stdio.h>
 /**
  * Abstract Syntax Tree for Knode
@@ -17,14 +18,11 @@ typedef struct translationUnit_ *TranslationUnit;
 
 struct expression_ {
   enum {function, unary, postfix, primary, string, cast} type;
-  union{
-    Identifier i;
-    char *s;
-  } val;
   union {
     Expression e;
     Identifier i;
     GrammarList l;
+    char *s;
     int typnam;
   } sub1;
   union {
@@ -32,7 +30,10 @@ struct expression_ {
     Identifier i;
     GrammarList l;
   } sub2;
-  enum {increment, decrement, positive = '+', negative = '-', negate = '!', clone = '*'} op;
+  union {
+    enum{none = 0, postincr, postdecr, bracket, identifier, arg} postfix;
+    enum{node = 0, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
+  } deriv;
 };
 
 struct identifier_ {
@@ -60,6 +61,7 @@ struct translationUnit_ {
   FunctionDefinition f;
 };
 struct grammarList_ {
+  enum {argument, statement} type;
   GrammarNode head;
 };
 struct grammarNode_ {
@@ -92,4 +94,12 @@ Expression getUnaryDecr(Expression e);
 Expression getUnarySingleOp(char c, Expression e);
 Expression getCastExpression(Expression e);
 Expression getTypedCast(int token, Expression e);
+void freeTranslationUnit(TranslationUnit t); 
+void freeFunctionDefinition(FunctionDefinition f);
+void freeDeclarator(Declarator d);
+void freeCompoundStatement(CompoundStatement c);
+void freeGrammarList(GrammarList g);
+void freeStatement(Statement s);
+void freeExpression(Expression e);
+void freeIdentifier(Identifier i);
 #endif
