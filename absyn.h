@@ -1,5 +1,7 @@
 #ifndef __ABSYN_H__
 #define __ABSYN_H__
+
+#include <stdio.h>
 /**
  * Abstract Syntax Tree for Knode
  * This code creates the structs used for our grammar.
@@ -16,14 +18,11 @@ typedef struct translationUnit_ *TranslationUnit;
 
 struct expression_ {
   enum {function, unary, postfix, primary, string} type;
-  union{
-    Identifier i;
-    char *s;
-  } val;
   union {
     Expression e;
     Identifier i;
     GrammarList l;
+    char *s;
   } sub1;
   union {
     Expression e;
@@ -31,7 +30,7 @@ struct expression_ {
     GrammarList l;
   } sub2;
   union {
-    enum{increment, decrement, bracket, identifier, arg, none = 0} postfix;
+    enum{none = 0, increment, decrement, bracket, identifier, arg } postfix;
   } deriv;
 };
 
@@ -60,6 +59,7 @@ struct translationUnit_ {
   FunctionDefinition f;
 };
 struct grammarList_ {
+  enum {argument, statement} type;
   GrammarNode head;
 };
 struct grammarNode_ {
@@ -86,4 +86,12 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id);
 Expression getPostfixIncr(Expression e);
 Expression getPostfixDecr(Expression e);
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
+void freeTranslationUnit(TranslationUnit t); 
+void freeFunctionDefinition(FunctionDefinition f);
+void freeDeclarator(Declarator d);
+void freeCompoundStatement(CompoundStatement c);
+void freeGrammarList(GrammarList g);
+void freeStatement(Statement s);
+void freeExpression(Expression e);
+void freeIdentifier(Identifier i);
 #endif

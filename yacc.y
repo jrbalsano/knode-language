@@ -13,7 +13,7 @@
 
 void yyerror(char *s);
 int errorHad = 0;
-struct symtab *symtable = NULL;
+TranslationUnit root = NULL;
 
 %}
 
@@ -114,7 +114,7 @@ struct symtab *symtable = NULL;
      */
 %%
 
-translationunit : externaldeclaration { $$ = getTranslationUnit($1); }
+translationunit : externaldeclaration { $$ = getTranslationUnit($1); root = $$; }
   | translationunit externaldeclaration
   ;
 externaldeclaration : functiondefinition { $$ = $1; }
@@ -143,13 +143,13 @@ statementlist : statement { $$ = newStatementList($1); }
   | statementlist statement
   ;
 statement : expressionstatement { $$ = $1; }
-  | iterationstatement
-  | selectionstatement
-  | nodestatement
-  | breakstatement
-  | dictstatement
-  | dictlist
-  | edgestatement
+  | iterationstatement { $$ = NULL; }
+  | selectionstatement { $$ = NULL; }
+  | nodestatement { $$ = NULL; }
+  | breakstatement { $$ = NULL; }
+  | dictstatement { $$ = NULL; }
+  | dictlist { $$ = NULL; }
+  | edgestatement { $$ = NULL; }
   ;
 dictstatement : DICT IDENTIFIER NEWLINE
   | DICT IDENTIFIER '[' INTEGER ']' NEWLINE
@@ -272,6 +272,7 @@ void yyerror(char *s) {
 
 int main(void) {
   yyparse();
+  freeTranslationUnit(root);
   if(errorHad)
     return 1;
   else
