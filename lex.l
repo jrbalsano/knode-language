@@ -49,7 +49,12 @@ boolean   "TRUE"|"FALSE"
 {operator}                      printf("%s\n", yytext); return *yytext;
 {integer}                       printf("INTEGER\n");  yylval.ival = atoi(yytext); return INTEGER;
 {double}                        printf("DOUBLEVAL\n");  yylval.fval = atof(yytext); return DOUBLEVAL;
-{boolean}                       printf("BOOLEAN\n");  yylval.ival = yytext[0] == 'T' ? 1 : 0; return BOOLEAN;
+{boolean}                       {
+                                    printf("BOOLEAN\n");  
+                                    yylval.ival = yytext[0] == 'T' ? 1 : 0; 
+                                    printf("BOOL'S TRUE COLORS: %d\n", yylval.ival);
+                                    return BOOLEAN;
+                                }
 "and"                         	printf("AND\n");  return AND; 
 "or"                      	    printf("OR\n");  return OR; 
 ^[ ]*\n                         ;
@@ -89,7 +94,7 @@ boolean   "TRUE"|"FALSE"
                                      * variables/keywords
                                      */
                                     printf("IDENTIFIER\n");
-                                    printf("%s\n", yytext);
+                                    //printf("%s\n", yytext);
                                     //check the symbol table with symlook and return a pointer to the symbol table
                                     struct symtab *sp = symlook(yytext);
                                     yylval.symp = sp;

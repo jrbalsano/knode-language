@@ -4,6 +4,7 @@ main():
     hi : hello
     hi : "hello"
     hi : 4
+    hi : TRUE
     hi : hello #TODO: make this work for multiple value types
   #thirdDict.bye = "adios"
   #thirdDict["greeting"] = "Hola Muchachos"
