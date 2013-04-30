@@ -166,6 +166,34 @@ Expression getUnaryDecr(Expression e){
   return ret;
 }
 
+Expression getUnaryExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  return ret;
+}
+
+Expression getUnaryIncr(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->operator = increment;
+  return ret;
+}
+
+Expression getUnarySingleOp(char op, Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->operator = op;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getUnaryDecr(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->operator = decrement;
+  return ret;
+}
+
 void addFront(GrammarList g, void *data) {
   GrammarNode n = (GrammarNode)malloc(sizeof(struct grammarNode_));
   n->data = data;
