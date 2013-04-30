@@ -173,7 +173,7 @@ expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
 dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE
   | IDENTIFIER ':' STRING_LITERAL NEWLINE { $1->value = $3; printf("%s\n", (char *)$1->value);}
-  | IDENTIFIER ':' INTEGER NEWLINE { $1->value = $3; printf("%d\n", (int *)$1->value);}
+  | IDENTIFIER ':' INTEGER NEWLINE { /*$1->value = $3; printf("%d\n", (int *)$1->value);*/}
   | IDENTIFIER ':' BOOLEAN NEWLINE { /*$1->value = $3; printf("%d\n", (int *)$1->value);*/}
   ;
 edgestatement: EDGE IDENTIFIER '=' '[' IDENTIFIER alledgestatement IDENTIFIER ']' NEWLINE
