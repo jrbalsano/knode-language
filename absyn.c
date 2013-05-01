@@ -158,6 +158,27 @@ GrammarList newStatementList(Statement s) {
   return sList;
 }
 
+GrammarList newParameterList(Parameter p) {
+	GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
+    pList->type = parameterList;
+	pList->head = 0;
+	addFront(pList, p);
+	return pList;
+}
+
+Parameter getTypedParameter(int typename, Identifier i){
+	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
+	ret->type=typename;
+	ret->i = i;
+	return ret;
+}
+
+GrammarList appendToPList(GrammarList pList,Parameter param) {
+	addFront(pList, param);
+	return pList;
+}
+
+
 /**
  * Creates a new argument expression list from an existing expression. To be used in
  * situations where the argument expression list does not already exist.
@@ -212,6 +233,9 @@ void freeGrammarList(GrammarList g) {
       case statement:
         freeStatement((Statement)d);
         break;
+      case parameterList:
+        freeParameter((Parameter)d);
+        break;
     }
   }
   free(g);
@@ -254,6 +278,13 @@ void freeStatement(Statement s) {
   #ifdef MEMTRACE
   printf("Statement freed\n");
   #endif
+}
+
+/**
+ * Free the Parameter.
+ */
+void freeParameter(Parameter p) {
+    freeIdentifier(p->i);
 }
 
 /*************

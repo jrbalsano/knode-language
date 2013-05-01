@@ -17,6 +17,7 @@ typedef struct compoundStatement_ *CompoundStatement;
 typedef struct grammarList_ *GrammarList;
 typedef struct grammarNode_ *GrammarNode;
 typedef struct translationUnit_ *TranslationUnit;
+typedef struct parameter_ *Parameter;
 
 struct expression_ {
   enum {function, unary, postfix, primary, string, cast} type;
@@ -53,6 +54,10 @@ struct statement_ {
     Expression e;
   } sub;
 };
+struct parameter_ {
+	int type;
+	Identifier i;
+};
 struct functionDefinition_ {
   Declarator d;
   CompoundStatement cs;
@@ -65,7 +70,7 @@ struct translationUnit_ {
   FunctionDefinition f;
 };
 struct grammarList_ {
-  enum {argument, statement} type;
+  enum {argument, statement,parameterList} type;
   GrammarNode head;
 };
 struct grammarNode_ {
@@ -80,6 +85,9 @@ Declarator declaratorId(Identifier id);
 Declarator getDeclarator(Identifier id, GrammarList pList);
 CompoundStatement newCompoundStatement(GrammarList sList);
 GrammarList newStatementList(Statement s);
+GrammarList newParameterList(Parameter p);
+Parameter getTypedParameter(int typname, Identifier i);
+GrammarList appendToPList(GrammarList pList,Parameter param);
 Statement getExpressionStatement(Expression e);
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
 Expression getPrimaryStringExpression(char *s);
@@ -92,6 +100,7 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id);
 Expression getPostfixIncr(Expression e);
 Expression getPostfixDecr(Expression e);
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
+void freeParameter(Parameter p);
 Expression getUnaryExpression(Expression e);
 Expression getUnaryIncr(Expression e);
 Expression getUnaryDecr(Expression e);
