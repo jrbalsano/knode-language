@@ -63,11 +63,12 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {statement_none = none, expression} type;
+  enum {statement_none = none, expression,selection} type;
   union {
     Expression e;
     Statement s;
   } sub;
+  enum {ifStatement,ifelseStatement} selectiontype;
 };
 struct parameter_ {
 	int type;

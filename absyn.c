@@ -127,6 +127,30 @@ CompoundStatement newCompoundStatement(GrammarList sList) {
 }
 
 /**
+ * Create a new selection if statement.
+ */
+Statement newIfStatement(Expression e, CompoundStatement cs) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->sub1.e = e;
+    ret->type = selection;
+    ret->selectiontype = ifStatement;
+    ret->sub2.cs = cs;
+    return ret;
+}
+
+/**
+ * Create a new selection if/else statement.
+ */
+Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStatement cs2) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->sub1.e = e;
+    ret->type = selection;
+    ret->selectiontype = ifelseStatement;
+    ret->sub2.cs = cs1;
+    ret->sub2.cs = cs2;
+    return ret;
+}
+/**
  * Recursively free the compound statement and its children in postorder.
  */
 void freeCompoundStatement(CompoundStatement c) {
@@ -249,7 +273,7 @@ void freeGrammarList(GrammarList g) {
 Statement getStatement(Statement s) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = none;
-  ret->sub.s = s;
+  ret->sub1.s = s;
   return ret;
 }
 
@@ -259,7 +283,7 @@ Statement getStatement(Statement s) {
 Statement getExpressionStatement(Expression e) {
   Statement s = (Statement)malloc(sizeof(struct statement_));
   s->type = expression;
-  s->sub.e = e;
+  s->sub1.e = e;
   return s;
 }
 
@@ -276,11 +300,24 @@ void freeStatement(Statement s) {
   }  
   switch(s->type) {
     case expression:
-      freeExpression(s->sub.e);
+      freeExpression(s->sub1.e);
       break;
     case none:
-      freeStatement(s->sub.s);
+      freeStatement(s->sub1.s);
       break;
+    case selection:
+      switch(s->selectiontype) {
+        case ifStatement:
+          freeCompoundStatement(s->sub2.cs);
+          freeExpression(s->sub1.e);
+          break;
+        case ifelseStatement:
+          freeExpression(s->sub1.e);
+          freeCompoundStatement(s->sub2.cs);
+          freeCompoundStatement(s->sub3.cs);
+          break;
+          }
+    break;
   }
   free(s);
   #ifdef MEMTRACE
