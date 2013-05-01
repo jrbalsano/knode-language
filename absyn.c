@@ -551,6 +551,15 @@ Expression getAndExpression(Expression e){
   return ret;
 }
 
+Expression getAnd(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = cond_and;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
 /**
  * Recursively free an expression and its children in postorder
  */

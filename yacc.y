@@ -208,7 +208,7 @@ conditionalexpression : orexpression
 orexpression : orexpression OR andexpression
   | andexpression
   ;
-andexpression : andexpression AND equalityexpression 
+andexpression : andexpression AND equalityexpression { $$ = getAnd($1, $3); }
   | equalityexpression { $$ = getAndExpression($1); }
   ;
 equalityexpression : relationalexpression { $$ = getEqExpression($1); }

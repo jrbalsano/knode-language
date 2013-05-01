@@ -124,6 +124,7 @@ Expression getEqExpression(Expression e);
 Expression getEqual(Expression e1, Expression e2);
 Expression getNotEqual(Expression e1, Expression e2);
 Expression getAndExpression(Expression e);
+Expression getAnd(Expression e1, Expression e2);
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
 void freeDeclarator(Declarator d);
