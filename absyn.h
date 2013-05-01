@@ -39,6 +39,7 @@ struct expression_ {
 
 struct identifier_ {
   char *symbol;
+  struct symtab *sp;
 };
 struct declarator_ {
   Identifier name;
