@@ -158,6 +158,12 @@ GrammarList newStatementList(Statement s) {
   return sList;
 }
 
+
+/**
+ * Creates a new parameter list from an existing parameter. To be used in sutations
+ * where a parameter list does not already exist. See addFront for cases where the
+ * list already exists.
+ */
 GrammarList newParameterList(Parameter p) {
 	GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
   pList->type = parameterList;
@@ -165,19 +171,6 @@ GrammarList newParameterList(Parameter p) {
 	addFront(pList, p);
 	return pList;
 }
-
-Parameter getTypedParameter(int typename, Identifier i){
-	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-	ret->type=typename;
-	ret->i = i;
-	return ret;
-}
-
-GrammarList appendToPList(GrammarList pList, Parameter param) {
-	addFront(pList, param);
-	return pList;
-}
-
 
 /**
  * Creates a new argument expression list from an existing expression. To be used in
@@ -194,11 +187,12 @@ GrammarList newArgumentExpressionList(Expression e) {
 /**
  * Add a node to the front of the Grammar List g, with data pointer data
  */
-void addFront(GrammarList g, void *data) {
+GrammarList addFront(GrammarList g, void *data) {
   GrammarNode n = (GrammarNode)malloc(sizeof(struct grammarNode_));
   n->data = data;
   n->next = g->head;
   g->head = n;
+  return g;
 }
 
 /**
@@ -249,6 +243,16 @@ void freeGrammarList(GrammarList g) {
  ************/
 
 /**
+ * Creates a statement from an existing statement
+ */
+Statement getStatement(Statement s) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = none;
+  ret->sub.s = s;
+  return ret;
+}
+
+/**
  * Create a Statement from an existing expression
  */
 Statement getExpressionStatement(Expression e) {
@@ -273,11 +277,28 @@ void freeStatement(Statement s) {
     case expression:
       freeExpression(s->sub.e);
       break;
+    case none:
+      freeStatement(s->sub.s);
+      break;
   }
   free(s);
   #ifdef MEMTRACE
   printf("Statement freed\n");
   #endif
+}
+
+/************
+ * Parameters
+ ************/
+
+/**
+ * Create a parameter from a typed argument
+ */
+Parameter getTypedParameter(int typename, Identifier i){
+	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
+	ret->type=typename;
+	ret->i = i;
+	return ret;
 }
 
 /**

@@ -56,9 +56,10 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {expression} type;
+  enum {statement_none = none, expression} type;
   union {
     Expression e;
+    Statement s;
   } sub;
 };
 struct parameter_ {
@@ -85,7 +86,7 @@ struct grammarNode_ {
   void *data;
 };
 
-void addFront(GrammarList g, void *data);
+GrammarList addFront(GrammarList g, void *data);
 TranslationUnit getTranslationUnit(FunctionDefinition fd);
 FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs);
 Declarator declaratorId(Identifier id);

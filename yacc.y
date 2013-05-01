@@ -131,7 +131,7 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
   ;
-parameterlist : parameterlist ',' parameterdeclaration {$$ = appendToPList($1,$3);}
+parameterlist : parameterlist ',' parameterdeclaration {$$ = addFront($1,$3);}
   | parameterdeclaration {$$ = newParameterList($1)}
   ;
 parameterdeclaration : typename identifier { $$ = getTypedParameter($1, $2); }
