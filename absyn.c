@@ -565,73 +565,45 @@ void freeExpression(Expression e) {
 
     case mult:
       switch(e->deriv.mult){
-        case times:
-          freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e);
-          break;
-        case divide:
-          freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e);
-          break; 
-        case mod:
-          freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e);
-          break;
         case 0:
           freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
           break;
       }
       break;
     case add:
       switch(e->deriv.add){
-        case plus:
-          freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e);
-          break;
-        case minus:
-          freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e);
-          break;
         case 0:
           freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
           break;
       }
       break;
     case relat:
       switch(e->deriv.relat){
-        case less:
-          freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e);
-          break;
-        case greater:
-          freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e);
-          break;
-        case le:
-          freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e);
-          break;
-        case ge:
-          freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e);
-          break;
         case 0:
           freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
           break;
       }
       break;
     case eq:
       switch(e->deriv.eq){
-        case equal:
-          freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e);
-          break;
-        case notequal:
-          freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e);
-          break;
         case 0:
           freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
           break;
       }
       break;
