@@ -86,10 +86,8 @@ TranslationUnit root = NULL;
 %nonassoc '<' '>' LE GE
 %left '+' '-'
 %left '*' '/' '%'
-%type<sval> STRING_LITERAL IDENTIFIER
-%type<ival> INTEGER typename NODE DICT EDGE
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER typename INT DOUBLE CHAR STRING DICT
+%type<ival> INTEGER typename INT DOUBLE CHAR STRING  NODE DICT EDGE
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*'
 %type<symp> IDENTIFIER
