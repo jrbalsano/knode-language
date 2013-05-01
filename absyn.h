@@ -111,6 +111,8 @@ Expression getSingleCharRelat(Expression e1, char c, Expression e2);
 Expression getLeRelat(Expression e1, Expression e2);
 Expression getGeRelat(Expression e1, Expression e2);
 Expression getEqExpression(Expression e);
+Expression getEqual(Expression e1, Expression e2);
+Expression getNotEqual(Expression e1, Expression e2);
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
 void freeDeclarator(Declarator d);

@@ -202,8 +202,8 @@ assignmentoperator : '='
   | MODEQ
   ;
 equalityexpression : relationalexpression { $$ = getEqExpression($1); }
-  | equalityexpression EQ relationalexpression
-  | equalityexpression NE relationalexpression 
+  | equalityexpression EQ relationalexpression { $$ = getEqual($1, $3); }
+  | equalityexpression NE relationalexpression { $$ = getNotEqual($1, $3); }
   ;
 relationalexpression : additiveexpression { $$ = getRelatExpression($1); }
   | relationalexpression '<' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }

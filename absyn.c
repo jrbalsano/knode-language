@@ -493,6 +493,25 @@ Expression getEqExpression(Expression e){
   ret->sub1.e = e;
   return ret;
 }
+
+Expression getEqual(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = eq;
+  ret->deriv.relat = equal;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getNotEqual(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = eq;
+  ret->deriv.relat = notequal;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
 /**
  * Recursively free an expression and its children in postorder
  */
