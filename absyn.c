@@ -677,6 +677,17 @@ void freeExpression(Expression e) {
           break;
       }
       break;
+    case cond:
+      switch(e->deriv.eq){
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+      }
+      break;
     case primary:
       freeIdentifier(e->sub1.i);
       break;
