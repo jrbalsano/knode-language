@@ -792,9 +792,9 @@ void freeExpression(Expression e) {
       freeGrammarList(e->sub2.l);
       break;
     case none:
-      if(e->deriv.none) 
+      if(!e->deriv.none) 
         freeExpression(e->sub1.e);
-      else {
+      else if(e->deriv.none == comma) {
         freeExpression(e->sub1.e);
         freeExpression(e->sub2.e);
       }
