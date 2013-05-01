@@ -67,9 +67,21 @@ struct statement_ {
   union {
     Expression e;
     Statement s;
-    CompoundStatement c;
-    GrammarList eList; //A list of expressions
-  } sub;
+	GrammarList eList; //A list of expressions
+	CompoundStatement cs;
+      } sub1;
+  union{
+	  Expression e;
+	  Statement s;
+	  GrammarList eList; //A list of expressions
+	  CompoundStatement cs;
+    } sub2;
+  union{
+		Expression e;
+		Statement s;
+		GrammarList eList; //A list of expressions
+		CompoundStatement cs;
+    } sub3;
   enum {forIter,whileIter} iterationtype;
 };
 struct parameter_ {
@@ -114,8 +126,8 @@ CompoundStatement newCompoundStatement(GrammarList sList);
 
 Statement getExpressionStatement(Expression e);
 Statement getStatement(Statement s);
-Statement newWhileStatement(Expression e, CompoundStatement c);
-Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement c);
+Statement newWhileStatement(Expression e, CompoundStatement cs);
+Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs);
 
 Identifier getIdentifier(char *s);
 

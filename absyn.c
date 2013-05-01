@@ -236,7 +236,6 @@ void freeGrammarList(GrammarList g) {
         freeExpression((Expression)d);
         break;
       case statement:
-        fprintf(stderr, "Inside statement case--");
         freeStatement((Statement)d);
         break;
       case parameterList:
@@ -263,7 +262,7 @@ void freeGrammarList(GrammarList g) {
 Statement getStatement(Statement s) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = none;
-  ret->sub.s = s;
+  ret->sub1.s = s;
   return ret;
 }
 
@@ -273,7 +272,7 @@ Statement getStatement(Statement s) {
 Statement getExpressionStatement(Expression e) {
   Statement s = (Statement)malloc(sizeof(struct statement_));
   s->type = expression;
-  s->sub.e = e;
+  s->sub1.e = e;
   return s;
 }
 /**
@@ -283,8 +282,8 @@ Statement newWhileStatement(Expression e, CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = iteration;
   ret->iterationtype = whileIter;
-  ret->sub.e = e;
-  ret->sub.c = cs;
+  ret->sub1.e = e;
+  ret->sub2.cs = cs;
   return ret;
 }
 /**
@@ -292,12 +291,12 @@ Statement newWhileStatement(Expression e, CompoundStatement cs) {
  */
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
-  ret->sub.eList = newExpressionList(e1);
-  addFront(ret->sub.eList,e2);
-  addFront(ret->sub.eList,e3);
+  ret->sub1.eList = newExpressionList(e1);
+  addFront(ret->sub1.eList,e2);
+  addFront(ret->sub1.eList,e3);
   ret->type = iteration;
   ret->iterationtype = forIter;
-  ret->sub.c = cs;
+  ret->sub2.cs = cs;
   return ret;
 }
 /**
@@ -313,21 +312,21 @@ void freeStatement(Statement s) {
   }  
   switch(s->type) {
     case expression:
-      freeExpression(s->sub.e);
+      freeExpression(s->sub1.e);
       break;
     case iteration:
       switch(s->iterationtype) {
         case forIter:
-          freeCompoundStatement(s->sub.c);
-          freeGrammarList(s->sub.eList);
+          freeCompoundStatement(s->sub2.cs);
+          freeGrammarList(s->sub1.eList);
         case whileIter:
-          freeExpression(s->sub.e);
-          freeCompoundStatement(s->sub.c);
+          freeExpression(s->sub1.e);
+          freeCompoundStatement(s->sub2.cs);
         break;
           }
       break;
     case none:
-      freeStatement(s->sub.s);
+      freeStatement(s->sub1.s);
       break;
   }
   free(s);
