@@ -1,6 +1,6 @@
 main():
   while(x > 7)
-    x = 4
+    4 + 3
     y = 2
   for(x=2;x>2;x++)
     x = 5
