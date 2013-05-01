@@ -89,7 +89,7 @@ TranslationUnit root = NULL;
 %type<sval> STRING_LITERAL
 %type<ival> INTEGER typename INT DOUBLE CHAR STRING  NODE DICT EDGE
 %type<fval> DOUBLEVAL
-%type<cval> unaryoperator '-' '+' '!' '*'
+%type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
 %type<identifier> identifier
@@ -203,24 +203,24 @@ assignmentoperator : '='
   | DIVEQ
   | MODEQ
   ;
-equalityexpression : relationalexpression
-  | equalityexpression EQ relationalexpression
-  | equalityexpression NE relationalexpression 
+equalityexpression : relationalexpression { $$ = getEqExpression($1); }
+  | equalityexpression EQ relationalexpression { $$ = getEqual($1, $3); }
+  | equalityexpression NE relationalexpression { $$ = getNotEqual($1, $3); }
   ;
-relationalexpression : additiveexpression
-  | relationalexpression '<' additiveexpression
-  | relationalexpression '>' additiveexpression
-  | relationalexpression LE additiveexpression
-  | relationalexpression GE additiveexpression
+relationalexpression : additiveexpression { $$ = getRelatExpression($1); }
+  | relationalexpression '<' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
+  | relationalexpression '>' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
+  | relationalexpression LE additiveexpression { $$ = getLeRelat($1, $3); }
+  | relationalexpression GE additiveexpression { $$ = getGeRelat($1, $3); }
   ;
-additiveexpression : multiplicativeexpression 
-  | additiveexpression '+' multiplicativeexpression 
-  | additiveexpression '-' multiplicativeexpression 
+additiveexpression : multiplicativeexpression { $$ = getAdditiveExpression($1); }
+  | additiveexpression '+' multiplicativeexpression { $$ = getAddExpression($1, $2, $3); } 
+  | additiveexpression '-' multiplicativeexpression { $$ = getAddExpression($1, $2, $3); }
   ;
-multiplicativeexpression : castexpression 
-  | multiplicativeexpression '*' castexpression 
-  | multiplicativeexpression '/' castexpression 
-  | multiplicativeexpression '%' castexpression 
+multiplicativeexpression : castexpression { $$ = getMultExpression($1); }
+  | multiplicativeexpression '*' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
+  | multiplicativeexpression '/' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
+  | multiplicativeexpression '%' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
   ;
 castexpression : unaryexpression { $$ = getCastExpression($1); }
   | '(' typename ')' castexpression { $$ = getTypedCast($2, $4); }

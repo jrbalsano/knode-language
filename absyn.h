@@ -20,7 +20,7 @@ typedef struct translationUnit_ *TranslationUnit;
 typedef struct parameter_ *Parameter;
 
 struct expression_ {
-  enum {function, unary, postfix, primary, string, cast} type;
+  enum {function, unary, postfix, primary, string, cast, mult, add, relat, eq} type;
   union {
     Expression e;
     Identifier i;
@@ -37,6 +37,10 @@ struct expression_ {
     enum{none = 0, postincr, postdecr, bracket, identifier, arg} postfix;
     enum{unary_none, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
     enum{cast_none, typed} cast;
+    enum{mult_none, times = '*', divide = '/', mod = '%'} mult;
+    enum{add_none, plus = '+', minus = '-'} add;
+    enum{relat_none, less = '<', greater = '>', le, ge} relat;
+    enum{eq_none, equal, notequal} eq;
   } deriv;
 };
 
@@ -107,6 +111,17 @@ Expression getUnaryDecr(Expression e);
 Expression getUnarySingleOp(char c, Expression e);
 Expression getCastExpression(Expression e);
 Expression getTypedCast(int token, Expression e);
+Expression getMultExpression(Expression e);
+Expression getMultiplyExpression(Expression e1, char c, Expression e2);
+Expression getAdditiveExpression(Expression e1);
+Expression getAddExpression(Expression e1, char c, Expression e2);
+Expression getRelatExpression(Expression e);
+Expression getSingleCharRelat(Expression e1, char c, Expression e2);
+Expression getLeRelat(Expression e1, Expression e2);
+Expression getGeRelat(Expression e1, Expression e2);
+Expression getEqExpression(Expression e);
+Expression getEqual(Expression e1, Expression e2);
+Expression getNotEqual(Expression e1, Expression e2);
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
 void freeDeclarator(Declarator d);

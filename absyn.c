@@ -448,6 +448,100 @@ Expression getTypedCast(int token, Expression e){
   return ret;
 }
 
+Expression getMultExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = mult;
+  ret->deriv.mult = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getMultiplyExpression(Expression e1, char c, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = mult;
+  ret->deriv.mult = c;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getAdditiveExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = add;
+  ret->deriv.add = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getAddExpression(Expression e1, char c, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = add;
+  ret->deriv.add = c;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getRelatExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = relat;
+  ret->deriv.relat = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getSingleCharRelat(Expression e1, char c, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = relat;
+  ret->deriv.relat = c;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getLeRelat(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = relat;
+  ret->deriv.relat = le;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getGeRelat(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = relat;
+  ret->deriv.relat = ge;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getEqExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = eq;
+  ret->deriv.eq = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getEqual(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = eq;
+  ret->deriv.relat = equal;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getNotEqual(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = eq;
+  ret->deriv.relat = notequal;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
 
 /**
  * Recursively free an expression and its children in postorder
@@ -496,6 +590,51 @@ void freeExpression(Expression e) {
           break;
         case 0:
           freeExpression(e->sub1.e);
+          break;
+      }
+      break;
+
+    case mult:
+      switch(e->deriv.mult){
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+      }
+      break;
+    case add:
+      switch(e->deriv.add){
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+      }
+      break;
+    case relat:
+      switch(e->deriv.relat){
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+      }
+      break;
+    case eq:
+      switch(e->deriv.eq){
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
           break;
       }
       break;
