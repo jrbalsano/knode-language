@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct symtab *symlook(char *symbol, void *data) {
+struct symtab *symlook(char *symbol) {
     //create a symbol pointer
     struct symtab *symbolPointer;
     //try to find the symbol in our table
@@ -14,15 +14,32 @@ struct symtab *symlook(char *symbol, void *data) {
     } 
     //if we don't find the symbol, add it to the table and return the pointer
     symbolPointer = (struct symtab*)malloc(sizeof(struct symtab));
-    symbolPointer->name = strdup(symbol);
+    strncpy(symbolPointer->name, symbol, sizeof(symbolPointer->name));
     HASH_ADD_STR(symtable, name, symbolPointer);
     return symbolPointer;
 }
- 
+
+//delete the symbol in the hash table that has the corresponding symbol
+void deleteSymbol(char *symbol) {
+    struct symtab *symbolPointer;
+    HASH_FIND_STR(symtable, symbol, symbolPointer);
+    if (symbolPointer) {
+        HASH_DEL(symtable, symbolPointer);
+        free(symbolPointer);
+    }
+}
+
 void *storeData(void *data) {
-    void *store = (void *)malloc(sizeof(data));
+    void *store = (void *)malloc(sizeof(*data));
     return store;
 }
 
-void freeData() {
+//iterate through the hash table and delete/free everything
+void freeHashTable() {
+    struct symtab *curr, *tmp;
+    HASH_ITER(hh, symtable, curr, tmp) {
+        HASH_DEL(symtable, curr);
+        free(curr);
+    }
 }
+
