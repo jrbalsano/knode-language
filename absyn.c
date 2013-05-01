@@ -236,6 +236,7 @@ void freeGrammarList(GrammarList g) {
         freeExpression((Expression)d);
         break;
       case statement:
+        fprintf(stderr, "Inside statement case--");
         freeStatement((Statement)d);
         break;
       case parameterList:
