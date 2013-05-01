@@ -164,7 +164,7 @@ breakstatement : BREAK NEWLINE
   ;
 
 nodestatement : NODE IDENTIFIER NEWLINE
-  | NODE IDENTIFIER EQ IDENTIFIER
+  | NODE IDENTIFIER '=' IDENTIFIER NEWLINE
   | NODE IDENTIFIER NEWLINE compoundstatement
   ;
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX

@@ -1,5 +1,8 @@
 main():
   node test_node
+  node test_node = another_node
+  node test_node
+    hello: "world"
   # assignment test won't work yet, as assignment isn't working yet
   # ie, node test_node = another_node
   # same applies for dictionary declaration
