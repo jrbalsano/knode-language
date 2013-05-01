@@ -160,7 +160,7 @@ GrammarList newStatementList(Statement s) {
 
 GrammarList newParameterList(Parameter p) {
 	GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
-    pList->type = parameterList;
+  pList->type = parameterList;
 	pList->head = 0;
 	addFront(pList, p);
 	return pList;
@@ -173,7 +173,7 @@ Parameter getTypedParameter(int typename, Identifier i){
 	return ret;
 }
 
-GrammarList appendToPList(GrammarList pList,Parameter param) {
+GrammarList appendToPList(GrammarList pList, Parameter param) {
 	addFront(pList, param);
 	return pList;
 }
