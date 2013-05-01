@@ -19,7 +19,7 @@ typedef struct grammarNode_ *GrammarNode;
 typedef struct translationUnit_ *TranslationUnit;
 
 struct expression_ {
-  enum {function, unary, postfix, primary, string, cast, mult, add, relat} type;
+  enum {function, unary, postfix, primary, string, cast, mult, add, relat, eq} type;
   union {
     Expression e;
     Identifier i;
@@ -39,6 +39,7 @@ struct expression_ {
     enum{mult_none, times = '*', divide = '/', mod = '%'} mult;
     enum{add_none, plus = '+', minus = '-'} add;
     enum{relat_none, less = '<', greater = '>', le, ge} relat;
+    enum{eq_none, equal, notequal} eq;
   } deriv;
 };
 
@@ -109,6 +110,7 @@ Expression getRelatExpression(Expression e);
 Expression getSingleCharRelat(Expression e1, char c, Expression e2);
 Expression getLeRelat(Expression e1, Expression e2);
 Expression getGeRelat(Expression e1, Expression e2);
+Expression getEqExpression(Expression e);
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
 void freeDeclarator(Declarator d);

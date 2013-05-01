@@ -201,7 +201,7 @@ assignmentoperator : '='
   | DIVEQ
   | MODEQ
   ;
-equalityexpression : relationalexpression
+equalityexpression : relationalexpression { $$ = getEqExpression($1); }
   | equalityexpression EQ relationalexpression
   | equalityexpression NE relationalexpression 
   ;
