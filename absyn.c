@@ -218,7 +218,7 @@ void *popFront(GrammarList g) {
 
 void freeGrammarList(GrammarList g) {
   #ifdef MEMTRACE
-  printf("Freeing grammar listn");
+  printf("Freeing grammar list\n");
   #endif
   if(g == NULL) {
     fprintf(stderr, "Null child GrammarList\n");
