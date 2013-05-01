@@ -135,35 +135,15 @@ GrammarList newStatementList(Statement s) {
 
 GrammarList newParameterList(Parameter p) {
 	GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
+    pList->type = parameterList;
 	pList->head = 0;
 	addFront(pList, p);
 	return pList;
 }
 
-Parameter getTypedParameter(int typname, Identifier i){
+Parameter getTypedParameter(int typename, Identifier i){
 	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-	//sret->type = typename;
-	ret->i = i;
-	return ret;
-}
-
-Parameter getNodeParameter(Identifier i){
-	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-	ret->type = node;
-	ret->i = i;
-	return ret;
-}
-
-Parameter getDictParameter(Identifier i){
-	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-	ret->type = dict;
-	ret->i = i;
-	return ret;
-}
-
-Parameter getEdgeParameter(Identifier i){
-	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-	ret->type = edge;
+	ret->type=typename;
 	ret->i = i;
 	return ret;
 }
@@ -225,6 +205,9 @@ void freeGrammarList(GrammarList g) {
       case statement:
         freeStatement((Statement)d);
         break;
+      case parameterList:
+        freeParameter((Parameter)d);
+        break;
     }
   }
   free(g);
@@ -258,6 +241,13 @@ void freeStatement(Statement s) {
       break;
   }
   free(s);
+}
+
+/**
+ * Free the Parameter.
+ */
+void freeParameter(Parameter p) {
+    freeIdentifier(p->i);
 }
 
 /*************
@@ -294,19 +284,6 @@ Expression getPrimaryStringExpression(char *s) {
   ret->type = string;
   ret->sub1.s = s;
   return ret;
-}
-
-GrammarList newArgumentExpressionList(Expression e) {
-  GrammarList aeList = (GrammarList)malloc(sizeof(struct grammarList_));
-  aeList->head = 0;
-  addFront(aeList, e);
-  return aeList;
-}
-
-Identifier getIdentifier(char *s) {
-  Identifier i = (Identifier)malloc(sizeof(struct identifier_));
-  i->symbol = s;
-  return i;
 }
 
 /**
@@ -385,11 +362,6 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
   return ret;
 }
 
-void addFront(GrammarList g, void *data) {
-  GrammarNode n = (GrammarNode)malloc(sizeof(struct grammarNode_));
-  n->data = data;
-  n->next = g->head;
-  g->head = n;
 /**
  * Recursively free an expression and its children in postorder
  */

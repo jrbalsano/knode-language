@@ -49,7 +49,7 @@ struct statement_ {
   } sub;
 };
 struct parameter_ {
-	enum {node, dict, edge} type;
+	int type;
 	Identifier i;
 };
 struct functionDefinition_ {
@@ -64,7 +64,7 @@ struct translationUnit_ {
   FunctionDefinition f;
 };
 struct grammarList_ {
-  enum {argument, statement} type;
+  enum {argument, statement,parameterList} type;
   GrammarNode head;
 };
 struct grammarNode_ {
@@ -81,9 +81,6 @@ CompoundStatement newCompoundStatement(GrammarList sList);
 GrammarList newStatementList(Statement s);
 GrammarList newParameterList(Parameter p);
 Parameter getTypedParameter(int typname, Identifier i);
-Parameter getNodeParameter(Identifier i);
-Parameter getDictParameter(Identifier i);
-Parameter getEdgeParameter(Identifier i);
 GrammarList appendToPList(GrammarList pList,Parameter param);
 Statement getExpressionStatement(Expression e);
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
@@ -97,6 +94,7 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id);
 Expression getPostfixIncr(Expression e);
 Expression getPostfixDecr(Expression e);
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
+void freeParameter(Parameter p);
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
 void freeDeclarator(Declarator d);

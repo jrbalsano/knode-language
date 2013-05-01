@@ -84,7 +84,7 @@ TranslationUnit root = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL IDENTIFIER
-%type<ival> INTEGER typename
+%type<ival> INTEGER typename NODE DICT EDGE
 %type<fval> DOUBLEVAL
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
 %type<identifier> identifier
@@ -130,9 +130,9 @@ parameterlist : parameterlist ',' parameterdeclaration {$$ = appendToPList($1,$3
   | parameterdeclaration {$$ = newParameterList($1)}
   ;
 parameterdeclaration : typename identifier { $$ = getTypedParameter($1, $2); }
-  | NODE identifier { $$ = getNodeParameter($2); }
-  | DICT identifier { $$ = getDictParameter($2); }
-  | EDGE identifier { $$ = getEdgeParameter($2); }
+  | NODE identifier { $$ = getTypedParameter($1, $2); }
+  | DICT identifier { $$ = getTypedParameter($1, $2); }
+  | EDGE identifier { $$ = getTypedParameter($1, $2); }
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;
