@@ -88,7 +88,7 @@ TranslationUnit root = NULL;
 %type<sval> STRING_LITERAL
 %type<ival> INTEGER typename INT DOUBLE CHAR STRING DICT
 %type<fval> DOUBLEVAL
-%type<cval> unaryoperator '-' '+' '!' '*' '%' '/'
+%type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
 %type<identifier> identifier
@@ -205,10 +205,10 @@ equalityexpression : relationalexpression
   | equalityexpression EQ relationalexpression
   | equalityexpression NE relationalexpression 
   ;
-relationalexpression : additiveexpression
-  | relationalexpression '<' additiveexpression
-  | relationalexpression '>' additiveexpression
-  | relationalexpression LE additiveexpression
+relationalexpression : additiveexpression { $$ = getRelatExpression($1); }
+  | relationalexpression '<' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
+  | relationalexpression '>' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
+  | relationalexpression LE additiveexpression 
   | relationalexpression GE additiveexpression
   ;
 additiveexpression : multiplicativeexpression { $$ = getAdditiveExpression($1); }
