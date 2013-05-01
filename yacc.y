@@ -146,8 +146,8 @@ compoundstatement : BLOCK_START statementlist BLOCK_END { $$ = newCompoundStatem
 statementlist : statement { $$ = newStatementList($1); }
   | statementlist statement
   ;
-statement : expressionstatement { $$ = $1; }
-  | iterationstatement { $$ = NULL; }
+statement : expressionstatement { $$ = getStatement($1); }
+  | iterationstatement { $$ = getStatement($1) }
   | selectionstatement { $$ = NULL; }
   | nodestatement { $$ = NULL; }
   | breakstatement { $$ = NULL; }
@@ -158,7 +158,7 @@ statement : expressionstatement { $$ = $1; }
 dictstatement : DICT IDENTIFIER NEWLINE {}
   | DICT IDENTIFIER '[' INTEGER ']' NEWLINE
   | DICT IDENTIFIER '[' INTEGER ']' NEWLINE compoundstatement
-  | DICT IDENTIFIER compoundstatement 
+  | DICT IDENTIFIER compoundstatement
   ;
 breakstatement : BREAK NEWLINE
   ;
@@ -170,8 +170,8 @@ nodestatement : NODE IDENTIFIER NEWLINE
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX
   | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement 
   ;
-iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
-  | FOR '(' expression ';' expression ';' expression ')' NEWLINE compoundstatement
+iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement {$$ = newWhileStatement($2,$4);}
+  | FOR '(' expression ';' expression ';' expression ')' NEWLINE compoundstatement { $$ = newForStatement($3,$5,$7,$10);}
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;

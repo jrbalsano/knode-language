@@ -63,11 +63,14 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {statement_none = none, expression} type;
+  enum {statement_none = none, expression, iteration} type;
   union {
     Expression e;
     Statement s;
+    CompoundStatement c;
+    GrammarList eList; //A list of expressions
   } sub;
+  enum {forIter,whileIter} iterationtype;
 };
 struct parameter_ {
 	int type;
@@ -85,7 +88,7 @@ struct translationUnit_ {
   FunctionDefinition f;
 };
 struct grammarList_ {
-  enum {argument, statement,parameterList} type;
+  enum {argument, statement,parameterList,expression} type;
   GrammarNode head;
 };
 struct grammarNode_ {
@@ -111,6 +114,8 @@ CompoundStatement newCompoundStatement(GrammarList sList);
 
 Statement getExpressionStatement(Expression e);
 Statement getStatement(Statement s);
+Statement newWhileStatement(Expression e, CompoundStatement c);
+Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement c);
 
 Identifier getIdentifier(char *s);
 
