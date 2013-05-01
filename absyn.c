@@ -1,4 +1,5 @@
 #include "absyn.h"
+#include "yacc.tab.h"
 #include <stdlib.h>
 
 /*******************
@@ -588,6 +589,34 @@ Expression getAssign(Expression e){
   ret->type = assignment;
   ret->deriv.assign = none;
   ret->sub1.e = e;
+  return ret;
+}
+
+Expression getTokenizedAssignment(Expression e1, int op, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = assignment;
+  ret->deriv.assign = op;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getAssignment(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = assignment;
+  ret->deriv.assign = eq_assign;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getInit(int token, Identifier i, Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->deriv.assign = init;
+  ret->type = assignment;
+  ret->sub1.typnam = token;
+  ret->sub2.i = i;
+  ret->sub3.e = e;
   return ret;
 }
 /**

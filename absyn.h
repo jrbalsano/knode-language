@@ -19,6 +19,8 @@ typedef struct grammarNode_ *GrammarNode;
 typedef struct translationUnit_ *TranslationUnit;
 typedef struct parameter_ *Parameter;
 
+#include "yacc.tab.h"
+
 struct expression_ {
   enum {function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment} type;
   union {
@@ -34,6 +36,11 @@ struct expression_ {
     GrammarList l;
   } sub2;
   union {
+    Expression e;
+    Identifier i;
+    GrammarList l;
+  } sub3;
+  union {
     enum{none = 0, postincr, postdecr, bracket, identifier, arg} postfix;
     enum{unary_none, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
     enum{cast_none, typed} cast;
@@ -42,7 +49,7 @@ struct expression_ {
     enum{relat_none, less = '<', greater = '>', le, ge} relat;
     enum{eq_none, equal, notequal} eq;
     enum{cond_none, cond_or, cond_and} cond;
-    enum{assign_none, init, assign} assign;
+    enum{assign_none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ, pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ } assign;
   } deriv;
 };
 
@@ -130,6 +137,9 @@ Expression getOrExpression(Expression e);
 Expression getOr(Expression e1, Expression e2);
 Expression getCond(Expression e);
 Expression getAssign(Expression e);
+Expression getTokenizedAssignment(Expression e1, int op, Expression e2);
+Expression getAssignment(Expression e1, Expression e2);
+Expression getInit(int token, Identifier i, Expression e);
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
 void freeDeclarator(Declarator d);
