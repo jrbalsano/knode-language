@@ -782,6 +782,7 @@ void freeExpression(Expression e) {
       default:
         freeExpression(e->sub1.e);
         freeExpression(e->sub2.e);
+        break;
       } 
       break;
     case primary:
