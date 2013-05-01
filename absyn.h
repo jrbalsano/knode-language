@@ -104,6 +104,8 @@ Expression getAdditiveExpression(Expression e1);
 Expression getAddExpression(Expression e1, char c, Expression e2);
 Expression getRelatExpression(Expression e);
 Expression getSingleCharRelat(Expression e1, char c, Expression e2);
+Expression getLeRelat(Expression e1, Expression e2);
+Expression getGeRelat(Expression e1, Expression e2);
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
 void freeDeclarator(Declarator d);

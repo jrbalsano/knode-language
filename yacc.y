@@ -208,8 +208,8 @@ equalityexpression : relationalexpression
 relationalexpression : additiveexpression { $$ = getRelatExpression($1); }
   | relationalexpression '<' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
   | relationalexpression '>' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
-  | relationalexpression LE additiveexpression 
-  | relationalexpression GE additiveexpression
+  | relationalexpression LE additiveexpression { $$ = getLeRelat($1, $3); }
+  | relationalexpression GE additiveexpression { $$ = getGeRelat($1, $3); }
   ;
 additiveexpression : multiplicativeexpression { $$ = getAdditiveExpression($1); }
   | additiveexpression '+' multiplicativeexpression { $$ = getAddExpression($1, $2, $3); } 

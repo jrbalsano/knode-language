@@ -468,6 +468,23 @@ Expression getSingleCharRelat(Expression e1, char c, Expression e2){
   return ret;
 }
 
+Expression getLeRelat(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = relat;
+  ret->deriv.relat = le;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getGeRelat(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = relat;
+  ret->deriv.relat = ge;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
 /**
  * Recursively free an expression and its children in postorder
  */
