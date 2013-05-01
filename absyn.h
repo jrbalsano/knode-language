@@ -20,7 +20,7 @@ typedef struct translationUnit_ *TranslationUnit;
 typedef struct parameter_ *Parameter;
 
 struct expression_ {
-  enum {function, unary, postfix, primary, string, cast, mult, add, relat, eq} type;
+  enum {function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond} type;
   union {
     Expression e;
     Identifier i;
@@ -41,6 +41,7 @@ struct expression_ {
     enum{add_none, plus = '+', minus = '-'} add;
     enum{relat_none, less = '<', greater = '>', le, ge} relat;
     enum{eq_none, equal, notequal} eq;
+    enum{cond_none, cond_or, cond_and} cond;
   } deriv;
 };
 
@@ -122,6 +123,7 @@ Expression getGeRelat(Expression e1, Expression e2);
 Expression getEqExpression(Expression e);
 Expression getEqual(Expression e1, Expression e2);
 Expression getNotEqual(Expression e1, Expression e2);
+Expression getAndExpression(Expression e);
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
 void freeDeclarator(Declarator d);

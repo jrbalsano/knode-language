@@ -203,6 +203,14 @@ assignmentoperator : '='
   | DIVEQ
   | MODEQ
   ;
+conditionalexpression : orexpression
+  ;
+orexpression : orexpression OR andexpression
+  | andexpression
+  ;
+andexpression : andexpression AND equalityexpression 
+  | equalityexpression { $$ = getAndExpression($1); }
+  ;
 equalityexpression : relationalexpression { $$ = getEqExpression($1); }
   | equalityexpression EQ relationalexpression { $$ = getEqual($1, $3); }
   | equalityexpression NE relationalexpression { $$ = getNotEqual($1, $3); }
@@ -238,14 +246,7 @@ unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
   | MINUSMINUS unaryexpression { $$ = getUnaryDecr($2); }
   | unaryoperator unaryexpression {$$ = getUnarySingleOp($1, $2); }
   ;
-conditionalexpression : orexpression
-  ;
-orexpression : orexpression OR andexpression
-  | andexpression
-  ;
-andexpression : andexpression AND equalityexpression  
-  | equalityexpression
-  ;
+
 unaryoperator : '+' { $$ = $1; }
   | '-' { $$ = $1; }
   | '!' { $$ = $1; }

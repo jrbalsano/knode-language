@@ -543,6 +543,14 @@ Expression getNotEqual(Expression e1, Expression e2){
   return ret;
 }
 
+Expression getAndExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
 /**
  * Recursively free an expression and its children in postorder
  */
