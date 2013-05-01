@@ -2,6 +2,8 @@
 #define __ABSYN_H__
 
 #include <stdio.h>
+#include "symtable.h"
+
 /**
  * Abstract Syntax Tree for Knode
  * This code creates the structs used for our grammar.
@@ -40,6 +42,7 @@ struct expression_ {
 
 struct identifier_ {
   char *symbol;
+  struct symtab *sp;
 };
 struct declarator_ {
   Identifier name;
