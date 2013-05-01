@@ -67,7 +67,18 @@ struct statement_ {
   union {
     Expression e;
     Statement s;
-  } sub;
+    CompoundStatement cs;
+  } sub1;
+  union {
+    Expression e;
+    Statement s;
+    CompoundStatement cs;
+    } sub2;
+   union {
+    Expression e;
+    Statement s;
+    CompoundStatement cs;
+    } sub3;
   enum {ifStatement,ifelseStatement} selectiontype;
 };
 struct parameter_ {
@@ -112,6 +123,8 @@ CompoundStatement newCompoundStatement(GrammarList sList);
 
 Statement getExpressionStatement(Expression e);
 Statement getStatement(Statement s);
+Statement newIfStatement(Expression e, CompoundStatement cs);
+Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStatement cs2);
 
 Identifier getIdentifier(char *s);
 

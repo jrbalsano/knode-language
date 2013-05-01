@@ -168,7 +168,7 @@ nodestatement : NODE IDENTIFIER NEWLINE
   | NODE IDENTIFIER NEWLINE compoundstatement
   ;
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX {$$ = newIfStatement($3,$6);}
-  | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement {$$ = ($3,$6,$9);}
+  | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement {$$ = newIfElseStatement($3,$6,$9);}
   ;
 iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
   | FOR '(' expression ';' expression ';' expression ')' NEWLINE compoundstatement

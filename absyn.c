@@ -125,31 +125,6 @@ CompoundStatement newCompoundStatement(GrammarList sList) {
   ret->sList = sList;
   return ret;
 }
-
-/**
- * Create a new selection if statement.
- */
-Statement newIfStatement(Expression e, CompoundStatement cs) {
-    Statement ret = (Statement)malloc(sizeof(struct statement_));
-    ret->sub1.e = e;
-    ret->type = selection;
-    ret->selectiontype = ifStatement;
-    ret->sub2.cs = cs;
-    return ret;
-}
-
-/**
- * Create a new selection if/else statement.
- */
-Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStatement cs2) {
-    Statement ret = (Statement)malloc(sizeof(struct statement_));
-    ret->sub1.e = e;
-    ret->type = selection;
-    ret->selectiontype = ifelseStatement;
-    ret->sub2.cs = cs1;
-    ret->sub2.cs = cs2;
-    return ret;
-}
 /**
  * Recursively free the compound statement and its children in postorder.
  */
@@ -277,6 +252,30 @@ Statement getStatement(Statement s) {
   return ret;
 }
 
+/**
+ * Create a new selection if statement.
+ */
+Statement newIfStatement(Expression e, CompoundStatement cs) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->sub1.e = e;
+    ret->type = selection;
+    ret->selectiontype = ifStatement;
+    ret->sub2.cs = cs;
+    return ret;
+}
+
+/**
+ * Create a new selection if/else statement.
+ */
+Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStatement cs2) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->sub1.e = e;
+    ret->type = selection;
+    ret->selectiontype = ifelseStatement;
+    ret->sub2.cs = cs1;
+    ret->sub3.cs = cs2;
+    return ret;
+}
 /**
  * Create a Statement from an existing expression
  */
