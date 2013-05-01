@@ -278,25 +278,25 @@ Statement getExpressionStatement(Expression e) {
 /**
  * Create a new while iteration statement.
  */
-Statement newWhileStatement(Expression e, CompoundStatement c) {
+Statement newWhileStatement(Expression e, CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = iteration;
   ret->iterationtype = whileIter;
   ret->sub.e = e;
-  ret->sub.c = c;
+  ret->sub.c = cs;
   return ret;
 }
 /**
  * Create a new for iteration statement.
  */
-Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement c) {
+Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->sub.eList = newExpressionList(e1);
   addFront(ret->sub.eList,e2);
   addFront(ret->sub.eList,e3);
   ret->type = iteration;
   ret->iterationtype = forIter;
-  ret->sub.c = c;
+  ret->sub.c = cs;
   return ret;
 }
 /**

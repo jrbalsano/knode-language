@@ -1,6 +1,10 @@
 main():
   while(x > 7)
-    x + 6
+    x = 4
+    y = 2
+  for(x=2;x>2;x++)
+    x = 5
+    y = 6
   # this next line should cause a syntax errr 
   #(int) string 3
 
