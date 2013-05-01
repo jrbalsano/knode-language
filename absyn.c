@@ -18,12 +18,19 @@ TranslationUnit getTranslationUnit(FunctionDefinition fd) {
  * Recursively free the translation unit and its children.
  */
 void freeTranslationUnit(TranslationUnit t) {
+  #ifdef MEMTRACE
+  printf("Freeing translation unit\n");
+  #endif
+
   if(t == NULL) {
     fprintf(stderr, "Null child TranslationUnit\n");
     return;
   }  
   freeFunctionDefinition(t->f);
   free(t);
+  #ifdef MEMTRACE
+  printf("Translation unit freed\n");
+  #endif
 }
 
 /*********************
@@ -45,6 +52,9 @@ FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs) {
  * Recursively free the function definition and its children.
  */
 void freeFunctionDefinition(FunctionDefinition f) {
+  #ifdef MEMTRACE
+  printf("Freeing function definition\n");
+  #endif
   if(f == NULL) {
     fprintf(stderr, "Null child FunctionDefinition\n");
     return;
@@ -52,6 +62,9 @@ void freeFunctionDefinition(FunctionDefinition f) {
   freeDeclarator(f->d);
   freeCompoundStatement(f->cs);
   free(f);
+  #ifdef MEMTRACE
+  printf("Function definition freed\n");
+  #endif
 }
 
 /*************
@@ -83,6 +96,9 @@ Declarator getDeclarator(Identifier id, GrammarList pList) {
  * Recursively free the declarator and its children.
  */
 void freeDeclarator(Declarator d) {
+  #ifdef MEMTRACE
+  printf("Freeing declarator\n");
+  #endif
   if(d == NULL) {
     fprintf(stderr, "Null child Declarator\n");
     return;
@@ -91,6 +107,9 @@ void freeDeclarator(Declarator d) {
     freeGrammarList(d->p);
   freeIdentifier(d->name);
   free(d);
+  #ifdef MEMTRACE
+  printf("Declarator freed\n");
+  #endif
 }
 
 /*********************
@@ -110,12 +129,18 @@ CompoundStatement newCompoundStatement(GrammarList sList) {
  * Recursively free the compound statement and its children in postorder.
  */
 void freeCompoundStatement(CompoundStatement c) {
+  #ifdef MEMTRACE
+  printf("Freeing compound statement\n");
+  #endif
   if(c == NULL) {
     fprintf(stderr, "Null child CompoundStatement\n");
     return;
   }
   freeGrammarList(c->sList);
   free(c);
+  #ifdef MEMTRACE
+  printf("Compound statement freed\n");
+  #endif
 }
 /*****************
  * Grammar Lists
@@ -192,6 +217,9 @@ void *popFront(GrammarList g) {
 }
 
 void freeGrammarList(GrammarList g) {
+  #ifdef MEMTRACE
+  printf("Freeing grammar listn");
+  #endif
   if(g == NULL) {
     fprintf(stderr, "Null child GrammarList\n");
     return;
@@ -211,6 +239,9 @@ void freeGrammarList(GrammarList g) {
     }
   }
   free(g);
+  #ifdef MEMTRACE
+  printf("Grammar list freed\n");
+  #endif
 }
 
 /************
@@ -231,6 +262,9 @@ Statement getExpressionStatement(Expression e) {
  * Recursively free the Statement and its children in postorder.
  */
 void freeStatement(Statement s) {
+  #ifdef MEMTRACE
+  printf("Freeing statement\n");
+  #endif
   if(s == NULL) {
     fprintf(stderr, "Null child Statement\n");
     return;
@@ -241,6 +275,9 @@ void freeStatement(Statement s) {
       break;
   }
   free(s);
+  #ifdef MEMTRACE
+  printf("Statement freed\n");
+  #endif
 }
 
 /**
@@ -331,7 +368,7 @@ Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
 Expression getPostfixIncr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = postfix;
-  ret->deriv.postfix = increment;
+  ret->deriv.postfix = postincr;
   ret->sub1.e = e;
   return ret;
 }
@@ -343,7 +380,7 @@ Expression getPostfixIncr(Expression e){
 Expression getPostfixDecr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type=postfix;
-  ret->deriv.postfix = decrement;
+  ret->deriv.postfix = postdecr;
   ret->sub1.e = e;
   return ret;
 }
@@ -362,10 +399,63 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
   return ret;
 }
 
+Expression getUnaryExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->deriv.unary = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getUnaryIncr(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->sub1.e = e;
+  ret->deriv.unary = preincr;
+  return ret;
+}
+
+Expression getUnarySingleOp(char op, Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->sub1.e = e;
+  ret->deriv.unary = op;
+  return ret;
+}
+
+Expression getUnaryDecr(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = unary;
+  ret->deriv.unary = predecr;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getCastExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cast;
+  ret->deriv.cast = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getTypedCast(int token, Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cast;
+  ret->deriv.cast = typed;
+  ret->sub1.typnam = token;
+  ret->sub2.e = e;
+  return ret;
+}
+
+
 /**
  * Recursively free an expression and its children in postorder
  */
 void freeExpression(Expression e) {
+  #ifdef MEMTRACE
+  printf("Freeing expression\n");
+  #endif
   if(e == NULL) {
     fprintf(stderr, "Null child Expression\n");
     return;
@@ -377,10 +467,10 @@ void freeExpression(Expression e) {
           freeIdentifier(e->sub2.i);
           freeExpression(e->sub1.e);
           break;
-        case decrement:
+        case postdecr:
           freeExpression(e->sub1.e);
           break;
-        case increment:
+        case postincr:
           freeExpression(e->sub1.e);
           break;
         case arg:
@@ -389,6 +479,19 @@ void freeExpression(Expression e) {
           break;
         case bracket:
           freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+      }
+      break;
+    case unary:
+      freeExpression(e->sub1.e);
+      break;
+    case cast:
+      switch(e->deriv.cast){
+        case typed:
           freeExpression(e->sub2.e);
           break;
         case 0:
@@ -407,6 +510,9 @@ void freeExpression(Expression e) {
       break;
   }
   free(e);
+  #ifdef MEMTRACE
+  printf("Expression freed\n");
+  #endif
 }
 
 
@@ -428,9 +534,15 @@ Identifier getIdentifier(char *s) {
  * free an identifier and its children
  */
 void freeIdentifier(Identifier i) {
+  #ifdef MEMTRACE
+  printf("Freeing identifier\n");
+  #endif
   if(i == NULL) {
     fprintf(stderr, "Null child Identifier\n");
     return;
   }  
   free(i);
+  #ifdef MEMTRACE
+  printf("Identifier freed\n");
+  #endif
 }

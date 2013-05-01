@@ -1,6 +1,8 @@
 CC = gcc
 CFLAGS = -g -Wall $(INCLUDES)
 LDFLAGS = -g
+# CFLAGS = -g -Wall -DMEMTRACE $(INCLUDES)
+# LDFLAGS = -g -DMEMTRACE
 COMPILER = klc
 PREPROCESSOR = klp
 
@@ -15,8 +17,8 @@ whitelex.yy.o: whitelex.yy.c
 whitelex.yy.c: whitelex.l
 	lex -o whitelex.yy.c whitelex.l
 
-$(COMPILER): lex.yy.o yacc.tab.o absyn.o 
-	$(CC) lex.yy.o yacc.tab.o absyn.o -o $(COMPILER)
+$(COMPILER): lex.yy.o yacc.tab.o absyn.o symtable.o
+	$(CC) lex.yy.o yacc.tab.o absyn.o symtable.o -o $(COMPILER)
 
 yacc.tab.o: yacc.tab.c
 

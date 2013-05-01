@@ -18,12 +18,13 @@ typedef struct translationUnit_ *TranslationUnit;
 typedef struct parameter_ *Parameter;
 
 struct expression_ {
-  enum {function, unary, postfix, primary, string} type;
+  enum {function, unary, postfix, primary, string, cast} type;
   union {
     Expression e;
     Identifier i;
     GrammarList l;
     char *s;
+    int typnam;
   } sub1;
   union {
     Expression e;
@@ -31,7 +32,9 @@ struct expression_ {
     GrammarList l;
   } sub2;
   union {
-    enum{none = 0, increment, decrement, bracket, identifier, arg } postfix;
+    enum{none = 0, postincr, postdecr, bracket, identifier, arg} postfix;
+    enum{unary_none, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
+    enum{cast_none, typed} cast;
   } deriv;
 };
 
@@ -95,6 +98,12 @@ Expression getPostfixIncr(Expression e);
 Expression getPostfixDecr(Expression e);
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
 void freeParameter(Parameter p);
+Expression getUnaryExpression(Expression e);
+Expression getUnaryIncr(Expression e);
+Expression getUnaryDecr(Expression e);
+Expression getUnarySingleOp(char c, Expression e);
+Expression getCastExpression(Expression e);
+Expression getTypedCast(int token, Expression e);
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
 void freeDeclarator(Declarator d);
