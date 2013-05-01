@@ -29,9 +29,13 @@ void deleteSymbol(char *symbol) {
     }
 }
 
-void *storeData(void *data) {
-    void *store = (void *)malloc(sizeof(*data));
-    return store;
+void storeData(char *symbol, void *data) {
+    struct symtab *symbolPointer;
+    HASH_FIND_STR(symtable, symbol, symbolPointer);
+    if (symbolPointer) {
+        void *store = (void *)malloc(sizeof(*data));
+        symbolPointer->value = store;
+    }
 }
 
 //iterate through the hash table and delete/free everything
