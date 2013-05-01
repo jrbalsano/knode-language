@@ -177,10 +177,10 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE
-  | IDENTIFIER ':' STRING_LITERAL NEWLINE { printf("%d\n", HASH_COUNT(symtable));/*$1->value = $3; printf("%s\n", (char *)$1->value)*/;}
-  | IDENTIFIER ':' INTEGER NEWLINE { printf("%d\n", HASH_COUNT(symtable));/*$1->value = $3; printf("%d\n", (int *)$1->value);*/}
-  | IDENTIFIER ':' BOOLEAN NEWLINE { printf("%d\n", HASH_COUNT(symtable));/*$1->value = $3; printf("%d\n", (int *)$1->value);*/}
+dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE {storeData($1->name, (void *)$3); printf("%s\n", (char *)$1->value);}
+  | IDENTIFIER ':' STRING_LITERAL NEWLINE { storeData($1->name, (void *)$3); printf("%s\n", (char *)$1->value);}
+  | IDENTIFIER ':' INTEGER NEWLINE { $1->num_val = $3; printf("%d\n", $1->num_val);}
+  | IDENTIFIER ':' BOOLEAN NEWLINE { $1->num_val = $3; printf("%d\n", $1->num_val);}
   ;
 edgestatement: EDGE IDENTIFIER '=' '[' IDENTIFIER alledgestatement IDENTIFIER ']' NEWLINE
   | IDENTIFIER alledgestatement IDENTIFIER NEWLINE

@@ -52,7 +52,6 @@ boolean   "TRUE"|"FALSE"
 {boolean}                       {
                                     printf("BOOLEAN\n");  
                                     yylval.ival = yytext[0] == 'T' ? 1 : 0; 
-                                    printf("BOOL'S TRUE COLORS: %d\n", yylval.ival);
                                     return BOOLEAN;
                                 }
 "and"                         	printf("AND\n");  return AND; 
