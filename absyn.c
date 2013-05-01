@@ -544,6 +544,30 @@ Expression getNotEqual(Expression e1, Expression e2){
 }
 
 /**
+ * Creates a new expression from an existing assignment expression
+ */
+Expression getExpression(Expression e) {
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = none;
+  ret->deriv.none = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+/**
+ * Creates a new expression from an existing expression and an existing
+ * assignment expression.
+ */
+Expression getExpressionAssignmentExpression(Expression e1, Expression e2) {
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = none;
+  ret->deriv.none = comma;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+/**
  * Recursively free an expression and its children in postorder
  */
 void freeExpression(Expression e) {
@@ -644,6 +668,14 @@ void freeExpression(Expression e) {
     case function:
       freeIdentifier(e->sub1.i);
       freeGrammarList(e->sub2.l);
+      break;
+    case none:
+      if(e->deriv.none) 
+        freeExpression(e->sub1.e);
+      else {
+        freeExpression(e->sub1.e);
+        freeExpression(e->sub2.e);
+      }
       break;
     default:
       break;

@@ -189,8 +189,8 @@ alledgestatement: ALLEDGE
   | LEFTEDGE
   | RIGHTEDGE
   ;
-expression : assignmentexpression
-  | expression ',' assignmentexpression
+expression : assignmentexpression { $$ = getExpression($1); }
+  | expression ',' assignmentexpression { $$ = getExpressionAssignmentExpression($1, $3); }
   ;
 assignmentexpression : conditionalexpression
   | unaryexpression assignmentoperator assignmentexpression
