@@ -89,7 +89,7 @@ struct symtab *symtable = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator
+%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
@@ -180,7 +180,10 @@ expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
 dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE {storeData($1->name, (void *)$3); printf("%s\n", (char *)$1->value);}
   | IDENTIFIER ':' STRING_LITERAL NEWLINE { storeData($1->name, (void *)$3); printf("%s\n", (char *)$1->value);}
   | IDENTIFIER ':' INTEGER NEWLINE { $1->num_val = $3; printf("%d\n", $1->num_val);}
-  | IDENTIFIER ':' BOOLEAN NEWLINE { /*$1->num_val = $3; printf("%d\n", $1->num_val);*/}
+  | IDENTIFIER ':' BOOLEAN NEWLINE { 
+                                    //$1->num_val = (int)$3; 
+                                    printf("%d\n", $3);
+                                    }
   ;
 edgestatement: EDGE IDENTIFIER '=' '[' IDENTIFIER alledgestatement IDENTIFIER ']' NEWLINE
   | IDENTIFIER alledgestatement IDENTIFIER NEWLINE
