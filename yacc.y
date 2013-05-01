@@ -89,11 +89,11 @@ struct symtab *symtable = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER typename INT DOUBLE CHAR STRING  NODE DICT EDGE
+%type<ival> INTEGER typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator
 %type<fval> DOUBLEVAL
-%type<cval> unaryoperator '-' '+' '!' '*'
+%type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement alledgestatement
@@ -133,7 +133,7 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
   ;
-parameterlist : parameterlist ',' parameterdeclaration {$$ = appendToPList($1,$3);}
+parameterlist : parameterlist ',' parameterdeclaration {$$ = addFront($1,$3);}
   | parameterdeclaration {$$ = newParameterList($1)}
   ;
 parameterdeclaration : typename identifier { $$ = getTypedParameter($1, $2); }
@@ -191,38 +191,46 @@ alledgestatement: ALLEDGE
   | LEFTEDGE
   | RIGHTEDGE
   ;
-expression : assignmentexpression
-  | expression ',' assignmentexpression
+expression : assignmentexpression { $$ = getExpression($1); }
+  | expression ',' assignmentexpression { $$ = getExpressionAssignmentExpression($1, $3); }
   ;
-assignmentexpression : conditionalexpression
-  | unaryexpression assignmentoperator assignmentexpression
-  | typename identifier '=' assignmentexpression
+assignmentexpression : conditionalexpression { $$ = getAssign($1); }
+  | unaryexpression assignmentoperator assignmentexpression { $$ = getTokenizedAssignment($1, $2, $3); }
+  | unaryexpression '=' assignmentexpression { $$ = getAssignment($1, $3); }
+  | typename identifier '=' assignmentexpression { $$ = getInit($1, $2, $4); }
   ;
-assignmentoperator : '='
-  | PLUSEQ
-  | MINUSEQ
-  | MULTEQ
-  | DIVEQ
-  | MODEQ
+assignmentoperator : PLUSEQ { $$ = $1; }
+  | MINUSEQ { $$ = $1; }
+  | MULTEQ { $$ = $1; }
+  | DIVEQ { $$ = $1; }
+  | MODEQ { $$ = $1; }
   ;
-equalityexpression : relationalexpression
-  | equalityexpression EQ relationalexpression
-  | equalityexpression NE relationalexpression 
+conditionalexpression : orexpression { $$ = getCond($1); }
   ;
-relationalexpression : additiveexpression
-  | relationalexpression '<' additiveexpression
-  | relationalexpression '>' additiveexpression
-  | relationalexpression LE additiveexpression
-  | relationalexpression GE additiveexpression
+orexpression : orexpression OR andexpression { $$ = getOr($1, $3); }
+  | andexpression { $$ = getOrExpression($1); }
   ;
-additiveexpression : multiplicativeexpression 
-  | additiveexpression '+' multiplicativeexpression 
-  | additiveexpression '-' multiplicativeexpression 
+andexpression : andexpression AND equalityexpression { $$ = getAnd($1, $3); }
+  | equalityexpression { $$ = getAndExpression($1); }
   ;
-multiplicativeexpression : castexpression 
-  | multiplicativeexpression '*' castexpression 
-  | multiplicativeexpression '/' castexpression 
-  | multiplicativeexpression '%' castexpression 
+equalityexpression : relationalexpression { $$ = getEqExpression($1); }
+  | equalityexpression EQ relationalexpression { $$ = getEqual($1, $3); }
+  | equalityexpression NE relationalexpression { $$ = getNotEqual($1, $3); }
+  ;
+relationalexpression : additiveexpression { $$ = getRelatExpression($1); }
+  | relationalexpression '<' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
+  | relationalexpression '>' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
+  | relationalexpression LE additiveexpression { $$ = getLeRelat($1, $3); }
+  | relationalexpression GE additiveexpression { $$ = getGeRelat($1, $3); }
+  ;
+additiveexpression : multiplicativeexpression { $$ = getAdditiveExpression($1); }
+  | additiveexpression '+' multiplicativeexpression { $$ = getAddExpression($1, $2, $3); } 
+  | additiveexpression '-' multiplicativeexpression { $$ = getAddExpression($1, $2, $3); }
+  ;
+multiplicativeexpression : castexpression { $$ = getMultExpression($1); }
+  | multiplicativeexpression '*' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
+  | multiplicativeexpression '/' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
+  | multiplicativeexpression '%' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
   ;
 castexpression : unaryexpression { $$ = getCastExpression($1); }
   | '(' typename ')' castexpression { $$ = getTypedCast($2, $4); }
@@ -240,14 +248,7 @@ unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
   | MINUSMINUS unaryexpression { $$ = getUnaryDecr($2); }
   | unaryoperator unaryexpression {$$ = getUnarySingleOp($1, $2); }
   ;
-conditionalexpression : orexpression
-  ;
-orexpression : orexpression OR andexpression
-  | andexpression
-  ;
-andexpression : andexpression AND equalityexpression  
-  | equalityexpression
-  ;
+
 unaryoperator : '+' { $$ = $1; }
   | '-' { $$ = $1; }
   | '!' { $$ = $1; }
@@ -269,7 +270,7 @@ primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval
   | '(' expression ')' { $$ = $2} 
   ;
 argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
-  | argumentexpressionlist ',' assignmentexpression
+  | argumentexpressionlist ',' assignmentexpression { $$ = addFront($1, $3); }
   ;
 %%
 void yyerror(char *s) {

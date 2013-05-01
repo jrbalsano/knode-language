@@ -1,4 +1,5 @@
 #include "absyn.h"
+#include "yacc.tab.h"
 #include <stdlib.h>
 
 /*******************
@@ -158,6 +159,12 @@ GrammarList newStatementList(Statement s) {
   return sList;
 }
 
+
+/**
+ * Creates a new parameter list from an existing parameter. To be used in sutations
+ * where a parameter list does not already exist. See addFront for cases where the
+ * list already exists.
+ */
 GrammarList newParameterList(Parameter p) {
 	GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
   pList->type = parameterList;
@@ -165,19 +172,6 @@ GrammarList newParameterList(Parameter p) {
 	addFront(pList, p);
 	return pList;
 }
-
-Parameter getTypedParameter(int typename, Identifier i){
-	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-	ret->type=typename;
-	ret->i = i;
-	return ret;
-}
-
-GrammarList appendToPList(GrammarList pList, Parameter param) {
-	addFront(pList, param);
-	return pList;
-}
-
 
 /**
  * Creates a new argument expression list from an existing expression. To be used in
@@ -194,11 +188,12 @@ GrammarList newArgumentExpressionList(Expression e) {
 /**
  * Add a node to the front of the Grammar List g, with data pointer data
  */
-void addFront(GrammarList g, void *data) {
+GrammarList addFront(GrammarList g, void *data) {
   GrammarNode n = (GrammarNode)malloc(sizeof(struct grammarNode_));
   n->data = data;
   n->next = g->head;
   g->head = n;
+  return g;
 }
 
 /**
@@ -218,7 +213,7 @@ void *popFront(GrammarList g) {
 
 void freeGrammarList(GrammarList g) {
   #ifdef MEMTRACE
-  printf("Freeing grammar listn");
+  printf("Freeing grammar list\n");
   #endif
   if(g == NULL) {
     fprintf(stderr, "Null child GrammarList\n");
@@ -249,6 +244,16 @@ void freeGrammarList(GrammarList g) {
  ************/
 
 /**
+ * Creates a statement from an existing statement
+ */
+Statement getStatement(Statement s) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = none;
+  ret->sub.s = s;
+  return ret;
+}
+
+/**
  * Create a Statement from an existing expression
  */
 Statement getExpressionStatement(Expression e) {
@@ -273,11 +278,28 @@ void freeStatement(Statement s) {
     case expression:
       freeExpression(s->sub.e);
       break;
+    case none:
+      freeStatement(s->sub.s);
+      break;
   }
   free(s);
   #ifdef MEMTRACE
   printf("Statement freed\n");
   #endif
+}
+
+/************
+ * Parameters
+ ************/
+
+/**
+ * Create a parameter from a typed argument
+ */
+Parameter getTypedParameter(int typename, Identifier i){
+	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
+	ret->type=typename;
+	ret->i = i;
+	return ret;
 }
 
 /**
@@ -448,6 +470,199 @@ Expression getTypedCast(int token, Expression e){
   return ret;
 }
 
+Expression getMultExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = mult;
+  ret->deriv.mult = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getMultiplyExpression(Expression e1, char c, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = mult;
+  ret->deriv.mult = c;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getAdditiveExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = add;
+  ret->deriv.add = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getAddExpression(Expression e1, char c, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = add;
+  ret->deriv.add = c;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getRelatExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = relat;
+  ret->deriv.relat = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getSingleCharRelat(Expression e1, char c, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = relat;
+  ret->deriv.relat = c;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getLeRelat(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = relat;
+  ret->deriv.relat = le;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getGeRelat(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = relat;
+  ret->deriv.relat = ge;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getEqExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = eq;
+  ret->deriv.eq = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getEqual(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = eq;
+  ret->deriv.relat = equal;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getNotEqual(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = eq;
+  ret->deriv.relat = notequal;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getAndExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getAnd(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = cond_and;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+Expression getOrExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getOr(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = cond_or;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+Expression getCond(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getAssign(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = assignment;
+  ret->deriv.assign = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getTokenizedAssignment(Expression e1, int op, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = assignment;
+  ret->deriv.assign = op;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getAssignment(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = assignment;
+  ret->deriv.assign = eq_assign;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getInit(int token, Identifier i, Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->deriv.assign = init;
+  ret->type = assignment;
+  ret->sub1.typnam = token;
+  ret->sub2.i = i;
+  ret->sub3.e = e;
+  return ret;
+}
+/**
+ * Creates a new expression from an existing assignment expression
+ */
+Expression getExpression(Expression e) {
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = none;
+  ret->deriv.none = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+/**
+ * Creates a new expression from an existing expression and an existing
+ * assignment expression.
+ */
+Expression getExpressionAssignmentExpression(Expression e1, Expression e2) {
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = none;
+  ret->deriv.none = comma;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
 
 /**
  * Recursively free an expression and its children in postorder
@@ -499,12 +714,91 @@ void freeExpression(Expression e) {
           break;
       }
       break;
+
+    case mult:
+      switch(e->deriv.mult){
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+      }
+      break;
+    case add:
+      switch(e->deriv.add){
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+      }
+      break;
+    case relat:
+      switch(e->deriv.relat){
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+      }
+      break;
+    case eq:
+      switch(e->deriv.eq){
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+      }
+      break;
+    case cond:
+      switch(e->deriv.eq){
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+      }
+      break;
+    case assignment:
+      switch(e->deriv.assign){
+      case init:
+        freeIdentifier(e->sub2.i);
+        freeExpression(e->sub3.e);
+        break;
+      case 0:
+        freeExpression(e->sub1.e);
+        break;
+      default:
+        freeExpression(e->sub1.e);
+        freeExpression(e->sub2.e);
+        break;
+      } 
+      break;
     case primary:
       freeIdentifier(e->sub1.i);
       break;
     case function:
       freeIdentifier(e->sub1.i);
       freeGrammarList(e->sub2.l);
+      break;
+    case none:
+      if(!e->deriv.none) 
+        freeExpression(e->sub1.e);
+      else if(e->deriv.none == comma) {
+        freeExpression(e->sub1.e);
+        freeExpression(e->sub2.e);
+      }
       break;
     default:
       break;
