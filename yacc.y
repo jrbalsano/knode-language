@@ -146,7 +146,7 @@ compoundstatement : BLOCK_START statementlist BLOCK_END { $$ = newCompoundStatem
 statementlist : statement { $$ = newStatementList($1); }
   | statementlist statement
   ;
-statement : expressionstatement { $$ = $1; }
+statement : expressionstatement { $$ = getStatement($1); }
   | iterationstatement { $$ = NULL; }
   | selectionstatement { $$ = NULL; }
   | nodestatement { $$ = NULL; }

@@ -290,6 +290,8 @@ void freeStatement(Statement s) {
     case none:
       freeStatement(s->sub.s);
       break;
+    default:
+      break;
   }
   free(s);
   #ifdef MEMTRACE
