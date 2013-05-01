@@ -268,7 +268,7 @@ primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval
   | '(' expression ')' { $$ = $2} 
   ;
 argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
-  | argumentexpressionlist ',' assignmentexpression
+  | argumentexpressionlist ',' assignmentexpression { $$ = addFront($1, $3); }
   ;
 %%
 void yyerror(char *s) {
