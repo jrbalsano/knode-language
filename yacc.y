@@ -88,7 +88,7 @@ TranslationUnit root = NULL;
 %type<sval> STRING_LITERAL
 %type<ival> INTEGER typename INT DOUBLE CHAR STRING DICT
 %type<fval> DOUBLEVAL
-%type<cval> unaryoperator '-' '+' '!' '*'
+%type<cval> unaryoperator '-' '+' '!' '*' '%' '/'
 %type<symp> IDENTIFIER
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression 
 %type<identifier> identifier
@@ -215,10 +215,10 @@ additiveexpression : multiplicativeexpression
   | additiveexpression '+' multiplicativeexpression 
   | additiveexpression '-' multiplicativeexpression 
   ;
-multiplicativeexpression : castexpression 
-  | multiplicativeexpression '*' castexpression 
-  | multiplicativeexpression '/' castexpression 
-  | multiplicativeexpression '%' castexpression 
+multiplicativeexpression : castexpression { $$ = getMultExpression($1); }
+  | multiplicativeexpression '*' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
+  | multiplicativeexpression '/' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
+  | multiplicativeexpression '%' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
   ;
 castexpression : unaryexpression { $$ = getCastExpression($1); }
   | '(' typename ')' castexpression { $$ = getTypedCast($2, $4); }

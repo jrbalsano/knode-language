@@ -17,7 +17,7 @@ typedef struct grammarNode_ *GrammarNode;
 typedef struct translationUnit_ *TranslationUnit;
 
 struct expression_ {
-  enum {function, unary, postfix, primary, string, cast} type;
+  enum {function, unary, postfix, primary, string, cast, mult} type;
   union {
     Expression e;
     Identifier i;
@@ -34,6 +34,7 @@ struct expression_ {
     enum{none = 0, postincr, postdecr, bracket, identifier, arg} postfix;
     enum{unary_none, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
     enum{cast_none, typed} cast;
+    enum{mult_none, times = '*', divide = '/', mod = '%'} mult;
   } deriv;
 };
 
@@ -95,6 +96,8 @@ Expression getUnaryDecr(Expression e);
 Expression getUnarySingleOp(char c, Expression e);
 Expression getCastExpression(Expression e);
 Expression getTypedCast(int token, Expression e);
+Expression getMultExpression(Expression e);
+Expression getMultiplyExpression(Expression e1, char c, Expression e2);
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
 void freeDeclarator(Declarator d);

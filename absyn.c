@@ -417,6 +417,22 @@ Expression getTypedCast(int token, Expression e){
   return ret;
 }
 
+Expression getMultExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = mult;
+  ret->deriv.mult = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getMultiplyExpression(Expression e1, char c, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = mult;
+  ret->deriv.mult = c;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
 
 /**
  * Recursively free an expression and its children in postorder
@@ -463,6 +479,23 @@ void freeExpression(Expression e) {
         case typed:
           freeExpression(e->sub2.e);
           break;
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+      }
+      break;
+
+    case mult:
+      switch(e->deriv.mult){
+        case times:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+        case divide:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e); 
+        case mod:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
         case 0:
           freeExpression(e->sub1.e);
           break;
