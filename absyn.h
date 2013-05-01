@@ -86,21 +86,29 @@ struct grammarNode_ {
   void *data;
 };
 
-GrammarList addFront(GrammarList g, void *data);
 TranslationUnit getTranslationUnit(FunctionDefinition fd);
+
 FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs);
 Declarator declaratorId(Identifier id);
 Declarator getDeclarator(Identifier id, GrammarList pList);
-CompoundStatement newCompoundStatement(GrammarList sList);
+
 GrammarList newStatementList(Statement s);
 GrammarList newParameterList(Parameter p);
-Parameter getTypedParameter(int typname, Identifier i);
+GrammarList newArgumentExpressionList(Expression e);
 GrammarList appendToPList(GrammarList pList,Parameter param);
+GrammarList addFront(GrammarList g, void *data);
+
+Parameter getTypedParameter(int typname, Identifier i);
+
+CompoundStatement newCompoundStatement(GrammarList sList);
+
 Statement getExpressionStatement(Expression e);
+Statement getStatement(Statement s);
+
+Identifier getIdentifier(char *s);
+
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
 Expression getPrimaryStringExpression(char *s);
-GrammarList newArgumentExpressionList(Expression e);
-Identifier getIdentifier(char *s);
 Expression getPrimaryIdentifierExpression(Identifier id);
 Expression getPostfixExpression(Expression e1);
 Expression getPostfixBracketExpression(Expression e1, Expression e2);
@@ -108,7 +116,6 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id);
 Expression getPostfixIncr(Expression e);
 Expression getPostfixDecr(Expression e);
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
-void freeParameter(Parameter p);
 Expression getUnaryExpression(Expression e);
 Expression getUnaryIncr(Expression e);
 Expression getUnaryDecr(Expression e);
@@ -128,6 +135,7 @@ Expression getEqual(Expression e1, Expression e2);
 Expression getNotEqual(Expression e1, Expression e2);
 Expression getExpression(Expression e);
 Expression getExpressionAssignmentExpression(Expression e1, Expression e2);
+
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
 void freeDeclarator(Declarator d);
@@ -136,5 +144,6 @@ void freeGrammarList(GrammarList g);
 void freeStatement(Statement s);
 void freeExpression(Expression e);
 void freeIdentifier(Identifier i);
+void freeParameter(Parameter p);
 
 #endif
