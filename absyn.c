@@ -570,6 +570,29 @@ void freeExpression(Expression e) {
           break;
       }
       break;
+    case relat:
+      switch(e->deriv.relat){
+        case less:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+        case greater:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+        case le:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+        case ge:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+      }
+      break;
     case primary:
       freeIdentifier(e->sub1.i);
       break;
