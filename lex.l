@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "absyn.h"
-#include "yacc.tab.h"
 #include "symtable.h"
 
 %}
