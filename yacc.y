@@ -192,7 +192,7 @@ alledgestatement: ALLEDGE
 expression : assignmentexpression
   | expression ',' assignmentexpression
   ;
-assignmentexpression : conditionalexpression
+assignmentexpression : conditionalexpression { $$ = getAssign($1); }
   | unaryexpression assignmentoperator assignmentexpression
   | typename identifier '=' assignmentexpression
   ;

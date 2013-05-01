@@ -582,6 +582,14 @@ Expression getCond(Expression e){
   ret->sub1.e = e;
   return ret;
 }
+
+Expression getAssign(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = assignment;
+  ret->deriv.assign = none;
+  ret->sub1.e = e;
+  return ret;
+}
 /**
  * Recursively free an expression and its children in postorder
  */
