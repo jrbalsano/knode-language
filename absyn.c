@@ -507,12 +507,30 @@ void freeExpression(Expression e) {
         case times:
           freeExpression(e->sub1.e);
           freeExpression(e->sub2.e);
+          break;
         case divide:
           freeExpression(e->sub1.e);
-          freeExpression(e->sub2.e); 
+          freeExpression(e->sub2.e);
+          break; 
         case mod:
           freeExpression(e->sub1.e);
           freeExpression(e->sub2.e);
+          break;
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+      }
+      break;
+    case add:
+      switch(e->deriv.add){
+        case plus:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+        case minus:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
         case 0:
           freeExpression(e->sub1.e);
           break;
