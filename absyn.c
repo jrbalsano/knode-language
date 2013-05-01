@@ -1,4 +1,5 @@
 #include "absyn.h"
+#include "yacc.tab.h"
 #include <stdlib.h>
 
 /*******************
@@ -564,6 +565,81 @@ Expression getNotEqual(Expression e1, Expression e2){
   return ret;
 }
 
+Expression getAndExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getAnd(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = cond_and;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+Expression getOrExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getOr(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = cond_or;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+Expression getCond(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getAssign(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = assignment;
+  ret->deriv.assign = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+Expression getTokenizedAssignment(Expression e1, int op, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = assignment;
+  ret->deriv.assign = op;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getAssignment(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = assignment;
+  ret->deriv.assign = eq_assign;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+Expression getInit(int token, Identifier i, Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->deriv.assign = init;
+  ret->type = assignment;
+  ret->sub1.typnam = token;
+  ret->sub2.i = i;
+  ret->sub3.e = e;
+  return ret;
+}
 /**
  * Creates a new expression from an existing assignment expression
  */
@@ -682,6 +758,31 @@ void freeExpression(Expression e) {
           freeExpression(e->sub2.e);
           break;
       }
+      break;
+    case cond:
+      switch(e->deriv.eq){
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
+      }
+      break;
+    case assignment:
+      switch(e->deriv.assign){
+      case init:
+        freeIdentifier(e->sub2.i);
+        freeExpression(e->sub3.e);
+        break;
+      case 0:
+        freeExpression(e->sub1.e);
+        break;
+      default:
+        freeExpression(e->sub1.e);
+        freeExpression(e->sub2.e);
+      } 
       break;
     case primary:
       freeIdentifier(e->sub1.i);
