@@ -203,10 +203,10 @@ assignmentoperator : '='
   | DIVEQ
   | MODEQ
   ;
-conditionalexpression : orexpression
+conditionalexpression : orexpression { $$ = getCond($1); }
   ;
-orexpression : orexpression OR andexpression
-  | andexpression
+orexpression : orexpression OR andexpression { $$ = getOr($1, $3); }
+  | andexpression { $$ = getOrExpression($1); }
   ;
 andexpression : andexpression AND equalityexpression { $$ = getAnd($1, $3); }
   | equalityexpression { $$ = getAndExpression($1); }

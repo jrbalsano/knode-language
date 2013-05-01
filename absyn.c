@@ -559,7 +559,29 @@ Expression getAnd(Expression e1, Expression e2){
   ret->sub2.e = e2;
   return ret;
 }
+Expression getOrExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = none;
+  ret->sub1.e = e;
+  return ret;
+}
 
+Expression getOr(Expression e1, Expression e2){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = cond_or;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+Expression getCond(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = cond;
+  ret->deriv.cond = none;
+  ret->sub1.e = e;
+  return ret;
+}
 /**
  * Recursively free an expression and its children in postorder
  */
