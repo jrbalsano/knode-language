@@ -53,7 +53,7 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {expression} type;
+  enum {expression, breakStatement} type;
   union {
     Expression e;
   } sub;
@@ -93,6 +93,7 @@ GrammarList newParameterList(Parameter p);
 Parameter getTypedParameter(int typname, Identifier i);
 GrammarList appendToPList(GrammarList pList,Parameter param);
 Statement getExpressionStatement(Expression e);
+Statement newBreakStatement();
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
 Expression getPrimaryStringExpression(char *s);
 GrammarList newArgumentExpressionList(Expression e);

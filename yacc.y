@@ -150,7 +150,7 @@ statement : expressionstatement { $$ = $1; }
   | iterationstatement { $$ = NULL; }
   | selectionstatement { $$ = NULL; }
   | nodestatement { $$ = NULL; }
-  | breakstatement { $$ = NULL; }
+  | breakstatement { $$ = getStatement($1); }
   | dictstatement { $$ = NULL; }
   | dictlist { $$ = NULL; }
   | edgestatement { $$ = NULL; }
@@ -160,7 +160,7 @@ dictstatement : DICT IDENTIFIER NEWLINE {}
   | DICT IDENTIFIER '[' INTEGER ']' NEWLINE compoundstatement
   | DICT IDENTIFIER compoundstatement 
   ;
-breakstatement : BREAK NEWLINE
+breakstatement : BREAK NEWLINE { $$ = newBreakStatement(); }
   ;
 
 nodestatement : NODE IDENTIFIER NEWLINE

@@ -259,6 +259,15 @@ Statement getExpressionStatement(Expression e) {
 }
 
 /**
+ * Create a new break statement.
+ */
+Statement newBreakStatement() {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->type = breakStatement;
+    return ret;
+}
+
+/**
  * Recursively free the Statement and its children in postorder.
  */
 void freeStatement(Statement s) {
