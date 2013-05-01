@@ -94,9 +94,9 @@ boolean   "TRUE"|"FALSE"
                                      * variables/keywords
                                      */
                                     printf("IDENTIFIER\n");
-                                    //printf("%s\n", yytext);
                                     //check the symbol table with symlook and return a pointer to the symbol table
-                                    struct symtab *sp = symlook(yytext);
+                                    char *symbol = yytext;
+                                    struct symtab *sp = symlook(symbol);
                                     yylval.symp = sp;
                                     return IDENTIFIER;
                                 }
