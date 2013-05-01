@@ -593,11 +593,11 @@ void freeExpression(Expression e) {
 
 /**
  * Create an identifier from a string
- * TODO: Add symbol table functionality
  */
 Identifier getIdentifier(char *s) {
   Identifier i = (Identifier)malloc(sizeof(struct identifier_));
   i->symbol = s;
+  i->sp = symlook(s);
   return i;
 }
 
