@@ -14,6 +14,6 @@ struct symtab {
 
 struct symtab *symtable;
 
-struct symtab *symlook(char *symbol); 
+struct symtab *symlook(char *symbol, void *data); 
 
 #endif

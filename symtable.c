@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct symtab *symlook(char *symbol) {
+struct symtab *symlook(char *symbol, void *data) {
     //create a symbol pointer
     struct symtab *symbolPointer;
     //try to find the symbol in our table
@@ -17,4 +17,12 @@ struct symtab *symlook(char *symbol) {
     symbolPointer->name = strdup(symbol);
     HASH_ADD_STR(symtable, name, symbolPointer);
     return symbolPointer;
+}
+ 
+void *storeData(void *data) {
+    void *store = (void *)malloc(sizeof(data));
+    return store;
+}
+
+void freeData() {
 }
