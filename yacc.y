@@ -211,7 +211,7 @@ relationalexpression : additiveexpression
   | relationalexpression LE additiveexpression
   | relationalexpression GE additiveexpression
   ;
-additiveexpression : multiplicativeexpression 
+additiveexpression : multiplicativeexpression { $$ = getAdditiveExpression($1); }
   | additiveexpression '+' multiplicativeexpression 
   | additiveexpression '-' multiplicativeexpression 
   ;

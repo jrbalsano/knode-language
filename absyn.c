@@ -434,6 +434,15 @@ Expression getMultiplyExpression(Expression e1, char c, Expression e2){
   return ret;
 }
 
+Expression getAdditiveExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = add;
+  ret->deriv.add = none;
+  ret->sub1.e = e;
+  return ret;
+}
+
+
 /**
  * Recursively free an expression and its children in postorder
  */
