@@ -170,7 +170,7 @@ nodestatement : NODE IDENTIFIER NEWLINE
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX
   | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement 
   ;
-iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement {$$ = newWhileStatement($2,$4);}
+iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement {$$ = newWhileStatement($3,$6);}
   | FOR '(' expression ';' expression ';' expression ')' NEWLINE compoundstatement { $$ = newForStatement($3,$5,$7,$10);}
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }

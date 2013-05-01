@@ -190,10 +190,10 @@ GrammarList newArgumentExpressionList(Expression e) {
  */
 GrammarList newExpressionList(Expression e) {
     GrammarList eList = (GrammarList)malloc(sizeof(struct grammarList_));
-    aeList->type = expression;
-    aeList->head = 0;
+    eList->type = expressionList;
+    eList->head = 0;
     addFront(eList, e);
-    return aeList;
+    return eList;
 }
 /**
  * Add a node to the front of the Grammar List g, with data pointer data
@@ -240,6 +240,9 @@ void freeGrammarList(GrammarList g) {
         break;
       case parameterList:
         freeParameter((Parameter)d);
+        break;
+      case expressionList:
+        freeExpression((Expression)d);
         break;
     }
   }
@@ -288,9 +291,9 @@ Statement newWhileStatement(Expression e, CompoundStatement c) {
  */
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement c) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
-  ret->eList = newExpressionList(e1);
-  addFront(e2);
-  addFront(e3);
+  ret->sub.eList = newExpressionList(e1);
+  addFront(ret->sub.eList,e2);
+  addFront(ret->sub.eList,e3);
   ret->type = iteration;
   ret->iterationtype = forIter;
   ret->sub.c = c;
@@ -313,7 +316,7 @@ void freeStatement(Statement s) {
       break;
     case iteration:
       switch(s->iterationtype) {
-        case forItern:
+        case forIter:
           freeCompoundStatement(s->sub.c);
           freeGrammarList(s->sub.eList);
         case whileIter:

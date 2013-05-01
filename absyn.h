@@ -88,7 +88,7 @@ struct translationUnit_ {
   FunctionDefinition f;
 };
 struct grammarList_ {
-  enum {argument, statement,parameterList,expression} type;
+  enum {argument, statement,parameterList,expressionList} type;
   GrammarNode head;
 };
 struct grammarNode_ {
