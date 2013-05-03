@@ -96,7 +96,7 @@ struct symtab *symtable = NULL;
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement alledgestatement
+%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement alledgestatement dictlist
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist statementlist
@@ -154,7 +154,7 @@ statement : expressionstatement { $$ = getStatement($1); }
   | nodestatement { $$ = NULL; }
   | breakstatement { $$ = getStatement($1); }
   | dictstatement { $$ = NULL; }
-  | dictlist { $$ = NULL; }
+  | dictlist { $$ = getStatement($1); }
   | edgestatement { $$ = NULL; }
   ;
 dictstatement : DICT identifier NEWLINE {}
@@ -162,7 +162,6 @@ dictstatement : DICT identifier NEWLINE {}
   ;
 breakstatement : BREAK NEWLINE { $$ = newBreakStatement(); }
   ;
-
 nodestatement : NODE identifier NEWLINE
   | NODE identifier EQ expression NEWLINE
   | NODE identifier NEWLINE compoundstatement
@@ -175,7 +174,7 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement {$$ = ne
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-dictlist : expression ':' expression NEWLINE {}
+dictlist : expression ':' expression NEWLINE { $$ = getDictListStatement($1, $3); }
   ;
 edgestatement: EDGE IDENTIFIER '=' '[' IDENTIFIER alledgestatement IDENTIFIER ']' NEWLINE
   | IDENTIFIER alledgestatement IDENTIFIER NEWLINE

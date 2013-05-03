@@ -332,6 +332,17 @@ Statement newBreakStatement() {
 }
 
 /**
+ * Create a new dictlist definition
+ */
+Statement getDictListStatement(Expression e1, Expression e2) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = dictlist;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
+
+/**
  * Recursively free the Statement and its children in postorder.
  */
 void freeStatement(Statement s) {
@@ -371,6 +382,10 @@ void freeStatement(Statement s) {
           freeCompoundStatement(s->sub3.cs);
           break;
       }
+      break;
+    case dictlist:
+      freeExpression(s->sub1.e);
+      freeExpression(s->sub2.e);
       break;
     case none:
       freeStatement(s->sub1.s);
