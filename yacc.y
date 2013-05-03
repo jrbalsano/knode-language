@@ -177,8 +177,8 @@ expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
 dictlist : expression ':' expression NEWLINE {}
   ;
-edgestatement: EDGE identifier '=' '[' unaryexpression edge unaryexpression ']' NEWLINE
-  | EDGE identifier NEWLINE
+edgestatement: EDGE identifier '=' '[' unaryexpression edge unaryexpression ']' NEWLINE { $$ = getEdgeStatementFromNodes($2, $5, $6, $7); }
+  | EDGE identifier NEWLINE { $$ = getEdgeDeclaration($2); }
   ;
 alledge: ALLEDGE
   | edge

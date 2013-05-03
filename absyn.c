@@ -345,6 +345,17 @@ Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnect
 }
 
 /**
+ * Create a new edge statement, that only declares that an edge can
+ * be stored in a certain identifier.
+ */
+Statement getEdgeDeclaration(Identifier i) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = edge;
+  ret->deriv.edge = none;
+  ret->sub1.i = i;
+  return ret;
+}
+/**
  * Recursively free the Statement and its children in postorder.
  */
 void freeStatement(Statement s) {

@@ -137,6 +137,8 @@ Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStateme
 Statement newWhileStatement(Expression e, CompoundStatement cs);
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs);
 Statement newBreakStatement();
+Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnector, Expression e2);
+Statement getEdgeDeclaration(Identifier i);
 
 Identifier getIdentifier(char *s);
 
