@@ -89,14 +89,14 @@ struct symtab *symtable = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator
+%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator edge alledge LEFTEDGE RIGHTEDGE ALLEDGE BOTHEDGE
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement alledgestatement dictlist
+%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist statementlist
@@ -151,20 +151,20 @@ statementlist : statement { $$ = newStatementList($1); }
 statement : expressionstatement { $$ = getStatement($1); }
   | iterationstatement { $$ = getStatement($1) }
   | selectionstatement { $$ = getStatement($1); }
-  | nodestatement { $$ = NULL; }
+  | nodestatement { $$ = getStatement($1); }
   | breakstatement { $$ = getStatement($1); }
   | dictstatement { $$ = getStatement($1); }
   | dictlist { $$ = getStatement($1); }
-  | edgestatement { $$ = NULL; }
+  | edgestatement { $$ = getStatement($1); }
   ;
 dictstatement : DICT identifier NEWLINE { $$ = getDictDecStatement($2); }
   | DICT identifier NEWLINE compoundstatement { $$ = getDictDefStatement($2, $4); }
   ;
 breakstatement : BREAK NEWLINE { $$ = newBreakStatement(); }
   ;
-nodestatement : NODE identifier NEWLINE
-  | NODE identifier EQ expression NEWLINE
-  | NODE identifier NEWLINE compoundstatement
+nodestatement : NODE identifier NEWLINE {$$ = newNodeCreateStatement($2);}
+  | NODE identifier '=' expression NEWLINE {$$ = newNodeAssignmentStatement($2, $4);}
+  | NODE identifier NEWLINE compoundstatement {$$ = newNodeDictAssignmentStatement($2, $4);}
   ;
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX {$$ = newIfStatement($3,$6);}
   | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement {$$ = newIfElseStatement($3,$6,$9);}
@@ -176,12 +176,13 @@ expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
 dictlist : expression ':' expression NEWLINE { $$ = getDictListStatement($1, $3); }
   ;
-edgestatement: EDGE IDENTIFIER '=' '[' IDENTIFIER alledgestatement IDENTIFIER ']' NEWLINE
-  | IDENTIFIER alledgestatement IDENTIFIER NEWLINE
-  | IDENTIFIER alledgestatement IDENTIFIER '['INTEGER']' NEWLINE
+edgestatement: EDGE identifier '=' '[' unaryexpression edge unaryexpression ']' NEWLINE { $$ = getEdgeStatementFromNodes($2, $5, $6, $7); }
+  | EDGE identifier NEWLINE { $$ = getEdgeDeclaration($2); }
   ;
-alledgestatement: ALLEDGE
-  | BOTHEDGE
+alledge: ALLEDGE
+  | edge
+  ;
+edge: BOTHEDGE
   | LEFTEDGE
   | RIGHTEDGE
   ;
@@ -192,6 +193,7 @@ assignmentexpression : conditionalexpression { $$ = getAssign($1); }
   | unaryexpression assignmentoperator assignmentexpression { $$ = getTokenizedAssignment($1, $2, $3); }
   | unaryexpression '=' assignmentexpression { $$ = getAssignment($1, $3); }
   | typename identifier '=' assignmentexpression { $$ = getInit($1, $2, $4); }
+  | unaryexpression alledge unaryexpression { $$ = getAssignEdgeExpression($1, $2, $3); }
   ;
 assignmentoperator : PLUSEQ { $$ = $1; }
   | MINUSEQ { $$ = $1; }
@@ -242,7 +244,6 @@ unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
   | MINUSMINUS unaryexpression { $$ = getUnaryDecr($2); }
   | unaryoperator unaryexpression {$$ = getUnarySingleOp($1, $2); }
   ;
-
 unaryoperator : '+' { $$ = $1; }
   | '-' { $$ = $1; }
   | '!' { $$ = $1; }

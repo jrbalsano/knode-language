@@ -50,7 +50,9 @@ struct expression_ {
     enum{eq_none = none, equal, notequal} eq;
     enum{gen_none = none, comma = ','} none;
     enum{cond_none = none, cond_or, cond_and} cond;
-    enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ, pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ } assign;
+    enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ,
+      pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ, assign_left = LEFTEDGE,
+      assign_right = RIGHTEDGE, assign_both = BOTHEDGE, assign_all = ALLEDGE } assign;
   } deriv;
 };
 
@@ -63,7 +65,7 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {statement_none = none, expression, breakStatement, iteration, selection, dictlist, dict} type;
+  enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge, dictlist, dict} type;
   union {
     Expression e;
     Statement s;
@@ -77,14 +79,18 @@ struct statement_ {
   union {
     Expression e;
     CompoundStatement cs;
+    Identifier i;
   } sub2;
   union {
     CompoundStatement cs;
+    Expression e;
   } sub3;
   union {
     enum {forIter,whileIter} iteration;
     enum {ifStatement, ifelseStatement} selection;
     enum {dict_none = none, definitions} dict;
+    enum {nodeCreate, nodeAssignment, nodeDictAssignment} node;
+    enum {edge_none = none, all = ALLEDGE, both = BOTHEDGE, left = LEFTEDGE, right = RIGHTEDGE} edge;
   } deriv;
 };
 struct parameter_ {
@@ -137,6 +143,11 @@ Statement newBreakStatement();
 Statement getDictListStatement(Expression e1, Expression e2);
 Statement getDictDecStatement(Identifier i);
 Statement getDictDefStatement(Identifier i, CompoundStatement cs);
+Statement newNodeCreateStatement(Identifier id);
+Statement newNodeAssignmentStatement(Identifier id, Expression e);
+Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs);
+Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnector, Expression e2);
+Statement getEdgeDeclaration(Identifier i);
 
 Identifier getIdentifier(char *s);
 
@@ -176,6 +187,7 @@ Expression getCond(Expression e);
 Expression getAssign(Expression e);
 Expression getTokenizedAssignment(Expression e1, int op, Expression e2);
 Expression getAssignment(Expression e1, Expression e2);
+Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression e2);
 Expression getInit(int token, Identifier i, Expression e);
 
 void freeTranslationUnit(TranslationUnit t); 

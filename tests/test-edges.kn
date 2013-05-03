@@ -6,6 +6,7 @@ main():
   edge e1 = [node_a <-> node_b]
   edge e2 = [node_b -> node_c]
   edge e3 = [node_c <- node_d]
+  edge e4
   node node_e
   node node_f
   node node_g

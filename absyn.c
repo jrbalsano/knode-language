@@ -19,9 +19,9 @@ TranslationUnit getTranslationUnit(FunctionDefinition fd) {
  * Recursively free the translation unit and its children.
  */
 void freeTranslationUnit(TranslationUnit t) {
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Freeing translation unit\n");
-  #endif
+#endif
 
   if(t == NULL) {
     fprintf(stderr, "Null child TranslationUnit\n");
@@ -29,9 +29,9 @@ void freeTranslationUnit(TranslationUnit t) {
   }  
   freeFunctionDefinition(t->f);
   free(t);
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Translation unit freed\n");
-  #endif
+#endif
 }
 
 /*********************
@@ -53,9 +53,9 @@ FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs) {
  * Recursively free the function definition and its children.
  */
 void freeFunctionDefinition(FunctionDefinition f) {
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Freeing function definition\n");
-  #endif
+#endif
   if(f == NULL) {
     fprintf(stderr, "Null child FunctionDefinition\n");
     return;
@@ -63,9 +63,9 @@ void freeFunctionDefinition(FunctionDefinition f) {
   freeDeclarator(f->d);
   freeCompoundStatement(f->cs);
   free(f);
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Function definition freed\n");
-  #endif
+#endif
 }
 
 /*************
@@ -97,9 +97,9 @@ Declarator getDeclarator(Identifier id, GrammarList pList) {
  * Recursively free the declarator and its children.
  */
 void freeDeclarator(Declarator d) {
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Freeing declarator\n");
-  #endif
+#endif
   if(d == NULL) {
     fprintf(stderr, "Null child Declarator\n");
     return;
@@ -108,9 +108,9 @@ void freeDeclarator(Declarator d) {
     freeGrammarList(d->p);
   freeIdentifier(d->name);
   free(d);
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Declarator freed\n");
-  #endif
+#endif
 }
 
 /*********************
@@ -129,18 +129,18 @@ CompoundStatement newCompoundStatement(GrammarList sList) {
  * Recursively free the compound statement and its children in postorder.
  */
 void freeCompoundStatement(CompoundStatement c) {
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Freeing compound statement\n");
-  #endif
+#endif
   if(c == NULL) {
     fprintf(stderr, "Null child CompoundStatement\n");
     return;
   }
   freeGrammarList(c->sList);
   free(c);
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Compound statement freed\n");
-  #endif
+#endif
 }
 /*****************
  * Grammar Lists
@@ -188,11 +188,11 @@ GrammarList newArgumentExpressionList(Expression e) {
  * situations where the argument expression list does not already exist.
  */
 GrammarList newExpressionList(Expression e) {
-    GrammarList eList = (GrammarList)malloc(sizeof(struct grammarList_));
-    eList->type = expressionList;
-    eList->head = 0;
-    addFront(eList, e);
-    return eList;
+  GrammarList eList = (GrammarList)malloc(sizeof(struct grammarList_));
+  eList->type = expressionList;
+  eList->head = 0;
+  addFront(eList, e);
+  return eList;
 }
 /**
  * Add a node to the front of the Grammar List g, with data pointer data
@@ -221,9 +221,9 @@ void *popFront(GrammarList g) {
 }
 
 void freeGrammarList(GrammarList g) {
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Freeing grammar list\n");
-  #endif
+#endif
   if(g == NULL) {
     fprintf(stderr, "Null child GrammarList\n");
     return;
@@ -246,9 +246,9 @@ void freeGrammarList(GrammarList g) {
     }
   }
   free(g);
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Grammar list freed\n");
-  #endif
+#endif
 }
 
 /************
@@ -269,25 +269,25 @@ Statement getStatement(Statement s) {
  * Create a new selection if statement.
  */
 Statement newIfStatement(Expression e, CompoundStatement cs) {
-    Statement ret = (Statement)malloc(sizeof(struct statement_));
-    ret->sub1.e = e;
-    ret->type = selection;
-    ret->deriv.selection = ifStatement;
-    ret->sub2.cs = cs;
-    return ret;
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->sub1.e = e;
+  ret->type = selection;
+  ret->deriv.selection = ifStatement;
+  ret->sub2.cs = cs;
+  return ret;
 }
 
 /**
  * Create a new selection if/else statement.
  */
 Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStatement cs2) {
-    Statement ret = (Statement)malloc(sizeof(struct statement_));
-    ret->sub1.e = e;
-    ret->type = selection;
-    ret->deriv.selection = ifelseStatement;
-    ret->sub2.cs = cs1;
-    ret->sub3.cs = cs2;
-    return ret;
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->sub1.e = e;
+  ret->type = selection;
+  ret->deriv.selection = ifelseStatement;
+  ret->sub2.cs = cs1;
+  ret->sub3.cs = cs2;
+  return ret;
 }
 /**
  * Create a Statement from an existing expression
@@ -326,9 +326,32 @@ Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundSta
  * Create a new break statement.
  */
 Statement newBreakStatement() {
-    Statement ret = (Statement)malloc(sizeof(struct statement_));
-    ret->type = breakStatement;
-    return ret;
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = breakStatement;
+  return ret;
+}
+
+/**
+ * Create a new, unadorned node declaration statement
+ */
+Statement newNodeCreateStatement(Identifier id) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = node;
+  ret->deriv.node = nodeCreate;
+  ret->sub1.i = id;
+  return ret;
+}
+
+/**
+ * Create a new node assignment statement
+ */
+Statement newNodeAssignmentStatement(Identifier id, Expression e) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = node;
+  ret->deriv.node = nodeAssignment;
+  ret->sub1.i = id;
+  ret->sub2.e = e;
+  return ret;
 }
 
 /**
@@ -352,6 +375,30 @@ Statement getDictDecStatement(Identifier i) {
   ret->sub1.i = i;
   return ret;
 }
+/**
+ * Create a new node dict assignment statement
+ */
+Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = node;
+  ret->deriv.node = nodeDictAssignment;
+  ret->sub1.i = id;
+  ret->sub2.cs = cs;
+  return ret;
+}
+
+/*
+ * Create a new edge statement out of an existing node pair.
+ */
+Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnector, Expression e2) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = edge;
+  ret->deriv.edge = edgeconnector;
+  ret->sub1.i = i;
+  ret->sub2.e = e1;
+  ret->sub3.e = e2;
+  return ret;
+}
 
 /**
  * Creates a new dict with a compound statement containing definitions.
@@ -366,12 +413,24 @@ Statement getDictDefStatement(Identifier i, CompoundStatement cs) {
 }
 
 /**
+ * Create a new edge statement, that only declares that an edge can
+ * be stored in a certain identifier.
+ */
+Statement getEdgeDeclaration(Identifier i) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = edge;
+  ret->deriv.edge = none;
+  ret->sub1.i = i;
+  return ret;
+}
+
+/**
  * Recursively free the Statement and its children in postorder.
  */
 void freeStatement(Statement s) {
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Freeing statement\n");
-  #endif
+#endif
   if(s == NULL) {
     fprintf(stderr, "Null child Statement\n");
     return;
@@ -387,11 +446,12 @@ void freeStatement(Statement s) {
           freeExpression(s->sub1.forloop.e2);
           freeExpression(s->sub1.forloop.e3);
           freeCompoundStatement(s->sub2.cs);
+          break;
         case whileIter:
           freeExpression(s->sub1.e);
           freeCompoundStatement(s->sub2.cs);
-        break;
-          }
+          break;
+      }
       break;
     case selection:
       switch(s->deriv.selection) {
@@ -421,6 +481,33 @@ void freeStatement(Statement s) {
           break;
       }
       break;
+    case node:
+      switch(s->deriv.node) {
+        case nodeCreate:
+          freeIdentifier(s->sub1.i);
+          break;
+        case nodeAssignment:
+          freeIdentifier(s->sub1.i);
+          freeExpression(s->sub2.e);
+          break;
+        case nodeDictAssignment:
+          freeIdentifier(s->sub1.i);
+          freeCompoundStatement(s->sub2.cs);
+          break;
+      }
+      break;
+    case edge:
+      switch(s->deriv.edge) {
+        case none:
+          freeIdentifier(s->sub1.i);
+          break;
+        default:
+          freeIdentifier(s->sub1.i);
+          freeExpression(s->sub2.e);
+          freeExpression(s->sub3.e);
+          break;
+      }
+      break;
     case none:
       freeStatement(s->sub1.s);
       break;
@@ -428,9 +515,9 @@ void freeStatement(Statement s) {
       break;
   }
   free(s);
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Statement freed\n");
-  #endif
+#endif
 }
 
 /************
@@ -451,7 +538,7 @@ Parameter getTypedParameter(int typename, Identifier i){
  * Free the Parameter.
  */
 void freeParameter(Parameter p) {
-    freeIdentifier(p->i);
+  freeIdentifier(p->i);
 }
 
 /*************
@@ -785,6 +872,19 @@ Expression getInit(int token, Identifier i, Expression e){
   ret->sub3.e = e;
   return ret;
 }
+
+/**
+ * Creates a new assignment expression from an edge connector expression
+ * This would in reality be an array of edges being returned.
+ */
+Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression e2) {
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = assignment;
+  ret->deriv.assign = edgeconnector;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
 /**
  * Creates a new expression from an existing assignment expression
  */
@@ -813,9 +913,9 @@ Expression getExpressionAssignmentExpression(Expression e1, Expression e2) {
  * Recursively free an expression and its children in postorder
  */
 void freeExpression(Expression e) {
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Freeing expression\n");
-  #endif
+#endif
   if(e == NULL) {
     fprintf(stderr, "Null child Expression\n");
     return;
@@ -917,17 +1017,17 @@ void freeExpression(Expression e) {
       break;
     case assignment:
       switch(e->deriv.assign){
-      case init:
-        freeIdentifier(e->sub2.i);
-        freeExpression(e->sub3.e);
-        break;
-      case 0:
-        freeExpression(e->sub1.e);
-        break;
-      default:
-        freeExpression(e->sub1.e);
-        freeExpression(e->sub2.e);
-        break;
+        case init:
+          freeIdentifier(e->sub2.i);
+          freeExpression(e->sub3.e);
+          break;
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+        default:
+          freeExpression(e->sub1.e);
+          freeExpression(e->sub2.e);
+          break;
       } 
       break;
     case primary:
@@ -949,9 +1049,9 @@ void freeExpression(Expression e) {
       break;
   }
   free(e);
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Expression freed\n");
-  #endif
+#endif
 }
 
 
@@ -973,15 +1073,15 @@ Identifier getIdentifier(char *s) {
  * free an identifier and its children
  */
 void freeIdentifier(Identifier i) {
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Freeing identifier\n");
-  #endif
+#endif
   if(i == NULL) {
     fprintf(stderr, "Null child Identifier\n");
     return;
   }  
   free(i);
-  #ifdef MEMTRACE
+#ifdef MEMTRACE
   printf("Identifier freed\n");
-  #endif
+#endif
 }
