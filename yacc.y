@@ -97,7 +97,7 @@ struct symtab *symtable = NULL;
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist
-%type<functionDefinition> functiondefinition externaldeclaration
+%type<functionDefinition> functiondefinition
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist statementlist
 %type<translationUnit> translationunit
@@ -120,10 +120,8 @@ struct symtab *symtable = NULL;
      */
 %%
 
-translationunit : externaldeclaration { $$ = getTranslationUnit($1); root = $$; }
-  | translationunit externaldeclaration
-  ;
-externaldeclaration : functiondefinition { $$ = $1; }
+translationunit : functiondefinition { $$ = getTranslationUnit($1); root = $$; }
+  | translationunit functiondefinition
   ;
 functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($1, $2); }
   | typename declarator compoundstatement { $$ = getRetTypeFunctionDefinition($1, $2, $3); }
