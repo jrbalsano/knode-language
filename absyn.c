@@ -342,6 +342,7 @@ Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnect
   ret->sub2.e = e1;
   ret->sub3.e = e2;
   return ret;
+}
 
 /**
  * Recursively free the Statement and its children in postorder.
@@ -390,7 +391,7 @@ void freeStatement(Statement s) {
           freeIdentifier(s->sub1.i);
           break;
         default:
-          freeIdentifer(s->sub1.i);
+          freeIdentifier(s->sub1.i);
           freeExpression(s->sub2.e);
           freeExpression(s->sub3.e);
           break;
