@@ -332,6 +332,15 @@ Statement newBreakStatement() {
 }
 
 /**
+ * Create a new node statement
+ */
+Statement newNodeStatement() {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->type = node;
+    return ret;
+}
+
+/**
  * Recursively free the Statement and its children in postorder.
  */
 void freeStatement(Statement s) {
