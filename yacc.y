@@ -146,7 +146,7 @@ identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
 compoundstatement : BLOCK_START statementlist BLOCK_END { $$ = newCompoundStatement($2); }
   ;
 statementlist : statement { $$ = newStatementList($1); }
-  | statementlist statement
+  | statementlist statement { $$ = extendStatementList($1, $2); }
   ;
 statement : expressionstatement { $$ = getStatement($1); }
   | iterationstatement { $$ = getStatement($1) }
