@@ -157,17 +157,15 @@ statement : expressionstatement { $$ = getStatement($1); }
   | dictlist { $$ = NULL; }
   | edgestatement { $$ = getStatement($1); }
   ;
-dictstatement : DICT IDENTIFIER NEWLINE {}
-  | DICT IDENTIFIER '[' INTEGER ']' NEWLINE
-  | DICT IDENTIFIER '[' INTEGER ']' NEWLINE compoundstatement
-  | DICT IDENTIFIER compoundstatement
+dictstatement : DICT identifier NEWLINE {}
+  | DICT identifier NEWLINE compoundstatement
   ;
 breakstatement : BREAK NEWLINE { $$ = newBreakStatement(); }
   ;
 
-nodestatement : NODE IDENTIFIER NEWLINE
-  | NODE IDENTIFIER EQ IDENTIFIER
-  | NODE IDENTIFIER NEWLINE compoundstatement
+nodestatement : NODE identifier NEWLINE
+  | NODE identifier EQ expression NEWLINE
+  | NODE identifier NEWLINE compoundstatement
   ;
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX {$$ = newIfStatement($3,$6);}
   | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement {$$ = newIfElseStatement($3,$6,$9);}
@@ -177,10 +175,7 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement {$$ = ne
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE {storeData($1->name, (void *)$3); printf("%s\n", (char *)$1->value);}
-  | IDENTIFIER ':' STRING_LITERAL NEWLINE { storeData($1->name, (void *)$3); printf("%s\n", (char *)$1->value);}
-  | IDENTIFIER ':' INTEGER NEWLINE { $1->num_val = $3; printf("%d\n", $1->num_val);}
-  | IDENTIFIER ':' BOOLEAN NEWLINE { printf("%d\n", $3); }
+dictlist : expression ':' expression NEWLINE {}
   ;
 edgestatement: EDGE identifier '=' '[' unaryexpression edge unaryexpression ']' NEWLINE
   | EDGE identifier NEWLINE
