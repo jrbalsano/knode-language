@@ -446,6 +446,7 @@ void freeStatement(Statement s) {
               freeCompoundStatement(s->sub2.cs);
               break;
       }
+      break;
     case edge:
       switch(s->deriv.edge) {
         case none:
