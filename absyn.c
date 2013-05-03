@@ -326,10 +326,22 @@ Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundSta
  * Create a new break statement.
  */
 Statement newBreakStatement() {
-    Statement ret = (Statement)malloc(sizeof(struct statement_));
-    ret->type = breakStatement;
-    return ret;
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = breakStatement;
+  return ret;
 }
+
+/**
+ * Create a new edge statement out of an existing node pair.
+ */
+Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnector, Expression e2) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = edge;
+  ret->deriv.edge = edgeconnector;
+  ret->sub1.i = i;
+  ret->sub2.e = e1;
+  ret->sub3.e = e2;
+  return ret;
 
 /**
  * Recursively free the Statement and its children in postorder.
@@ -369,6 +381,18 @@ void freeStatement(Statement s) {
           freeExpression(s->sub1.e);
           freeCompoundStatement(s->sub2.cs);
           freeCompoundStatement(s->sub3.cs);
+          break;
+      }
+      break;
+    case edge:
+      switch(s->deriv.edge) {
+        case none:
+          freeIdentifier(s->sub1.i);
+          break;
+        default:
+          freeIdentifer(s->sub1.i);
+          freeExpression(s->sub2.e);
+          freeExpression(s->sub3.e);
           break;
       }
       break;
