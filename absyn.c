@@ -291,11 +291,11 @@ Statement newWhileStatement(Expression e, CompoundStatement cs) {
  */
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
-  ret->sub1.eList = newExpressionList(e1);
-  addFront(ret->sub1.eList,e2);
-  addFront(ret->sub1.eList,e3);
   ret->type = iteration;
   ret->iterationtype = forIter;
+  ret->sub1.forloop.e1 = e1;
+  ret->sub1.forloop.e2 = e2;
+  ret->sub1.forloop.e3 = e3;
   ret->sub2.cs = cs;
   return ret;
 }
@@ -317,8 +317,10 @@ void freeStatement(Statement s) {
     case iteration:
       switch(s->iterationtype) {
         case forIter:
+          freeExpression(s->sub1.forloop.e1);
+          freeExpression(s->sub1.forloop.e2);
+          freeExpression(s->sub1.forloop.e3);
           freeCompoundStatement(s->sub2.cs);
-          freeGrammarList(s->sub1.eList);
         case whileIter:
           freeExpression(s->sub1.e);
           freeCompoundStatement(s->sub2.cs);

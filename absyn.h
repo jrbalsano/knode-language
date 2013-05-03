@@ -67,21 +67,15 @@ struct statement_ {
   union {
     Expression e;
     Statement s;
-    GrammarList eList; //A list of expressions
-    CompoundStatement cs;
+    struct {
+      Expression e1;
+      Expression e2;
+      Expression e3;
+    } forloop;
   } sub1;
   union{
-    Expression e;
-    Statement s;
-    GrammarList eList; //A list of expressions
     CompoundStatement cs;
   } sub2;
-  union{
-    Expression e;
-    Statement s;
-    GrammarList eList; //A list of expressions
-    CompoundStatement cs;
-  } sub3;
   enum {forIter,whileIter} iterationtype;
 };
 struct parameter_ {
