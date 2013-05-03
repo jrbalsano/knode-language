@@ -166,11 +166,11 @@ GrammarList newStatementList(Statement s) {
  * list already exists.
  */
 GrammarList newParameterList(Parameter p) {
-	GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
-    pList->type = parameterList;
-	pList->head = 0;
-	addFront(pList, p);
-	return pList;
+  GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
+  pList->type = parameterList;
+  pList->head = 0;
+  addFront(pList, p);
+  return pList;
 }
 
 /**
