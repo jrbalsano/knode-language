@@ -184,7 +184,17 @@ GrammarList newArgumentExpressionList(Expression e) {
   addFront(aeList, e);
   return aeList;
 }
-
+/**
+ * Creates a new argument expression list from an existing expression. To be used in
+ * situations where the argument expression list does not already exist.
+ */
+GrammarList newExpressionList(Expression e) {
+    GrammarList eList = (GrammarList)malloc(sizeof(struct grammarList_));
+    eList->type = expressionList;
+    eList->head = 0;
+    addFront(eList, e);
+    return eList;
+}
 /**
  * Add a node to the front of the Grammar List g, with data pointer data
  */
@@ -231,6 +241,9 @@ void freeGrammarList(GrammarList g) {
       case parameterList:
         freeParameter((Parameter)d);
         break;
+      case expressionList:
+        freeExpression((Expression)d);
+        break;
     }
   }
   free(g);
@@ -249,7 +262,7 @@ void freeGrammarList(GrammarList g) {
 Statement getStatement(Statement s) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = none;
-  ret->sub.s = s;
+  ret->sub1.s = s;
   return ret;
 }
 
@@ -259,10 +272,33 @@ Statement getStatement(Statement s) {
 Statement getExpressionStatement(Expression e) {
   Statement s = (Statement)malloc(sizeof(struct statement_));
   s->type = expression;
-  s->sub.e = e;
+  s->sub1.e = e;
   return s;
 }
-
+/**
+ * Create a new while iteration statement.
+ */
+Statement newWhileStatement(Expression e, CompoundStatement cs) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = iteration;
+  ret->iterationtype = whileIter;
+  ret->sub1.e = e;
+  ret->sub2.cs = cs;
+  return ret;
+}
+/**
+ * Create a new for iteration statement.
+ */
+Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = iteration;
+  ret->iterationtype = forIter;
+  ret->sub1.forloop.e1 = e1;
+  ret->sub1.forloop.e2 = e2;
+  ret->sub1.forloop.e3 = e3;
+  ret->sub2.cs = cs;
+  return ret;
+}
 /**
  * Create a new break statement.
  */
@@ -285,10 +321,23 @@ void freeStatement(Statement s) {
   }  
   switch(s->type) {
     case expression:
-      freeExpression(s->sub.e);
+      freeExpression(s->sub1.e);
+      break;
+    case iteration:
+      switch(s->iterationtype) {
+        case forIter:
+          freeExpression(s->sub1.forloop.e1);
+          freeExpression(s->sub1.forloop.e2);
+          freeExpression(s->sub1.forloop.e3);
+          freeCompoundStatement(s->sub2.cs);
+        case whileIter:
+          freeExpression(s->sub1.e);
+          freeCompoundStatement(s->sub2.cs);
+        break;
+          }
       break;
     case none:
-      freeStatement(s->sub.s);
+      freeStatement(s->sub1.s);
       break;
     default:
       break;
