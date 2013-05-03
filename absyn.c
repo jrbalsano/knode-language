@@ -332,11 +332,37 @@ Statement newBreakStatement() {
 }
 
 /**
- * Create a new node statement
+ * Create a new, unadorned node declaration statement
  */
-Statement newNodeStatement() {
+Statement newNodeCreateStatement(Identifier id) {
     Statement ret = (Statement)malloc(sizeof(struct statement_));
     ret->type = node;
+    ret->deriv.node = nodeCreate;
+    ret->sub1.i = id;
+    return ret;
+}
+
+/**
+ * Create a new node assignment statement
+ */
+Statement newNodeAssignmentStatement(Identifier id, Expression e) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->type = node;
+    ret->deriv.node = nodeAssignment;
+    ret->sub1.i = id;
+    ret->sub2.e = e;
+    return ret;
+}
+
+/**
+ * Create a new node dict assignment statement
+ */
+Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->type = node;
+    ret->deriv.node = nodeDictAssignment;
+    ret->sub1.i = id;
+    ret->sub2.cs = cs;
     return ret;
 }
 

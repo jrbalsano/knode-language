@@ -67,6 +67,7 @@ struct statement_ {
   union {
     Expression e;
     Statement s;
+    Identifier i;
     struct {
       Expression e1;
       Expression e2;
@@ -74,7 +75,9 @@ struct statement_ {
     } forloop;
   } sub1;
   union {
+    Expression e;
     CompoundStatement cs;
+    Identifier i;
   } sub2;
   union {
     CompoundStatement cs;
@@ -82,6 +85,7 @@ struct statement_ {
   union {
     enum {forIter,whileIter} iteration;
     enum {ifStatement, ifelseStatement} selection;
+    enum {nodeCreate, nodeAssignment, nodeDictAssignment} node;
   } deriv;
 };
 struct parameter_ {
@@ -131,7 +135,9 @@ Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStateme
 Statement newWhileStatement(Expression e, CompoundStatement cs);
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs);
 Statement newBreakStatement();
-Statement newNodeStatement();
+Statement newNodeCreateStatement(Identifier id);
+Statement newNodeAssignmentStatement(Identifier id, Expression e);
+Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs);
 
 Identifier getIdentifier(char *s);
 
