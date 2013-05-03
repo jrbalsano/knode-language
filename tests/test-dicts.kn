@@ -1,10 +1,11 @@
 main():
   dict firstDict
-  dict secondDict[4]
+  dict secondDict
     hellothar3 : hello
     hellothar1 : "hello"
-    hellothar2 : 4
-    hellothar : TRUE
-    hellothar : hello #TODO: make this work for multiple value types
+  dict myDict
+    betterThan : yourDict
+    fasterThan : hisDict
+    coolerThan : herDict
   #thirdDict.bye = "adios"
   #thirdDict["greeting"] = "Hola Muchachos"
