@@ -151,7 +151,7 @@ statementlist : statement { $$ = newStatementList($1); }
 statement : expressionstatement { $$ = getStatement($1); }
   | iterationstatement { $$ = getStatement($1) }
   | selectionstatement { $$ = getStatement($1); }
-  | nodestatement { $$ = NULL; }
+  | nodestatement { $$ = getStatement($1); }
   | breakstatement { $$ = getStatement($1); }
   | dictstatement { $$ = NULL; }
   | dictlist { $$ = NULL; }
@@ -163,9 +163,9 @@ dictstatement : DICT identifier NEWLINE {}
 breakstatement : BREAK NEWLINE { $$ = newBreakStatement(); }
   ;
 
-nodestatement : NODE identifier NEWLINE
-  | NODE identifier EQ expression NEWLINE
-  | NODE identifier NEWLINE compoundstatement
+nodestatement : NODE identifier NEWLINE {$$ = newNodeCreateStatement($2);}
+  | NODE identifier '=' expression NEWLINE {$$ = newNodeAssignmentStatement($2, $4);}
+  | NODE identifier NEWLINE compoundstatement {$$ = newNodeDictAssignmentStatement($2, $4);}
   ;
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX {$$ = newIfStatement($3,$6);}
   | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement {$$ = newIfElseStatement($3,$6,$9);}

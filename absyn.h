@@ -65,7 +65,7 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {statement_none = none, expression, breakStatement, iteration, selection, edge} type;
+  enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge} type;
   union {
     Expression e;
     Statement s;
@@ -77,8 +77,9 @@ struct statement_ {
     } forloop;
   } sub1;
   union {
-    CompoundStatement cs;
     Expression e;
+    CompoundStatement cs;
+    Identifier i;
   } sub2;
   union {
     CompoundStatement cs;
@@ -87,6 +88,7 @@ struct statement_ {
   union {
     enum {forIter,whileIter} iteration;
     enum {ifStatement, ifelseStatement} selection;
+    enum {nodeCreate, nodeAssignment, nodeDictAssignment} node;
     enum {edge_none = none, all = ALLEDGE, both = BOTHEDGE, left = LEFTEDGE, right = RIGHTEDGE} edge;
   } deriv;
 };
@@ -137,6 +139,9 @@ Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStateme
 Statement newWhileStatement(Expression e, CompoundStatement cs);
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs);
 Statement newBreakStatement();
+Statement newNodeCreateStatement(Identifier id);
+Statement newNodeAssignmentStatement(Identifier id, Expression e);
+Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs);
 Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnector, Expression e2);
 Statement getEdgeDeclaration(Identifier i);
 

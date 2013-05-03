@@ -332,6 +332,41 @@ Statement newBreakStatement() {
 }
 
 /**
+ * Create a new, unadorned node declaration statement
+ */
+Statement newNodeCreateStatement(Identifier id) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->type = node;
+    ret->deriv.node = nodeCreate;
+    ret->sub1.i = id;
+    return ret;
+}
+
+/**
+ * Create a new node assignment statement
+ */
+Statement newNodeAssignmentStatement(Identifier id, Expression e) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->type = node;
+    ret->deriv.node = nodeAssignment;
+    ret->sub1.i = id;
+    ret->sub2.e = e;
+    return ret;
+}
+
+/**
+ * Create a new node dict assignment statement
+ */
+Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->type = node;
+    ret->deriv.node = nodeDictAssignment;
+    ret->sub1.i = id;
+    ret->sub2.cs = cs;
+    return ret;
+}
+
+/*
  * Create a new edge statement out of an existing node pair.
  */
 Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnector, Expression e2) {
@@ -355,6 +390,7 @@ Statement getEdgeDeclaration(Identifier i) {
   ret->sub1.i = i;
   return ret;
 }
+
 /**
  * Recursively free the Statement and its children in postorder.
  */
@@ -394,6 +430,21 @@ void freeStatement(Statement s) {
           freeCompoundStatement(s->sub2.cs);
           freeCompoundStatement(s->sub3.cs);
           break;
+      }
+      break;
+    case node:
+      switch(s->deriv.node) {
+          case nodeCreate:
+              freeIdentifier(s->sub1.i);
+              break;
+          case nodeAssignment:
+              freeIdentifier(s->sub1.i);
+              freeExpression(s->sub2.e);
+              break;
+          case nodeDictAssignment:
+              freeIdentifier(s->sub1.i);
+              freeCompoundStatement(s->sub2.cs);
+              break;
       }
       break;
     case edge:
