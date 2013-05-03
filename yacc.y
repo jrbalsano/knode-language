@@ -89,7 +89,7 @@ struct symtab *symtable = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator edge alledge LEFTEDGE RIGHTEDGE ALLEDGE BOTHEDGE
+%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator edge alledge LEFTEDGE RIGHTEDGE ALLEDGE BOTHEDGE
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
