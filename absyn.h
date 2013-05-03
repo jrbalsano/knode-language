@@ -100,6 +100,11 @@ struct parameter_ {
 struct functionDefinition_ {
   Declarator d;
   CompoundStatement cs;
+  union{
+    Declarator d;
+    CompoundStatement cs;
+    int type;
+     
 };
 struct compoundStatement_ {
   GrammarList dlist; //A list of declarations

@@ -126,7 +126,7 @@ translationunit : externaldeclaration { $$ = getTranslationUnit($1); root = $$; 
 externaldeclaration : functiondefinition { $$ = $1; }
   ;
 functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($1, $2); }
-  | typename declarator compoundstatement
+  | typename declarator compoundstatement { $$ = getRetTypeFuncDef($1, $2, $3); }
   | NODE declarator compoundstatement
   | EDGE declarator compoundstatement
   ;
