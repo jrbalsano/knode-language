@@ -166,11 +166,11 @@ GrammarList newStatementList(Statement s) {
  * list already exists.
  */
 GrammarList newParameterList(Parameter p) {
-	GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
-    pList->type = parameterList;
-	pList->head = 0;
-	addFront(pList, p);
-	return pList;
+  GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
+  pList->type = parameterList;
+  pList->head = 0;
+  addFront(pList, p);
+  return pList;
 }
 
 /**
@@ -300,6 +300,15 @@ Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundSta
   return ret;
 }
 /**
+ * Create a new break statement.
+ */
+Statement newBreakStatement() {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->type = breakStatement;
+    return ret;
+}
+
+/**
  * Recursively free the Statement and its children in postorder.
  */
 void freeStatement(Statement s) {
@@ -330,6 +339,8 @@ void freeStatement(Statement s) {
     case none:
       freeStatement(s->sub1.s);
       break;
+    default:
+      break;
   }
   free(s);
   #ifdef MEMTRACE
@@ -345,10 +356,10 @@ void freeStatement(Statement s) {
  * Create a parameter from a typed argument
  */
 Parameter getTypedParameter(int typename, Identifier i){
-	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-	ret->type=typename;
-	ret->i = i;
-	return ret;
+  Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
+  ret->type=typename;
+  ret->i = i;
+  return ret;
 }
 
 /**
