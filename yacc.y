@@ -96,7 +96,7 @@ struct symtab *symtable = NULL;
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement
+%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist statementlist
@@ -153,16 +153,15 @@ statement : expressionstatement { $$ = getStatement($1); }
   | selectionstatement { $$ = getStatement($1); }
   | nodestatement { $$ = getStatement($1); }
   | breakstatement { $$ = getStatement($1); }
-  | dictstatement { $$ = NULL; }
-  | dictlist { $$ = NULL; }
+  | dictstatement { $$ = getStatement($1); }
+  | dictlist { $$ = getStatement($1); }
   | edgestatement { $$ = getStatement($1); }
   ;
-dictstatement : DICT identifier NEWLINE {}
-  | DICT identifier NEWLINE compoundstatement
+dictstatement : DICT identifier NEWLINE { $$ = getDictDecStatement($2); }
+  | DICT identifier NEWLINE compoundstatement { $$ = getDictDefStatement($2, $4); }
   ;
 breakstatement : BREAK NEWLINE { $$ = newBreakStatement(); }
   ;
-
 nodestatement : NODE identifier NEWLINE {$$ = newNodeCreateStatement($2);}
   | NODE identifier '=' expression NEWLINE {$$ = newNodeAssignmentStatement($2, $4);}
   | NODE identifier NEWLINE compoundstatement {$$ = newNodeDictAssignmentStatement($2, $4);}
@@ -175,7 +174,7 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement {$$ = ne
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-dictlist : expression ':' expression NEWLINE {}
+dictlist : expression ':' expression NEWLINE { $$ = getDictListStatement($1, $3); }
   ;
 edgestatement: EDGE identifier '=' '[' unaryexpression edge unaryexpression ']' NEWLINE { $$ = getEdgeStatementFromNodes($2, $5, $6, $7); }
   | EDGE identifier NEWLINE { $$ = getEdgeDeclaration($2); }

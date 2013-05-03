@@ -65,7 +65,7 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge} type;
+  enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge, dictlist, dict} type;
   union {
     Expression e;
     Statement s;
@@ -88,6 +88,7 @@ struct statement_ {
   union {
     enum {forIter,whileIter} iteration;
     enum {ifStatement, ifelseStatement} selection;
+    enum {dict_none = none, definitions} dict;
     enum {nodeCreate, nodeAssignment, nodeDictAssignment} node;
     enum {edge_none = none, all = ALLEDGE, both = BOTHEDGE, left = LEFTEDGE, right = RIGHTEDGE} edge;
   } deriv;
@@ -139,6 +140,9 @@ Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStateme
 Statement newWhileStatement(Expression e, CompoundStatement cs);
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs);
 Statement newBreakStatement();
+Statement getDictListStatement(Expression e1, Expression e2);
+Statement getDictDecStatement(Identifier i);
+Statement getDictDefStatement(Identifier i, CompoundStatement cs);
 Statement newNodeCreateStatement(Identifier id);
 Statement newNodeAssignmentStatement(Identifier id, Expression e);
 Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs);
