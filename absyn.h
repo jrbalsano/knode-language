@@ -124,6 +124,7 @@ Declarator declaratorId(Identifier id);
 Declarator getDeclarator(Identifier id, GrammarList pList);
 
 GrammarList newStatementList(Statement s);
+GrammarList extendStatementList(GrammarList sList, Statement s);
 GrammarList newParameterList(Parameter p);
 GrammarList newArgumentExpressionList(Expression e);
 GrammarList appendToPList(GrammarList pList,Parameter param);
