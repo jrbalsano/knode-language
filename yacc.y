@@ -126,9 +126,10 @@ translationunit : externaldeclaration { $$ = getTranslationUnit($1); root = $$; 
 externaldeclaration : functiondefinition { $$ = $1; }
   ;
 functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($1, $2); }
-  | typename declarator compoundstatement { $$ = getRetTypeFuncDef($1, $2, $3); }
-  | NODE declarator compoundstatement
-  | EDGE declarator compoundstatement
+  | typename declarator compoundstatement { $$ = getRetTypeFunctionDefinition($1, $2, $3); }
+  | NODE declarator compoundstatement { $$ = getRetTypeFunctionDefinition($1, $2, $3); }
+  | EDGE declarator compoundstatement { $$ = getRetTypeFunctionDefinition($1, $2, $3); }
+  | DICT declarator compoundstatement { $$ = getRetTypeFunctionDefinition($1, $2, $3); }
   ;
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }

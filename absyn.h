@@ -98,13 +98,10 @@ struct parameter_ {
   Identifier i;
 };
 struct functionDefinition_ {
+  enum {typ_void = none, typ_int = INT, typ_double = DOUBLE, typ_char = CHAR, typ_string = STRING,
+    typ_node = NODe, typ_edge = EDGE, typ_dict = DICT} type_name;
   Declarator d;
   CompoundStatement cs;
-  union{
-    Declarator d;
-    CompoundStatement cs;
-    int type;
-     
 };
 struct compoundStatement_ {
   GrammarList dlist; //A list of declarations

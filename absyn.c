@@ -44,8 +44,18 @@ void freeTranslationUnit(TranslationUnit t) {
  */
 FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs) {
   FunctionDefinition ret = (FunctionDefinition)malloc(sizeof(struct functionDefinition_));
+  ret->type_name = none;
   ret->d = d;
   ret->cs = cs;
+  return ret;
+}
+
+/**
+ * Create a new function definition with a specified type
+ */
+FunctionDefinition getRetTypeFunctionDefinition(int type, Declarator d, CompoundStatement cs) {
+  FunctionDefinition ret = getFunctionDefinition(d, cs);
+  ret->type_name = type;
   return ret;
 }
 
@@ -59,7 +69,7 @@ void freeFunctionDefinition(FunctionDefinition f) {
   if(f == NULL) {
     fprintf(stderr, "Null child FunctionDefinition\n");
     return;
-  }  
+  }
   freeDeclarator(f->d);
   freeCompoundStatement(f->cs);
   free(f);
