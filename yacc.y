@@ -11,9 +11,11 @@
 #include "absyn.h"
 #include "symtable.h"
 
+
 void yyerror(char *s);
 int errorHad = 0;
 TranslationUnit root = NULL;
+struct symtab *symtable = NULL;
 
 %}
 
@@ -87,7 +89,7 @@ TranslationUnit root = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator
+%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
@@ -175,10 +177,10 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE
-  | IDENTIFIER ':' STRING_LITERAL NEWLINE { $1->value = $3; printf("%s\n", (char *)$1->value);}
-  | IDENTIFIER ':' INTEGER NEWLINE { /*$1->value = $3; printf("%d\n", (int *)$1->value);*/}
-  | IDENTIFIER ':' BOOLEAN NEWLINE { /*$1->value = $3; printf("%d\n", (int *)$1->value);*/}
+dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE {storeData($1->name, (void *)$3); printf("%s\n", (char *)$1->value);}
+  | IDENTIFIER ':' STRING_LITERAL NEWLINE { storeData($1->name, (void *)$3); printf("%s\n", (char *)$1->value);}
+  | IDENTIFIER ':' INTEGER NEWLINE { $1->num_val = $3; printf("%d\n", $1->num_val);}
+  | IDENTIFIER ':' BOOLEAN NEWLINE { printf("%d\n", $3); }
   ;
 edgestatement: EDGE IDENTIFIER '=' '[' IDENTIFIER alledgestatement IDENTIFIER ']' NEWLINE
   | IDENTIFIER alledgestatement IDENTIFIER NEWLINE
