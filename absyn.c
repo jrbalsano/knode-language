@@ -166,11 +166,11 @@ GrammarList newStatementList(Statement s) {
  * list already exists.
  */
 GrammarList newParameterList(Parameter p) {
-	GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
-    pList->type = parameterList;
-	pList->head = 0;
-	addFront(pList, p);
-	return pList;
+  GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
+  pList->type = parameterList;
+  pList->head = 0;
+  addFront(pList, p);
+  return pList;
 }
 
 /**
@@ -307,10 +307,10 @@ void freeStatement(Statement s) {
  * Create a parameter from a typed argument
  */
 Parameter getTypedParameter(int typename, Identifier i){
-	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-	ret->type=typename;
-	ret->i = i;
-	return ret;
+  Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
+  ret->type=typename;
+  ret->i = i;
+  return ret;
 }
 
 /**
