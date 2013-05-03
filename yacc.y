@@ -165,9 +165,9 @@ dictstatement : DICT IDENTIFIER NEWLINE {}
 breakstatement : BREAK NEWLINE { $$ = newBreakStatement(); }
   ;
 
-nodestatement : NODE IDENTIFIER NEWLINE
-  | NODE IDENTIFIER EQ IDENTIFIER
-  | NODE IDENTIFIER NEWLINE compoundstatement
+nodestatement : NODE identifier NEWLINE
+  | NODE identifier EQ expression NEWLINE
+  | NODE identifier NEWLINE compoundstatement
   ;
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX {$$ = newIfStatement($3,$6);}
   | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement {$$ = newIfElseStatement($3,$6,$9);}
