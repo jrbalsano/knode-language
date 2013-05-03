@@ -150,7 +150,7 @@ statementlist : statement { $$ = newStatementList($1); }
   ;
 statement : expressionstatement { $$ = getStatement($1); }
   | iterationstatement { $$ = getStatement($1) }
-  | selectionstatement { $$ = NULL; }
+  | selectionstatement { $$ = getStatement($1); }
   | nodestatement { $$ = NULL; }
   | breakstatement { $$ = getStatement($1); }
   | dictstatement { $$ = NULL; }
@@ -169,8 +169,8 @@ nodestatement : NODE IDENTIFIER NEWLINE
   | NODE IDENTIFIER EQ IDENTIFIER
   | NODE IDENTIFIER NEWLINE compoundstatement
   ;
-selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX
-  | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement 
+selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX {$$ = newIfStatement($3,$6);}
+  | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement {$$ = newIfElseStatement($3,$6,$9);}
   ;
 iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement {$$ = newWhileStatement($3,$6);}
   | FOR '(' expression ';' expression ';' expression ')' NEWLINE compoundstatement { $$ = newForStatement($3,$5,$7,$10);}

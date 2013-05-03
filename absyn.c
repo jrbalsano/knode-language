@@ -125,7 +125,6 @@ CompoundStatement newCompoundStatement(GrammarList sList) {
   ret->sList = sList;
   return ret;
 }
-
 /**
  * Recursively free the compound statement and its children in postorder.
  */
@@ -267,6 +266,30 @@ Statement getStatement(Statement s) {
 }
 
 /**
+ * Create a new selection if statement.
+ */
+Statement newIfStatement(Expression e, CompoundStatement cs) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->sub1.e = e;
+    ret->type = selection;
+    ret->deriv.selection = ifStatement;
+    ret->sub2.cs = cs;
+    return ret;
+}
+
+/**
+ * Create a new selection if/else statement.
+ */
+Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStatement cs2) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->sub1.e = e;
+    ret->type = selection;
+    ret->deriv.selection = ifelseStatement;
+    ret->sub2.cs = cs1;
+    ret->sub3.cs = cs2;
+    return ret;
+}
+/**
  * Create a Statement from an existing expression
  */
 Statement getExpressionStatement(Expression e) {
@@ -281,7 +304,7 @@ Statement getExpressionStatement(Expression e) {
 Statement newWhileStatement(Expression e, CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = iteration;
-  ret->iterationtype = whileIter;
+  ret->deriv.iteration = whileIter;
   ret->sub1.e = e;
   ret->sub2.cs = cs;
   return ret;
@@ -292,7 +315,7 @@ Statement newWhileStatement(Expression e, CompoundStatement cs) {
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = iteration;
-  ret->iterationtype = forIter;
+  ret->deriv.iteration = forIter;
   ret->sub1.forloop.e1 = e1;
   ret->sub1.forloop.e2 = e2;
   ret->sub1.forloop.e3 = e3;
@@ -324,7 +347,7 @@ void freeStatement(Statement s) {
       freeExpression(s->sub1.e);
       break;
     case iteration:
-      switch(s->iterationtype) {
+      switch(s->deriv.iteration) {
         case forIter:
           freeExpression(s->sub1.forloop.e1);
           freeExpression(s->sub1.forloop.e2);
@@ -335,6 +358,19 @@ void freeStatement(Statement s) {
           freeCompoundStatement(s->sub2.cs);
         break;
           }
+      break;
+    case selection:
+      switch(s->deriv.selection) {
+        case ifStatement:
+          freeCompoundStatement(s->sub2.cs);
+          freeExpression(s->sub1.e);
+          break;
+        case ifelseStatement:
+          freeExpression(s->sub1.e);
+          freeCompoundStatement(s->sub2.cs);
+          freeCompoundStatement(s->sub3.cs);
+          break;
+      }
       break;
     case none:
       freeStatement(s->sub1.s);

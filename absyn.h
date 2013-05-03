@@ -63,7 +63,7 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {statement_none = none, expression, breakStatement, iteration} type;
+  enum {statement_none = none, expression, breakStatement, iteration, selection} type;
   union {
     Expression e;
     Statement s;
@@ -73,10 +73,16 @@ struct statement_ {
       Expression e3;
     } forloop;
   } sub1;
-  union{
+  union {
     CompoundStatement cs;
   } sub2;
-  enum {forIter,whileIter} iterationtype;
+  union {
+    CompoundStatement cs;
+  } sub3;
+  union {
+    enum {forIter,whileIter} iteration;
+    enum {ifStatement, ifelseStatement} selection;
+  } deriv;
 };
 struct parameter_ {
   int type;
@@ -120,6 +126,8 @@ CompoundStatement newCompoundStatement(GrammarList sList);
 
 Statement getExpressionStatement(Expression e);
 Statement getStatement(Statement s);
+Statement newIfStatement(Expression e, CompoundStatement cs);
+Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStatement cs2);
 Statement newWhileStatement(Expression e, CompoundStatement cs);
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs);
 Statement newBreakStatement();
