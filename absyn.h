@@ -63,7 +63,7 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {statement_none = none, expression} type;
+  enum {statement_none = none, expression, node} type;
   union {
     Expression e;
     Statement s;
