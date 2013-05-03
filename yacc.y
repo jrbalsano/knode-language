@@ -89,7 +89,7 @@ struct symtab *symtable = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator edge alledge LEFTEDGE RIGHTEDGE ALLEDGE BOTHEDGE
+%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator edge alledge LEFTEDGE RIGHTEDGE ALLEDGE BOTHEDGE
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
@@ -97,7 +97,7 @@ struct symtab *symtable = NULL;
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist
-%type<functionDefinition> functiondefinition externaldeclaration
+%type<functionDefinition> functiondefinition
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist statementlist
 %type<translationUnit> translationunit
@@ -120,15 +120,14 @@ struct symtab *symtable = NULL;
      */
 %%
 
-translationunit : externaldeclaration { $$ = getTranslationUnit($1); root = $$; }
-  | translationunit externaldeclaration
-  ;
-externaldeclaration : functiondefinition { $$ = $1; }
+translationunit : functiondefinition { $$ = getTranslationUnit($1); root = $$; }
+  | translationunit functiondefinition
   ;
 functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($1, $2); }
-  | typename declarator compoundstatement
-  | NODE declarator compoundstatement
-  | EDGE declarator compoundstatement
+  | typename declarator compoundstatement { $$ = getRetTypeFunctionDefinition($1, $2, $3); }
+  | NODE declarator compoundstatement { $$ = getRetTypeFunctionDefinition($1, $2, $3); }
+  | EDGE declarator compoundstatement { $$ = getRetTypeFunctionDefinition($1, $2, $3); }
+  | DICT declarator compoundstatement { $$ = getRetTypeFunctionDefinition($1, $2, $3); }
   ;
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
