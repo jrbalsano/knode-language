@@ -63,7 +63,7 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {statement_none = none, expression} type;
+  enum {statement_none = none, expression, breakStatement} type;
   union {
     Expression e;
     Statement s;
@@ -111,6 +111,7 @@ CompoundStatement newCompoundStatement(GrammarList sList);
 
 Statement getExpressionStatement(Expression e);
 Statement getStatement(Statement s);
+Statement newBreakStatement();
 
 Identifier getIdentifier(char *s);
 
