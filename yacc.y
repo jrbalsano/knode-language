@@ -157,8 +157,8 @@ statement : expressionstatement { $$ = getStatement($1); }
   | dictlist { $$ = NULL; }
   | edgestatement { $$ = NULL; }
   ;
-dictstatement : DICT IDENTIFIER NEWLINE {}
-  | DICT IDENTIFIER NEWLINE compoundstatement
+dictstatement : DICT identifier NEWLINE {}
+  | DICT identifier NEWLINE compoundstatement
   ;
 breakstatement : BREAK NEWLINE { $$ = newBreakStatement(); }
   ;
