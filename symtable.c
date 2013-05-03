@@ -14,7 +14,36 @@ struct symtab *symlook(char *symbol) {
     } 
     //if we don't find the symbol, add it to the table and return the pointer
     symbolPointer = (struct symtab*)malloc(sizeof(struct symtab));
-    symbolPointer->name = strdup(symbol);
+    strncpy(symbolPointer->name, symbol, sizeof(symbolPointer->name));
     HASH_ADD_STR(symtable, name, symbolPointer);
     return symbolPointer;
 }
+
+//delete the symbol in the hash table that has the corresponding symbol
+void deleteSymbol(char *symbol) {
+    struct symtab *symbolPointer;
+    HASH_FIND_STR(symtable, symbol, symbolPointer);
+    if (symbolPointer) {
+        HASH_DEL(symtable, symbolPointer);
+        free(symbolPointer);
+    }
+}
+
+void storeData(char *symbol, void *data) {
+    struct symtab *symbolPointer;
+    HASH_FIND_STR(symtable, symbol, symbolPointer);
+    if (symbolPointer) {
+        void *store = (void *)malloc(sizeof(*data));
+        symbolPointer->value = store;
+    }
+}
+
+//iterate through the hash table and delete/free everything
+void freeHashTable() {
+    struct symtab *curr, *tmp;
+    HASH_ITER(hh, symtable, curr, tmp) {
+        HASH_DEL(symtable, curr);
+        free(curr);
+    }
+}
+

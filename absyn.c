@@ -125,7 +125,6 @@ CompoundStatement newCompoundStatement(GrammarList sList) {
   ret->sList = sList;
   return ret;
 }
-
 /**
  * Recursively free the compound statement and its children in postorder.
  */
@@ -166,11 +165,11 @@ GrammarList newStatementList(Statement s) {
  * list already exists.
  */
 GrammarList newParameterList(Parameter p) {
-	GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
+  GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
   pList->type = parameterList;
-	pList->head = 0;
-	addFront(pList, p);
-	return pList;
+  pList->head = 0;
+  addFront(pList, p);
+  return pList;
 }
 
 /**
@@ -184,7 +183,17 @@ GrammarList newArgumentExpressionList(Expression e) {
   addFront(aeList, e);
   return aeList;
 }
-
+/**
+ * Creates a new argument expression list from an existing expression. To be used in
+ * situations where the argument expression list does not already exist.
+ */
+GrammarList newExpressionList(Expression e) {
+    GrammarList eList = (GrammarList)malloc(sizeof(struct grammarList_));
+    eList->type = expressionList;
+    eList->head = 0;
+    addFront(eList, e);
+    return eList;
+}
 /**
  * Add a node to the front of the Grammar List g, with data pointer data
  */
@@ -231,6 +240,9 @@ void freeGrammarList(GrammarList g) {
       case parameterList:
         freeParameter((Parameter)d);
         break;
+      case expressionList:
+        freeExpression((Expression)d);
+        break;
     }
   }
   free(g);
@@ -249,18 +261,74 @@ void freeGrammarList(GrammarList g) {
 Statement getStatement(Statement s) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = none;
-  ret->sub.s = s;
+  ret->sub1.s = s;
   return ret;
 }
 
+/**
+ * Create a new selection if statement.
+ */
+Statement newIfStatement(Expression e, CompoundStatement cs) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->sub1.e = e;
+    ret->type = selection;
+    ret->deriv.selection = ifStatement;
+    ret->sub2.cs = cs;
+    return ret;
+}
+
+/**
+ * Create a new selection if/else statement.
+ */
+Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStatement cs2) {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->sub1.e = e;
+    ret->type = selection;
+    ret->deriv.selection = ifelseStatement;
+    ret->sub2.cs = cs1;
+    ret->sub3.cs = cs2;
+    return ret;
+}
 /**
  * Create a Statement from an existing expression
  */
 Statement getExpressionStatement(Expression e) {
   Statement s = (Statement)malloc(sizeof(struct statement_));
   s->type = expression;
-  s->sub.e = e;
+  s->sub1.e = e;
   return s;
+}
+/**
+ * Create a new while iteration statement.
+ */
+Statement newWhileStatement(Expression e, CompoundStatement cs) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = iteration;
+  ret->deriv.iteration = whileIter;
+  ret->sub1.e = e;
+  ret->sub2.cs = cs;
+  return ret;
+}
+/**
+ * Create a new for iteration statement.
+ */
+Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = iteration;
+  ret->deriv.iteration = forIter;
+  ret->sub1.forloop.e1 = e1;
+  ret->sub1.forloop.e2 = e2;
+  ret->sub1.forloop.e3 = e3;
+  ret->sub2.cs = cs;
+  return ret;
+}
+/**
+ * Create a new break statement.
+ */
+Statement newBreakStatement() {
+    Statement ret = (Statement)malloc(sizeof(struct statement_));
+    ret->type = breakStatement;
+    return ret;
 }
 
 /**
@@ -276,10 +344,38 @@ void freeStatement(Statement s) {
   }  
   switch(s->type) {
     case expression:
-      freeExpression(s->sub.e);
+      freeExpression(s->sub1.e);
+      break;
+    case iteration:
+      switch(s->deriv.iteration) {
+        case forIter:
+          freeExpression(s->sub1.forloop.e1);
+          freeExpression(s->sub1.forloop.e2);
+          freeExpression(s->sub1.forloop.e3);
+          freeCompoundStatement(s->sub2.cs);
+        case whileIter:
+          freeExpression(s->sub1.e);
+          freeCompoundStatement(s->sub2.cs);
+        break;
+          }
+      break;
+    case selection:
+      switch(s->deriv.selection) {
+        case ifStatement:
+          freeCompoundStatement(s->sub2.cs);
+          freeExpression(s->sub1.e);
+          break;
+        case ifelseStatement:
+          freeExpression(s->sub1.e);
+          freeCompoundStatement(s->sub2.cs);
+          freeCompoundStatement(s->sub3.cs);
+          break;
+      }
       break;
     case none:
-      freeStatement(s->sub.s);
+      freeStatement(s->sub1.s);
+      break;
+    default:
       break;
   }
   free(s);
@@ -296,10 +392,10 @@ void freeStatement(Statement s) {
  * Create a parameter from a typed argument
  */
 Parameter getTypedParameter(int typename, Identifier i){
-	Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-	ret->type=typename;
-	ret->i = i;
-	return ret;
+  Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
+  ret->type=typename;
+  ret->i = i;
+  return ret;
 }
 
 /**
