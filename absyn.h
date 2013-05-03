@@ -63,27 +63,30 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {statement_none = none, expression,selection} type;
+  enum {statement_none = none, expression, breakStatement, iteration, selection} type;
   union {
     Expression e;
     Statement s;
-    CompoundStatement cs;
+    struct {
+      Expression e1;
+      Expression e2;
+      Expression e3;
+    } forloop;
   } sub1;
   union {
-    Expression e;
-    Statement s;
     CompoundStatement cs;
-    } sub2;
-   union {
-    Expression e;
-    Statement s;
+  } sub2;
+  union {
     CompoundStatement cs;
-    } sub3;
-  enum {ifStatement,ifelseStatement} selectiontype;
+  } sub3;
+  union {
+    enum {forIter,whileIter} iteration;
+    enum {ifStatement, ifelseStatement} selection;
+  } deriv;
 };
 struct parameter_ {
-	int type;
-	Identifier i;
+  int type;
+  Identifier i;
 };
 struct functionDefinition_ {
   Declarator d;
@@ -97,7 +100,7 @@ struct translationUnit_ {
   FunctionDefinition f;
 };
 struct grammarList_ {
-  enum {argument, statement,parameterList} type;
+  enum {argument, statement,parameterList,expressionList} type;
   GrammarNode head;
 };
 struct grammarNode_ {
@@ -125,6 +128,9 @@ Statement getExpressionStatement(Expression e);
 Statement getStatement(Statement s);
 Statement newIfStatement(Expression e, CompoundStatement cs);
 Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStatement cs2);
+Statement newWhileStatement(Expression e, CompoundStatement cs);
+Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs);
+Statement newBreakStatement();
 
 Identifier getIdentifier(char *s);
 

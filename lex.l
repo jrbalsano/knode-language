@@ -51,7 +51,6 @@ boolean   "TRUE"|"FALSE"
 {boolean}                       {
                                     printf("BOOLEAN\n");  
                                     yylval.ival = yytext[0] == 'T' ? 1 : 0; 
-                                    printf("BOOL'S TRUE COLORS: %d\n", yylval.ival);
                                     return BOOLEAN;
                                 }
 "and"                         	printf("AND\n");  return AND; 
@@ -93,9 +92,9 @@ boolean   "TRUE"|"FALSE"
                                      * variables/keywords
                                      */
                                     printf("IDENTIFIER\n");
-                                    //printf("%s\n", yytext);
                                     //check the symbol table with symlook and return a pointer to the symbol table
-                                    struct symtab *sp = symlook(yytext);
+                                    char *symbol = yytext;
+                                    struct symtab *sp = symlook(symbol);
                                     yylval.symp = sp;
                                     return IDENTIFIER;
                                 }

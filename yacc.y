@@ -11,9 +11,11 @@
 #include "absyn.h"
 #include "symtable.h"
 
+
 void yyerror(char *s);
 int errorHad = 0;
 TranslationUnit root = NULL;
+struct symtab *symtable = NULL;
 
 %}
 
@@ -87,7 +89,7 @@ TranslationUnit root = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator
+%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
@@ -147,10 +149,10 @@ statementlist : statement { $$ = newStatementList($1); }
   | statementlist statement
   ;
 statement : expressionstatement { $$ = getStatement($1); }
-  | iterationstatement { $$ = NULL; }
+  | iterationstatement { $$ = getStatement($1) }
   | selectionstatement { $$ = getStatement($1); }
   | nodestatement { $$ = NULL; }
-  | breakstatement { $$ = NULL; }
+  | breakstatement { $$ = getStatement($1); }
   | dictstatement { $$ = NULL; }
   | dictlist { $$ = NULL; }
   | edgestatement { $$ = NULL; }
@@ -158,9 +160,9 @@ statement : expressionstatement { $$ = getStatement($1); }
 dictstatement : DICT IDENTIFIER NEWLINE {}
   | DICT IDENTIFIER '[' INTEGER ']' NEWLINE
   | DICT IDENTIFIER '[' INTEGER ']' NEWLINE compoundstatement
-  | DICT IDENTIFIER compoundstatement 
+  | DICT IDENTIFIER compoundstatement
   ;
-breakstatement : BREAK NEWLINE
+breakstatement : BREAK NEWLINE { $$ = newBreakStatement(); }
   ;
 
 nodestatement : NODE IDENTIFIER NEWLINE
@@ -170,15 +172,15 @@ nodestatement : NODE IDENTIFIER NEWLINE
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX {$$ = newIfStatement($3,$6);}
   | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement {$$ = newIfElseStatement($3,$6,$9);}
   ;
-iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement
-  | FOR '(' expression ';' expression ';' expression ')' NEWLINE compoundstatement
+iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement {$$ = newWhileStatement($3,$6);}
+  | FOR '(' expression ';' expression ';' expression ')' NEWLINE compoundstatement { $$ = newForStatement($3,$5,$7,$10);}
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE
-  | IDENTIFIER ':' STRING_LITERAL NEWLINE { $1->value = $3; printf("%s\n", (char *)$1->value);}
-  | IDENTIFIER ':' INTEGER NEWLINE { /*$1->value = $3; printf("%d\n", (int *)$1->value);*/}
-  | IDENTIFIER ':' BOOLEAN NEWLINE { /*$1->value = $3; printf("%d\n", (int *)$1->value);*/}
+dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE {storeData($1->name, (void *)$3); printf("%s\n", (char *)$1->value);}
+  | IDENTIFIER ':' STRING_LITERAL NEWLINE { storeData($1->name, (void *)$3); printf("%s\n", (char *)$1->value);}
+  | IDENTIFIER ':' INTEGER NEWLINE { $1->num_val = $3; printf("%d\n", $1->num_val);}
+  | IDENTIFIER ':' BOOLEAN NEWLINE { printf("%d\n", $3); }
   ;
 edgestatement: EDGE IDENTIFIER '=' '[' IDENTIFIER alledgestatement IDENTIFIER ']' NEWLINE
   | IDENTIFIER alledgestatement IDENTIFIER NEWLINE
