@@ -164,7 +164,7 @@ breakstatement : BREAK NEWLINE { $$ = newBreakStatement(); }
   ;
 
 nodestatement : NODE identifier NEWLINE {$$ = newNodeCreateStatement($2);}
-  | NODE identifier EQ expression NEWLINE {$$ = newNodeAssignmentStatement($2, $4);}
+  | NODE identifier '=' expression NEWLINE {$$ = newNodeAssignmentStatement($2, $4);}
   | NODE identifier NEWLINE compoundstatement {$$ = newNodeDictAssignmentStatement($2, $4);}
   ;
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX {$$ = newIfStatement($3,$6);}

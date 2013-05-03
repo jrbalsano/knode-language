@@ -407,6 +407,21 @@ void freeStatement(Statement s) {
           break;
       }
       break;
+    case node:
+      switch(s->deriv.node) {
+          case nodeCreate:
+              freeIdentifier(s->sub1.i);
+              break;
+          case nodeAssignment:
+              freeIdentifier(s->sub1.i);
+              freeExpression(s->sub2.e);
+              break;
+          case nodeDictAssignment:
+              freeIdentifier(s->sub1.i);
+              freeCompoundStatement(s->sub2.cs);
+              break;
+      }
+      break;
     case none:
       freeStatement(s->sub1.s);
       break;
