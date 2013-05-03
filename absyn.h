@@ -21,7 +21,10 @@ typedef struct parameter_ *Parameter;
 
 #include "yacc.tab.h"
 
+typedef enum {int_, double_, string_, char_, node_, edge_, dict_, function_} typecheckType;
+
 struct expression_ {
+  typecheckType tt;
   enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment} type;
   union {
     Expression e;
@@ -58,13 +61,16 @@ struct expression_ {
 
 struct identifier_ {
   char *symbol;
+  typecheckType tt;
   struct symtab *sp;
 };
 struct declarator_ {
   Identifier name;
+  typecheckType tt;
   GrammarList p; //A list of parameters
 };
 struct statement_ {
+  typecheckType tt;
   enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge, dictlist, dict} type;
   union {
     Expression e;
@@ -94,10 +100,12 @@ struct statement_ {
   } deriv;
 };
 struct parameter_ {
+  typecheckType tt;
   int type;
   Identifier i;
 };
 struct functionDefinition_ {
+  typecheckType tt;
   enum {typ_void = none, typ_int = INT, typ_double = DOUBLE, typ_char = CHAR, typ_string = STRING,
     typ_node = NODE, typ_edge = EDGE, typ_dict = DICT} type_name;
   Declarator d;
