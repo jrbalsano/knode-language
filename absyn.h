@@ -50,7 +50,9 @@ struct expression_ {
     enum{eq_none = none, equal, notequal} eq;
     enum{gen_none = none, comma = ','} none;
     enum{cond_none = none, cond_or, cond_and} cond;
-    enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ, pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ } assign;
+    enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ,
+      pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ, assign_left = LEFTEDGE,
+      assign_right = RIGHTEDGE, assign_both = BOTHEDGE, assign_all = ALLEDGE } assign;
   } deriv;
 };
 
@@ -76,16 +78,16 @@ struct statement_ {
   } sub1;
   union {
     CompoundStatement cs;
-    Identifier i;
+    Expression e;
   } sub2;
   union {
     CompoundStatement cs;
-    Identifier i;
+    Expression e;
   } sub3;
   union {
     enum {forIter,whileIter} iteration;
     enum {ifStatement, ifelseStatement} selection;
-    enum {all = ALLEDGE, both = BOTHEDGE, left = LEFTEDGE, right = RIGHTEDGE, assign_all } edge;
+    enum {edge_none = none, all = ALLEDGE, both = BOTHEDGE, left = LEFTEDGE, right = RIGHTEDGE} edge;
   } deriv;
 };
 struct parameter_ {
@@ -174,6 +176,7 @@ Expression getCond(Expression e);
 Expression getAssign(Expression e);
 Expression getTokenizedAssignment(Expression e1, int op, Expression e2);
 Expression getAssignment(Expression e1, Expression e2);
+Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression e2);
 Expression getInit(int token, Identifier i, Expression e);
 
 void freeTranslationUnit(TranslationUnit t); 

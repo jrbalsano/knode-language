@@ -736,6 +736,19 @@ Expression getInit(int token, Identifier i, Expression e){
   ret->sub3.e = e;
   return ret;
 }
+
+/**
+ * Creates a new assignment expression from an edge connector expression
+ * This would in reality be an array of edges being returned.
+ */
+Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression e2) {
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = assignment;
+  ret->deriv.assign = edgeconnector;
+  ret->sub1.e = e1;
+  ret->sub2.e = e2;
+  return ret;
+}
 /**
  * Creates a new expression from an existing assignment expression
  */

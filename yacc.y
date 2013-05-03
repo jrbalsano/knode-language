@@ -89,7 +89,7 @@ struct symtab *symtable = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator
+%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING  NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator edge alledge LEFTEDGE RIGHTEDGE ALLEDGE BOTHEDGE
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
@@ -194,7 +194,7 @@ assignmentexpression : conditionalexpression { $$ = getAssign($1); }
   | unaryexpression assignmentoperator assignmentexpression { $$ = getTokenizedAssignment($1, $2, $3); }
   | unaryexpression '=' assignmentexpression { $$ = getAssignment($1, $3); }
   | typename identifier '=' assignmentexpression { $$ = getInit($1, $2, $4); }
-  | unaryexpression alledge unaryexpression
+  | unaryexpression alledge unaryexpression { $$ = getAssignEdgeExpression($1, $2, $3); }
   ;
 assignmentoperator : PLUSEQ { $$ = $1; }
   | MINUSEQ { $$ = $1; }
