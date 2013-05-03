@@ -125,6 +125,7 @@ CompoundStatement newCompoundStatement(GrammarList sList) {
   ret->sList = sList;
   return ret;
 }
+
 /**
  * Recursively free the compound statement and its children in postorder.
  */
@@ -158,6 +159,13 @@ GrammarList newStatementList(Statement s) {
   return sList;
 }
 
+/**
+ * Adds a new statement to the front of the statementlist
+ */
+GrammarList extendStatementList(GrammarList sList, Statement s) {
+  addFront(sList, s);
+  return sList;
+}
 
 /**
  * Creates a new parameter list from an existing parameter. To be used in sutations
