@@ -67,26 +67,26 @@ struct statement_ {
   union {
     Expression e;
     Statement s;
-	GrammarList eList; //A list of expressions
-	CompoundStatement cs;
-      } sub1;
+    GrammarList eList; //A list of expressions
+    CompoundStatement cs;
+  } sub1;
   union{
-	  Expression e;
-	  Statement s;
-	  GrammarList eList; //A list of expressions
-	  CompoundStatement cs;
-    } sub2;
+    Expression e;
+    Statement s;
+    GrammarList eList; //A list of expressions
+    CompoundStatement cs;
+  } sub2;
   union{
-		Expression e;
-		Statement s;
-		GrammarList eList; //A list of expressions
-		CompoundStatement cs;
-    } sub3;
+    Expression e;
+    Statement s;
+    GrammarList eList; //A list of expressions
+    CompoundStatement cs;
+  } sub3;
   enum {forIter,whileIter} iterationtype;
 };
 struct parameter_ {
-	int type;
-	Identifier i;
+  int type;
+  Identifier i;
 };
 struct functionDefinition_ {
   Declarator d;
