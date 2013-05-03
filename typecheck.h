@@ -11,5 +11,7 @@ void compoundStatementTypeCheck(CompoundStatement cs);
 void expressionListTypeCheck(GrammarList g);
 void statementListTypeCheck(GrammarList g);
 void parameterListTypeCheck(GrammarList g);
+void forStatementTypeCheck(Statement s);
+void whileStatementTypeCheck(Statement s);
 
 #endif

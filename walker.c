@@ -119,3 +119,102 @@ void walkGrammarList(GrammarList g) {
   printf("Grammar list walked at %p\n", g);
 #endif
 }
+
+
+void walkStatement(Statement s) {
+#ifdef MEMTRACE
+  printf("Walking statement at %p\n", s);
+#endif
+  if(s == NULL) {
+    fprintf(stderr, "Null child Statement\n");
+    return;
+  }  
+  switch(s->type) {
+    case expression:
+      walkExpression(s->sub1.e);
+      break;
+    case iteration:
+      switch(s->deriv.iteration) {
+        case forIter:
+          walkExpression(s->sub1.forloop.e1);
+          walkExpression(s->sub1.forloop.e2);
+          walkExpression(s->sub1.forloop.e3);
+          walkCompoundStatement(s->sub2.cs);
+          forStatementTypeCheck(s);
+          forStatementGenerateCode(s);
+          break;
+        case whileIter:
+          walkExpression(s->sub1.e);
+          walkCompoundStatement(s->sub2.cs);
+          whileStatementTypeCheck(s);
+          whileStatementGenerateCode(s);
+          break;
+      }
+      break;
+      // EVERYTHING BELOW HERE IS WRONG AND NEEDS TO BE SWITCHED TO WALK/TYPECHECK/GENERATE
+    case selection:
+      switch(s->deriv.selection) {
+        case ifStatement:
+          freeCompoundStatement(s->sub2.cs);
+          freeExpression(s->sub1.e);
+          break;
+        case ifelseStatement:
+          freeExpression(s->sub1.e);
+          freeCompoundStatement(s->sub2.cs);
+          freeCompoundStatement(s->sub3.cs);
+          break;
+      }
+      break;
+    case dictlist:
+      freeExpression(s->sub1.e);
+      freeExpression(s->sub2.e);
+      break;
+    case dict:
+      switch(s->deriv.dict) {
+        case definitions:
+          freeIdentifier(s->sub1.i);
+          freeCompoundStatement(s->sub2.cs);
+          break;
+        case none:
+          freeIdentifier(s->sub1.i);
+          break;
+      }
+      break;
+    case node:
+      switch(s->deriv.node) {
+        case nodeCreate:
+          freeIdentifier(s->sub1.i);
+          break;
+        case nodeAssignment:
+          freeIdentifier(s->sub1.i);
+          freeExpression(s->sub2.e);
+          break;
+        case nodeDictAssignment:
+          freeIdentifier(s->sub1.i);
+          freeCompoundStatement(s->sub2.cs);
+          break;
+      }
+      break;
+    case edge:
+      switch(s->deriv.edge) {
+        case none:
+          freeIdentifier(s->sub1.i);
+          break;
+        default:
+          freeIdentifier(s->sub1.i);
+          freeExpression(s->sub2.e);
+          freeExpression(s->sub3.e);
+          break;
+      }
+      break;
+    case none:
+      freeStatement(s->sub1.s);
+      break;
+    default:
+      break;
+  }
+  free(s);
+#ifdef MEMTRACE
+  printf("Statement walked at %p\n", s);
+#endif
+}

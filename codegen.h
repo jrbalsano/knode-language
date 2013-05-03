@@ -9,6 +9,8 @@ void declaratorGenerateCode(Declarator d);
 void translationUnitGenerateCode(translationUnit t);
 void compoundStatementGenerateCode(CompoundStatement cs);
 void expressionListGenerateCode(GrammarList g);
+void forStatementGenerateCode(Statement s);
+void whileStatementGenerateCode(Statement s);
 
 
 #endif
