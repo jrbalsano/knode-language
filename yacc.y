@@ -163,9 +163,9 @@ dictstatement : DICT IDENTIFIER NEWLINE {}
 breakstatement : BREAK NEWLINE
   ;
 
-nodestatement : NODE IDENTIFIER NEWLINE
-  | NODE IDENTIFIER EQ IDENTIFIER
-  | NODE IDENTIFIER NEWLINE compoundstatement
+nodestatement : NODE identifier NEWLINE
+  | NODE identifier EQ expression NEWLINE
+  | NODE identifier NEWLINE compoundstatement
   ;
 selectionstatement : IF '(' expression ')' NEWLINE compoundstatement %prec IFX
   | IF '(' expression ')' NEWLINE compoundstatement ELSE NEWLINE compoundstatement 
