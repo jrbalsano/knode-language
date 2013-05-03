@@ -63,10 +63,11 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {statement_none = none, expression, breakStatement, iteration, selection, dictlist} type;
+  enum {statement_none = none, expression, breakStatement, iteration, selection, dictlist, dict} type;
   union {
     Expression e;
     Statement s;
+    Identifier i;
     struct {
       Expression e1;
       Expression e2;
@@ -83,6 +84,7 @@ struct statement_ {
   union {
     enum {forIter,whileIter} iteration;
     enum {ifStatement, ifelseStatement} selection;
+    enum {dict_none = none, definitions} dict;
   } deriv;
 };
 struct parameter_ {
@@ -133,6 +135,8 @@ Statement newWhileStatement(Expression e, CompoundStatement cs);
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs);
 Statement newBreakStatement();
 Statement getDictListStatement(Expression e1, Expression e2);
+Statement getDictDecStatement(Identifier i);
+Statement getDictDefStatement(Identifier i, CompoundStatement cs);
 
 Identifier getIdentifier(char *s);
 

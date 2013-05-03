@@ -153,12 +153,12 @@ statement : expressionstatement { $$ = getStatement($1); }
   | selectionstatement { $$ = getStatement($1); }
   | nodestatement { $$ = NULL; }
   | breakstatement { $$ = getStatement($1); }
-  | dictstatement { $$ = NULL; }
+  | dictstatement { $$ = getStatement($1); }
   | dictlist { $$ = getStatement($1); }
   | edgestatement { $$ = NULL; }
   ;
-dictstatement : DICT identifier NEWLINE {}
-  | DICT identifier NEWLINE compoundstatement
+dictstatement : DICT identifier NEWLINE { $$ = getDictDecStatement($2); }
+  | DICT identifier NEWLINE compoundstatement { $$ = getDictDefStatement($2, $4); }
   ;
 breakstatement : BREAK NEWLINE { $$ = newBreakStatement(); }
   ;

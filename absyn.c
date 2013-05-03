@@ -343,6 +343,29 @@ Statement getDictListStatement(Expression e1, Expression e2) {
 }
 
 /**
+ * Creates a new Dict without definitions
+ */
+Statement getDictDecStatement(Identifier i) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = dict;
+  ret->deriv.dict = none;
+  ret->sub1.i = i;
+  return ret;
+}
+
+/**
+ * Creates a new dict with a compound statement containing definitions.
+ */
+Statement getDictDefStatement(Identifier i, CompoundStatement cs) {
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->type = dict;
+  ret->deriv.dict = definitions;
+  ret->sub1.i = i;
+  ret->sub2.cs = cs;
+  return ret;
+}
+
+/**
  * Recursively free the Statement and its children in postorder.
  */
 void freeStatement(Statement s) {
@@ -386,6 +409,17 @@ void freeStatement(Statement s) {
     case dictlist:
       freeExpression(s->sub1.e);
       freeExpression(s->sub2.e);
+      break;
+    case dict:
+      switch(s->deriv.dict) {
+        case definitions:
+          freeIdentifier(s->sub1.i);
+          freeCompoundStatement(s->sub2.cs);
+          break;
+        case none:
+          freeIdentifier(s->sub1.i);
+          break;
+      }
       break;
     case none:
       freeStatement(s->sub1.s);
