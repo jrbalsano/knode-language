@@ -96,7 +96,7 @@ struct symtab *symtable = NULL;
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement alledgestatement
+%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement
 %type<functionDefinition> functiondefinition externaldeclaration
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist statementlist
@@ -155,7 +155,7 @@ statement : expressionstatement { $$ = getStatement($1); }
   | breakstatement { $$ = getStatement($1); }
   | dictstatement { $$ = NULL; }
   | dictlist { $$ = NULL; }
-  | edgestatement { $$ = NULL; }
+  | edgestatement { $$ = getStatement($1); }
   ;
 dictstatement : DICT IDENTIFIER NEWLINE {}
   | DICT IDENTIFIER '[' INTEGER ']' NEWLINE
@@ -182,12 +182,13 @@ dictlist : IDENTIFIER ':' IDENTIFIER NEWLINE {storeData($1->name, (void *)$3); p
   | IDENTIFIER ':' INTEGER NEWLINE { $1->num_val = $3; printf("%d\n", $1->num_val);}
   | IDENTIFIER ':' BOOLEAN NEWLINE { printf("%d\n", $3); }
   ;
-edgestatement: EDGE IDENTIFIER '=' '[' IDENTIFIER alledgestatement IDENTIFIER ']' NEWLINE
-  | IDENTIFIER alledgestatement IDENTIFIER NEWLINE
-  | IDENTIFIER alledgestatement IDENTIFIER '['INTEGER']' NEWLINE
+edgestatement: EDGE identifier '=' '[' unaryexpression edge unaryexpression ']' NEWLINE
+  | EDGE identifier NEWLINE
   ;
-alledgestatement: ALLEDGE
-  | BOTHEDGE
+alledge: ALLEDGE
+  | edge
+  ;
+edge: BOTHEDGE
   | LEFTEDGE
   | RIGHTEDGE
   ;
@@ -198,6 +199,7 @@ assignmentexpression : conditionalexpression { $$ = getAssign($1); }
   | unaryexpression assignmentoperator assignmentexpression { $$ = getTokenizedAssignment($1, $2, $3); }
   | unaryexpression '=' assignmentexpression { $$ = getAssignment($1, $3); }
   | typename identifier '=' assignmentexpression { $$ = getInit($1, $2, $4); }
+  | unaryexpression alledge unaryexpression
   ;
 assignmentoperator : PLUSEQ { $$ = $1; }
   | MINUSEQ { $$ = $1; }
@@ -248,7 +250,6 @@ unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
   | MINUSMINUS unaryexpression { $$ = getUnaryDecr($2); }
   | unaryoperator unaryexpression {$$ = getUnarySingleOp($1, $2); }
   ;
-
 unaryoperator : '+' { $$ = $1; }
   | '-' { $$ = $1; }
   | '!' { $$ = $1; }

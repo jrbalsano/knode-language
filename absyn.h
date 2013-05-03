@@ -63,10 +63,11 @@ struct declarator_ {
   GrammarList p; //A list of parameters
 };
 struct statement_ {
-  enum {statement_none = none, expression, breakStatement, iteration, selection} type;
+  enum {statement_none = none, expression, breakStatement, iteration, selection, edge} type;
   union {
     Expression e;
     Statement s;
+    Identifier i;
     struct {
       Expression e1;
       Expression e2;
@@ -75,13 +76,16 @@ struct statement_ {
   } sub1;
   union {
     CompoundStatement cs;
+    Identifier i;
   } sub2;
   union {
     CompoundStatement cs;
+    Identifier i;
   } sub3;
   union {
     enum {forIter,whileIter} iteration;
     enum {ifStatement, ifelseStatement} selection;
+    enum {all = ALLEDGE, both = BOTHEDGE, left = LEFTEDGE, right = RIGHTEDGE, assign_all } edge;
   } deriv;
 };
 struct parameter_ {
