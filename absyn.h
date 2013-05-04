@@ -45,6 +45,7 @@ struct typeCheckType_ {
 
 struct expression_ {
   TypeCheckType tt;
+  char *code;
   enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment} type;
   union {
     Expression e;
@@ -80,16 +81,19 @@ struct expression_ {
 };
 
 struct identifier_ {
+  char *code;
   char *symbol;
   TypeCheckType tt;
   struct symtab *sp;
 };
 struct declarator_ {
+  char *code;
   Identifier name;
   TypeCheckType tt;
   GrammarList p; //A list of parameters
 };
 struct statement_ {
+  char *code;
   TypeCheckType tt;
   enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge, dictlist, dict} type;
   union {
@@ -120,11 +124,13 @@ struct statement_ {
   } deriv;
 };
 struct parameter_ {
+  char *code;
   TypeCheckType tt;
   int type;
   Identifier i;
 };
 struct functionDefinition_ {
+  char *code;
   TypeCheckType tt;
   enum {typ_void = none, typ_int = INT, typ_double = DOUBLE, typ_char = CHAR, typ_string = STRING,
     typ_node = NODE, typ_edge = EDGE, typ_dict = DICT} type_name;
@@ -132,16 +138,20 @@ struct functionDefinition_ {
   CompoundStatement cs;
 };
 struct compoundStatement_ {
+  char *code;
   GrammarList sList; //A list of statements
 };
 struct translationUnit_ {
+  char *code;
   FunctionDefinition f;
 };
 struct grammarList_ {
+  char *code;
   enum {argument, statement,parameterList,expressionList} type;
   GrammarNode head;
 };
 struct grammarNode_ {
+  char *code;
   GrammarNode next;
   void *data;
 };
