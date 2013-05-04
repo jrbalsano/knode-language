@@ -78,56 +78,188 @@ void parameterListTypeCheck(GrammarList g);
 void forStatementTypeCheck(Statement s);
 
 /**
- * 
+ * Checks to make sure that each statement in its compound statement
+ * is an evaluatable statement, and not for example a dictionary definition.
+ * Also makes sure that the while condition is a boolean or indeterminable.
+ */
 void whileStatementTypeCheck(Statement s);
-/* Selection */
+
+/**
+ * Checks for valid sub-compoundstatements and then makes sure that its
+ * condition is either a boolean or indeterminable.
+ */
 void ifStatementTypeCheck(Statement s);
+
+/**
+ * Checks for valid sub-compoundstatements and then makes sure that its
+ * condition is either a boolean or indeterminable.
+ */
 void ifelseStatementTypeCheck(Statement s);
-/* Dictionaries */
+
+/**
+ * Doesn't need to do anything?
+ */
 void dictlistTypeCheck(Statement s);
+
+/**
+ * Checks to make sure all the statements in its compounds statement
+ * are dictlists and nothing else. Also sets its type to dict.
+ */
 void dictDefinitionsTypeCheck(Statement s);
+
+/**
+ * Sets its type to dict
+ */
 void dictTypeCheck(Statement s);
-/* Nodes */
+
+/**
+ * Sets its type to node
+ */
 void nodeCreationTypeCheck(Statement s);
+
+/**
+ * Sets its type to node and checks to make sure the operator is an equals sign
+ * and that on the other side of the equals sign is a node type expression.
+ */
 void nodeAssignmentTypeCheck(Statement s);
+
+/**
+ * Sets its type to node and makes sure that its compound statement's statements
+ * are all dictlists statements.
+ */
+
 void nodeDictionaryTypeCheck(Statement s);
-/* Statement */
+/**
+ * Just carries up the type of its sub-statement.
+ */
 void statementTypeCheck(s);
 
 /************************************************
  * Expressions
  ************************************************/
+/**
+ * Just passes up the type of the single sub-statement
+ * to the this statement.
+ */
 void passupExpressionType(Expression e);
+
+/**
+ * Sets its type to the type of its identifier after
+ * first checking that the postfix expression on the left
+ * is a '.' operable postfix expression type (node, dict, edge,
+ * undeterminable)
+ */
 void postfixIdentifierTypeCheck(Expression e);
+
+/**
+ * Sets its type to integer after checking to make sure
+ * the sub expression is type integer.
+ */
 void postfixDecrementTypeCheck(Expression e);
+
+/**
+ * Sets its type to integer after checking to make sure
+ * the sub expression is type integer.
+ */
 void postfixIncrementTypeCheck(Expresion e);
-void postfixArgumentTypeCheck(Expression e);
+
+/**
+ * Sets its type to whatever type the function its trying to be
+ * should return. If the function its trying to be is indeterminable
+ * then it should be indeterminable.
+ */
 void postfixArgumentTypeCheck(Expression e);
 
+/**
+ * Checks to make sure either a) the bracketed expression
+ * is an integer and the left expression is an array type
+ * or b) the bracketed expression is a string (or convertible
+ * to string)
+ */
+void postfixBracketTypeCheck(Expression e);
+
+/**
+ * Checks to make sure the sub expression is operable on by the
+ * operator.
+ */
 void unaryExpressionTypeCheck(Expression e);
 
+/**
+ * Checks the two types to make sure its a valid cast and then
+ * types the expression to the casted type.
+ */
 void castTypedExpressionTypeCheck(Expression e);
 
+/**
+ * Checks to make sure the two expressions are int or double
+ * and then should use the normal rules to resolve whether or not
+ * the resulting expression is int or double. Indeterminable is also
+ * an option.
+ */
 void multExpressionTypeCheck(Expression e);
 
+/**
+ * Checks to make sure the two expressions are int or double
+ * and then should use the normal rules to resolve whether or not
+ * the resulting expression is int or double. Indeterminable is also
+ * an option.
+ */
 void addExpressionTypeCheck(Expression e);
 
+/**
+ * If we're talking > or < comparators then check again for number types.
+ * Don't forget about indeterminables and set the resulting expression to
+ * boolean type.
+ */
 void relatExpressionTypeCheck(Expression e);
 
+/**
+ * Make sure two expressions are of castably comparable types and then set
+ * the resulting expression to boolean.
+ */
 void eqExpressionTypeCheck(Expression e);
 
+/**
+ * Check to make sure right hand side type matches left hand side type
+ * and then set the resulting expression type to the same type as the
+ * expression.
+ */
 void assignmentInitExpressionTypeCheck(Expression e);
+
+/**
+ * Check to make sure that both sides are node types and then set the
+ * expression type to an array of edges.
+ */
 void edgeExpressionTypeCheck(Expression e);
+
+/**
+ * Check to make sure left hand side and right hand side are the same type
+ * or castable to the same type and then set the expression type to the lhs
+ * type.
+ */
 void assignmentExpressionTypeCheck(Expression e);
 
+/**
+ * Sets its type to the appropriate type based on the kind of primary expression
+ * it is.
+ */ 
 void primaryExpressionTypeCheck(Expression e);
 
+/**
+ * Sets its type to function the return type of the function its calling.
+ */
 void functionExpressionTypeCheck(Expression e);
 
+/**
+ * Sets its type to the list type of the two expressions its composed of?
+ */
 void twoExpressionTypeCheck(Expression e);
 
 /************************************************
  * Identifiers
  ************************************************/
+/**
+ * Sets its type to the type of the variable it represents. May or may not be knowable.
+ */
 void identifierTypeCheck(Identifier i);
 #endif
