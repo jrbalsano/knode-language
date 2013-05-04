@@ -28,6 +28,8 @@ void freeTranslationUnit(TranslationUnit t) {
     return;
   }  
   freeFunctionDefinition(t->f);
+  if(t->code)
+    free(t->code);
   free(t);
 #ifdef MEMTRACE
   printf("Translation unit freed\n");
@@ -73,6 +75,8 @@ void freeFunctionDefinition(FunctionDefinition f) {
   freeDeclarator(f->d);
   freeCompoundStatement(f->cs);
   freeTypeCheckType(f->tt);
+  if(f->code)
+    free(f->code);
   free(f);
 #ifdef MEMTRACE
   printf("Function definition freed\n");
@@ -119,6 +123,8 @@ void freeDeclarator(Declarator d) {
     freeGrammarList(d->p);
   freeIdentifier(d->name);
   freeTypeCheckType(d->tt);
+  if(d->code)
+    free(d->code);
   free(d);
 #ifdef MEMTRACE
   printf("Declarator freed\n");
@@ -151,6 +157,8 @@ void freeCompoundStatement(CompoundStatement c) {
   }
   freeGrammarList(c->sList);
   freeTypeCheckType(c->tt);
+  if(c->code)
+    free(c->code);
   free(c);
 #ifdef MEMTRACE
   printf("Compound statement freed\n");
@@ -267,6 +275,8 @@ void freeGrammarList(GrammarList g) {
     }
   }
   freeTypeCheckType(g->tt);
+  if(g->code)
+    free(g->code);
   free(g);
 #ifdef MEMTRACE
   printf("Grammar list freed\n");
@@ -537,6 +547,8 @@ void freeStatement(Statement s) {
       break;
   }
   freeTypeCheckType(s->tt);
+  if(s->code)
+    free(s->code);
   free(s);
 #ifdef MEMTRACE
   printf("Statement freed\n");
@@ -563,6 +575,8 @@ Parameter getTypedParameter(int typename, Identifier i){
 void freeParameter(Parameter p) {
   freeIdentifier(p->i);
   freeTypeCheckType(p->tt);
+  if(p->code)
+    free(p->code);
   free(p);
 }
 
@@ -1074,6 +1088,8 @@ void freeExpression(Expression e) {
       break;
   }
   freeTypeCheckType(e->tt);
+  if(e->code)
+    free(e->code);
   free(e);
 #ifdef MEMTRACE
   printf("Expression freed\n");
@@ -1107,6 +1123,8 @@ void freeIdentifier(Identifier i) {
     return;
   }  
   freeTypeCheckType(i->tt);
+  if(i->code)
+    free(i->code);
   free(i);
 #ifdef MEMTRACE
   printf("Identifier freed\n");
