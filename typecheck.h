@@ -13,5 +13,7 @@ void statementListTypeCheck(GrammarList g);
 void parameterListTypeCheck(GrammarList g);
 void forStatementTypeCheck(Statement s);
 void whileStatementTypeCheck(Statement s);
+void ifStatementTypeCheck(Statement s);
+void ifelseStatementTypeCheck(Statement s);
 
 #endif

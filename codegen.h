@@ -11,7 +11,8 @@ void compoundStatementGenerateCode(CompoundStatement cs);
 void expressionListGenerateCode(GrammarList g);
 void forStatementGenerateCode(Statement s);
 void whileStatementGenerateCode(Statement s);
-
+void ifStatementGenerateCode(Statement s);
+void ifelseStatementGenerateCode(Statement s);
 
 #endif
 
