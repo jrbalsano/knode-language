@@ -41,7 +41,7 @@ struct typeCheckType_ {
   enum {indeterminable, int_, double_, string_, char_, node_, edge_, dict_, function_, array_} base;
   TypeCheckType ar_sub;
   TypeCheckType fn_sub;
-}
+};
 
 struct expression_ {
   TypeCheckType tt;
@@ -139,6 +139,7 @@ struct functionDefinition_ {
 };
 struct compoundStatement_ {
   char *code;
+  TypeCheckType tt;
   GrammarList sList; //A list of statements
 };
 struct translationUnit_ {
@@ -147,6 +148,7 @@ struct translationUnit_ {
 };
 struct grammarList_ {
   char *code;
+  TypeCheckType tt;
   enum {argument, statement,parameterList,expressionList} type;
   GrammarNode head;
 };
@@ -241,5 +243,6 @@ void freeStatement(Statement s);
 void freeExpression(Expression e);
 void freeIdentifier(Identifier i);
 void freeParameter(Parameter p);
+void freeTypeCheckType(TypeCheckType t);
 
 #endif

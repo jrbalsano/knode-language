@@ -28,7 +28,6 @@ void freeTranslationUnit(TranslationUnit t) {
     return;
   }  
   freeFunctionDefinition(t->f);
-  freeTypeCheckType(t->tt);
   free(t);
 #ifdef MEMTRACE
   printf("Translation unit freed\n");
