@@ -1103,3 +1103,24 @@ void freeIdentifier(Identifier i) {
   printf("Identifier freed\n");
 #endif
 }
+
+/****************
+ * TypeCheckTypes
+ ****************/
+void freeTypeCheckType(TypeCheckType t) {
+#ifdef MEMTRACE
+  printf("Freeing TypeCheckType\n");
+#endif
+  if(t == NULL) {
+    fprintf(stderr, "Null child TypeCheckType\n");
+    return;
+  }  
+  if(t->ar_sub)
+    freeTypeCheckType(t->ar_sub);
+  if(t->fn_sub)
+    freeTypeCheckType(t->fn_sub);
+  free(t);
+#ifdef MEMTRACE
+  printf("TypeCheckType freed\n");
+#endif
+}
