@@ -1,6 +1,6 @@
 #include "codegen.h"
 
-void translationUnitGenerateCode(translationUnit t) {
+void translationUnitGenerateCode(TranslationUnit t) {
 
 }
 
@@ -68,7 +68,19 @@ void nodeDictionaryGenerateCode(Statement s) {
 
 }
 
+void edgeCreationGenerateCode(Statement s) {
+
+}
+
+void edgeStatementGenerateCode(Statement s) {
+
+}
+
 void statementGenerateCode(Statement s) {
+
+}
+
+void parameterGenerateCode(Parameter p) {
 
 }
 
@@ -84,7 +96,7 @@ void postfixDecrementGenerateCode(Expression e) {
 
 }
 
-void postfixIncrementGenerateCode(Expresion e) {
+void postfixIncrementGenerateCode(Expression e) {
 
 }
 
@@ -100,7 +112,7 @@ void unaryExpressionGenerateCode(Expression e) {
 
 }
 
-void castTypedExpressionGenerateCode(e) {
+void castTypedExpressionGenerateCode(Expression e) {
 
 }
 
@@ -117,6 +129,10 @@ void relatExpressionGenerateCode(Expression e) {
 }
 
 void eqExpressionGenerateCode(Expression e) {
+
+}
+
+void condExpressionGenerateCode(Expression e) {
 
 }
 

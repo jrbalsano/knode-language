@@ -68,7 +68,19 @@ void nodeDictionaryTypeCheck(Statement s) {
 
 }
 
-void statementTypeCheck(s) {
+void edgeCreationTypeCheck(Statement s) {
+
+}
+
+void edgeStatementTypeCheck(Statement s) {
+
+}
+
+void statementTypeCheck(Statement s) {
+
+}
+
+void parameterTypeCheck(Parameter p) {
 
 }
 
@@ -84,7 +96,7 @@ void postfixDecrementTypeCheck(Expression e) {
 
 }
 
-void postfixIncrementTypeCheck(Expresion e) {
+void postfixIncrementTypeCheck(Expression e) {
 
 }
 
@@ -120,6 +132,10 @@ void eqExpressionTypeCheck(Expression e) {
 
 }
 
+void condExpressionTypeCheck(Expression e) {
+
+}
+
 void assignmentInitExpressionTypeCheck(Expression e) {
 
 }
@@ -148,7 +164,7 @@ void identifierTypeCheck(Identifier i) {
 
 }
 
-void getTypeCheckType(int type) {
+TypeCheckType getTypeCheckType(int type) {
   TypeCheckType ret = (TypeCheckType)malloc(sizeof(struct typeCheckType_));
   ret->base = type;
   return ret;
@@ -166,7 +182,7 @@ int exactTypeMatch(TypeCheckType t1, TypeCheckType t2) {
     int fnmatch = exactTypeMatch(t1->fn_sub, t2->fn_sub);
     int armatch = exactTypeMatch(t1->ar_sub, t2->ar_sub);
     if(basematch && fnmatch && armatch) {
-      if(basematach < 0 || fnmatch < 0 || armatch < 0)
+      if(basematch < 0 || fnmatch < 0 || armatch < 0)
         return -1;
       else
         return 1;

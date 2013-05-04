@@ -405,7 +405,7 @@ void walkExpression(Expression e) {
           edgeExpressionTypeCheck(e);
           edgeExpressionGenerateCode(e);
           break;
-        case eqassign:
+        case eq_assign:
         case multeq:
         case pluseq:
         case diveq:
@@ -459,7 +459,7 @@ void walkIdentifier(Identifier i) {
     return;
   }  
   identifierTypeCheck(i);
-  identifierCodeGeneration(i);
+  identifierGenerateCode(i);
 #ifdef MEMTRACE
   printf("Identifier walked at %p\n", i);
 #endif

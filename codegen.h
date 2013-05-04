@@ -50,11 +50,19 @@ void dictGenerateCode(Statement s);
 void nodeCreationGenerateCode(Statement s);
 void nodeAssignmentGenerateCode(Statement s);
 void nodeDictionaryGenerateCode(Statement s);
+/* Edges */
+void edgeCreationGenerateCode(Statement s);
+void edgeStatementGenerateCode(Statement s);
 /* Generic */
 void statementGenerateCode(Statement s);
 
 /************************************************
- * Statements
+ * Parameters
+ ************************************************/
+void parameterGenerateCode(Parameter p);
+
+/************************************************
+ * Expressions
  ************************************************/
 /**
  * This function should just take the code of e->sub1.e
@@ -80,6 +88,8 @@ void addExpressionGenerateCode(Expression e);
 void relatExpressionGenerateCode(Expression e);
 
 void eqExpressionGenerateCode(Expression e);
+
+void condExpressionGenerateCode(Expression e);
 
 void assignmentInitExpressionGenerateCode(Expression e);
 void edgeExpressionGenerateCode(Expression e);

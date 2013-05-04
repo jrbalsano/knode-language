@@ -129,10 +129,29 @@ void nodeAssignmentTypeCheck(Statement s);
  */
 
 void nodeDictionaryTypeCheck(Statement s);
+
+/**
+ * Should check to make sure both arguments are nodes and that they do not use alledge
+ */
+void edgeCreationTypeCheck(Statement s);
+
+/**
+ * Checks identifers
+ */
+void edgeStatementTypeCheck(Statement s);
+
 /**
  * Just carries up the type of its sub-statement.
  */
 void statementTypeCheck(Statement s);
+
+/************************************************
+ * Parameters
+ ************************************************/
+/**
+ * Sets the type of the parameter properly.
+ */
+void parameterTypeCheck(Parameter p);
 
 /************************************************
  * Expressions
@@ -220,6 +239,11 @@ void relatExpressionTypeCheck(Expression e);
 void eqExpressionTypeCheck(Expression e);
 
 /**
+ * Check to make sure the or parameters are booleans? and set type to boolean
+ */
+void condExpressionTypeCheck(Expression e);
+
+/**
  * Check to make sure right hand side type matches left hand side type
  * and then set the resulting expression type to the same type as the
  * expression.
@@ -269,7 +293,7 @@ void identifierTypeCheck(Identifier i);
 /**
  * Returns a new TypeCheckType object that's been malloc'ed and set to the proper type.
  */
-void getTypeCheckType(int type);
+TypeCheckType getTypeCheckType(int type);
 
 /**
  * Returns 1 if t1 is exactly the same type as t2. Return -1 if they are matches

@@ -157,6 +157,9 @@ struct grammarNode_ {
   void *data;
 };
 
+
+void *popFront(GrammarList g);
+
 TranslationUnit getTranslationUnit(FunctionDefinition fd);
 
 FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs);
