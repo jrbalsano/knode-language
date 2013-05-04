@@ -66,7 +66,7 @@ void postfixIdentifierGenerateCode(Expression e);
 void postfixDecrementGenerateCode(Expression e);
 void postfixIncrementGenerateCode(Expresion e);
 void postfixArgumentGenerateCode(Expression e);
-void postfixArgumentGenerateCode(Expression e);
+void postfixBracketGenerateCode(Expression e);
 
 void unaryExpressionGenerateCode(Expression e);
 
