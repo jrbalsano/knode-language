@@ -262,4 +262,13 @@ void twoExpressionTypeCheck(Expression e);
  * Sets its type to the type of the variable it represents. May or may not be knowable.
  */
 void identifierTypeCheck(Identifier i);
+
+/************************************************
+ * Types
+ ************************************************/
+/**
+ * Returns a new TypeCheckType object that's been malloc'ed and set to the proper type.
+ */
+void getTypeCheckType(int type);
+
 #endif
