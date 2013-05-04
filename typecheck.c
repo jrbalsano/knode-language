@@ -149,5 +149,7 @@ void identifierTypeCheck(Identifier i) {
 }
 
 void getTypeCheckType(int type) {
-
+  TypeCheckType ret = (TypeCheckType)malloc(sizeof(struct typeCheckType_));
+  ret->base = type;
+  return ret;
 }
