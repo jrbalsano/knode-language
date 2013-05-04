@@ -180,7 +180,7 @@ void walkStatement(Statement s) {
           walkIdentifier(s->sub1.i);
           walkCompoundStatement(s->sub2.cs);
           dictDefinitionsTypeCheck(s);
-	  dictDefinitionsGenerateCode(s);
+          dictDefinitionsGenerateCode(s);
           break;
         case none:
           walkIdentifier(s->sub1.i);
