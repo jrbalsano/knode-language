@@ -15,5 +15,8 @@ void forStatementTypeCheck(Statement s);
 void whileStatementTypeCheck(Statement s);
 void ifStatementTypeCheck(Statement s);
 void ifelseStatementTypeCheck(Statement s);
+void dictlistTypeCheck(Statement s);
+void dictDefinitionsTypeCheck(Statement s);
+void dictTypeCheck(Statement s);
 
 #endif

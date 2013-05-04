@@ -11,5 +11,7 @@ void walkDeclarator(Declarator d);
 void walkCompoundStatement(CompoundStatement c);
 void walkGrammarList(GrammarList g);
 void walkStatement(Statement s);
+void walkExpression(Expression e);
+void walkIdentifier(Identifier i);
 
 #endif

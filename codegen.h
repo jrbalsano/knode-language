@@ -13,6 +13,9 @@ void forStatementGenerateCode(Statement s);
 void whileStatementGenerateCode(Statement s);
 void ifStatementGenerateCode(Statement s);
 void ifelseStatementGenerateCode(Statement s);
+void dictlistGenerateCode(Statement s);
+void dictDefinitionsGenerateCode(Statement s);
+void dictGenerateCode(Statement s);
 
 #endif
 

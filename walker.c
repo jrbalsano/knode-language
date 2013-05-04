@@ -168,22 +168,28 @@ void walkStatement(Statement s) {
           break;
       }
       break;
-      // EVERYTHING BELOW HERE IS WRONG AND NEEDS TO BE SWITCHED TO WALK/TYPECHECK/GENERATE
     case dictlist:
-      freeExpression(s->sub1.e);
-      freeExpression(s->sub2.e);
+      walkExpression(s->sub1.e);
+      walkExpression(s->sub2.e);
+      dictlistTypeCheck(s);
+      dictlistGenerateCode(s); 
       break;
     case dict:
       switch(s->deriv.dict) {
         case definitions:
-          freeIdentifier(s->sub1.i);
-          freeCompoundStatement(s->sub2.cs);
+          walkIdentifier(s->sub1.i);
+          walkCompoundStatement(s->sub2.cs);
+          dictDefinitionsTypeCheck(s);
+	  dictDefinitionsGenerateCode(s);
           break;
         case none:
-          freeIdentifier(s->sub1.i);
+          walkIdentifier(s->sub1.i);
+          dictTypeCheck(s);
+          dictGenerateCode(s);
           break;
       }
       break;
+      //EVERYTHING BELOW HERE IS WRONG AND NEEDS TO BE SWITCHED TO WALK/TYPECHECK/GENERATE
     case node:
       switch(s->deriv.node) {
         case nodeCreate:
