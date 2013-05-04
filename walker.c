@@ -151,20 +151,24 @@ void walkStatement(Statement s) {
           break;
       }
       break;
-      // EVERYTHING BELOW HERE IS WRONG AND NEEDS TO BE SWITCHED TO WALK/TYPECHECK/GENERATE
     case selection:
       switch(s->deriv.selection) {
         case ifStatement:
-          freeCompoundStatement(s->sub2.cs);
-          freeExpression(s->sub1.e);
+          walkCompoundStatement(s->sub2.cs);
+          walkExpression(s->sub1.e);
+          ifStatementTypeCheck(s);
+          ifStatementGenerateCode(s);
           break;
         case ifelseStatement:
-          freeExpression(s->sub1.e);
-          freeCompoundStatement(s->sub2.cs);
-          freeCompoundStatement(s->sub3.cs);
+          walkExpression(s->sub1.e);
+          walkCompoundStatement(s->sub2.cs);
+          walkCompoundStatement(s->sub3.cs);
+          ifelseStatementTypeCheck(s);
+          ifelseStatementGenerateCode(s);
           break;
       }
       break;
+      // EVERYTHING BELOW HERE IS WRONG AND NEEDS TO BE SWITCHED TO WALK/TYPECHECK/GENERATE
     case dictlist:
       freeExpression(s->sub1.e);
       freeExpression(s->sub2.e);
