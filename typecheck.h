@@ -271,4 +271,19 @@ void identifierTypeCheck(Identifier i);
  */
 void getTypeCheckType(int type);
 
+/**
+ * Returns 1 if t1 is exactly the same type as t2. Return -1 if they are matches
+ * because of an indeterminable type. Return 0 otherwise. Easily
+ * done recursively (think pattern matcher)
+ */
+int exactTypeMatch(TypeCheckType t1, TypeCheckType t2);
+
+/**
+ * Returns 1 if t1 is exactly the same type as t2. Return -1 if they are matches
+ * because of an indeterminable type. Return 2 if they are matchable via an implicit
+ * cast such as int or double to string, or int to double. Return 0 otherwise. Easily
+ * done recursively (think pattern matcher)
+ */
+int castTypeMatch(TypeCheckType t1, TypeCheckType t2);
+
 #endif

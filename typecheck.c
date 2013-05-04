@@ -153,3 +153,29 @@ void getTypeCheckType(int type) {
   ret->base = type;
   return ret;
 }
+
+int exactTypeMatch(TypeCheckType t1, TypeCheckType t2) {
+  if(t1 == NULL && t2 == NULL)
+    return 1;
+  else if(t1 == NULL || t2 == NULL)
+    return 0;
+  else if(t1->base == indeterminable || t2->base == indeterminable)
+    return -1;
+  else {
+    int basematch = (t1->base == t2->base);
+    int fnmatch = exactTypeMatch(t1->fn_sub, t2->fn_sub);
+    int armatch = exactTypeMatch(t1->ar_sub, t2->ar_sub);
+    if(basematch && fnmatch && armatch) {
+      if(basematach < 0 || fnmatch < 0 || armatch < 0)
+        return -1;
+      else
+        return 1;
+    }
+    else
+      return 0;
+  }
+}
+
+int castTypeMatch(TypeCheckType t1, TypeCheckType t2) {
+  return 0;
+}
