@@ -21,7 +21,7 @@ typedef struct parameter_ *Parameter;
 
 #include "yacc.tab.h"
 
-typedef enum {int_, double_, string_, char_, node_, edge_, dict_, function_} typecheckType;
+typedef enum {indeterminable, int_, double_, string_, char_, node_, edge_, dict_, function_} typecheckType;
 
 struct expression_ {
   typecheckType tt;
