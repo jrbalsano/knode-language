@@ -112,7 +112,6 @@ struct functionDefinition_ {
   CompoundStatement cs;
 };
 struct compoundStatement_ {
-  GrammarList dlist; //A list of declarations
   GrammarList sList; //A list of statements
 };
 struct translationUnit_ {
