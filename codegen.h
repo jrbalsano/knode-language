@@ -3,11 +3,12 @@
 
 #include "absyn.h"
 #include <stdio.h>
+#include <string.h>
 
 /************************************************
  * Translation Units
  ************************************************/
-void translationUnitGenerateCode(translationUnit t);
+void translationUnitGenerateCode(TranslationUnit t);
 
 /************************************************
  * Function Definitions
@@ -64,13 +65,13 @@ void statementGenerateCode(Statement s);
 void passupExpressionCode(Expression e);
 void postfixIdentifierGenerateCode(Expression e);
 void postfixDecrementGenerateCode(Expression e);
-void postfixIncrementGenerateCode(Expresion e);
+void postfixIncrementGenerateCode(Expression e);
 void postfixArgumentGenerateCode(Expression e);
 void postfixBracketGenerateCode(Expression e);
 
 void unaryExpressionGenerateCode(Expression e);
 
-void castTypedExpressionGenerateCode(e);
+void castTypedExpressionGenerateCode(Expression e);
 
 void multExpressionGenerateCode(Expression e);
 
@@ -92,5 +93,19 @@ void twoExpressionGenerateCode(Expression e);
 
 
 void identifierGenerateCode(Identifier i);
+
+
+/************************************************
+ * Code Generating
+ ************************************************/
+/**
+ * Anytime you generate code in any of the above functions you should NOT
+ * be setting that generated code to the code of a node in the abstract syntax
+ * tree. Rather, deal with stack-allocated strings within your method until you're
+ * ready to set the AST node's code to a string. Then, set it to the return value of
+ * this function, called on the string you were going to use. This will automatically
+ * heap allocating the string for you.
+ */
+char *getAllocatedString(char *s);
 #endif
 

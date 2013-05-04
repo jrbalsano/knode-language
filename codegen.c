@@ -148,3 +148,8 @@ void identifierGenerateCode(Identifier i) {
 
 }
 
+char *getAllocatedString(char *s) {
+  char *ret = (char *)malloc((strlen(s)+1)*sizeof(char));
+  strcpy(ret, s);
+  return ret;
+}

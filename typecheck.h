@@ -132,7 +132,7 @@ void nodeDictionaryTypeCheck(Statement s);
 /**
  * Just carries up the type of its sub-statement.
  */
-void statementTypeCheck(s);
+void statementTypeCheck(Statement s);
 
 /************************************************
  * Expressions
@@ -161,7 +161,7 @@ void postfixDecrementTypeCheck(Expression e);
  * Sets its type to integer after checking to make sure
  * the sub expression is type integer.
  */
-void postfixIncrementTypeCheck(Expresion e);
+void postfixIncrementTypeCheck(Expression e);
 
 /**
  * Sets its type to whatever type the function its trying to be
