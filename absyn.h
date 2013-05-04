@@ -153,7 +153,6 @@ struct grammarList_ {
   GrammarNode head;
 };
 struct grammarNode_ {
-  char *code;
   GrammarNode next;
   void *data;
 };
