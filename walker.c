@@ -80,6 +80,7 @@ void walkGrammarList(GrammarList g) {
     void *d = popFront(g);
     switch(g->type) {
       case argument:
+      case expressionList:
         walkExpression((Expression)d);
         break;
       case statement:
@@ -87,9 +88,6 @@ void walkGrammarList(GrammarList g) {
         break;
       case parameterList:
         walkParameter((Parameter)d);
-        break;
-      case expressionList:
-        walkExpression((Expression)d);
         break;
     }
   }
