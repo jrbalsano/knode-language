@@ -28,6 +28,7 @@ void freeTranslationUnit(TranslationUnit t) {
     return;
   }  
   freeFunctionDefinition(t->f);
+  freeTypeCheckType(t->tt);
   free(t);
 #ifdef MEMTRACE
   printf("Translation unit freed\n");
@@ -72,6 +73,7 @@ void freeFunctionDefinition(FunctionDefinition f) {
   }
   freeDeclarator(f->d);
   freeCompoundStatement(f->cs);
+  freeTypeCheckType(f->tt);
   free(f);
 #ifdef MEMTRACE
   printf("Function definition freed\n");
@@ -117,6 +119,7 @@ void freeDeclarator(Declarator d) {
   if(d->p)
     freeGrammarList(d->p);
   freeIdentifier(d->name);
+  freeTypeCheckType(d->tt);
   free(d);
 #ifdef MEMTRACE
   printf("Declarator freed\n");
@@ -148,6 +151,7 @@ void freeCompoundStatement(CompoundStatement c) {
     return;
   }
   freeGrammarList(c->sList);
+  freeTypeCheckType(c->tt);
   free(c);
 #ifdef MEMTRACE
   printf("Compound statement freed\n");
@@ -263,6 +267,7 @@ void freeGrammarList(GrammarList g) {
         break;
     }
   }
+  freeTypeCheckType(g->tt);
   free(g);
 #ifdef MEMTRACE
   printf("Grammar list freed\n");
@@ -532,6 +537,7 @@ void freeStatement(Statement s) {
     default:
       break;
   }
+  freeTypeCheckType(s->tt);
   free(s);
 #ifdef MEMTRACE
   printf("Statement freed\n");
@@ -557,6 +563,8 @@ Parameter getTypedParameter(int typename, Identifier i){
  */
 void freeParameter(Parameter p) {
   freeIdentifier(p->i);
+  freeTypeCheckType(p->tt);
+  free(p);
 }
 
 /*************
@@ -1066,6 +1074,7 @@ void freeExpression(Expression e) {
     default:
       break;
   }
+  freeTypeCheckType(e->tt);
   free(e);
 #ifdef MEMTRACE
   printf("Expression freed\n");
@@ -1098,6 +1107,7 @@ void freeIdentifier(Identifier i) {
     fprintf(stderr, "Null child Identifier\n");
     return;
   }  
+  freeTypeCheckType(i->tt);
   free(i);
 #ifdef MEMTRACE
   printf("Identifier freed\n");
@@ -1112,13 +1122,10 @@ void freeTypeCheckType(TypeCheckType t) {
   printf("Freeing TypeCheckType\n");
 #endif
   if(t == NULL) {
-    fprintf(stderr, "Null child TypeCheckType\n");
     return;
   }  
-  if(t->ar_sub)
-    freeTypeCheckType(t->ar_sub);
-  if(t->fn_sub)
-    freeTypeCheckType(t->fn_sub);
+  freeTypeCheckType(t->ar_sub);
+  freeTypeCheckType(t->fn_sub);
   free(t);
 #ifdef MEMTRACE
   printf("TypeCheckType freed\n");
