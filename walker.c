@@ -120,7 +120,6 @@ void walkGrammarList(GrammarList g) {
 #endif
 }
 
-
 void walkStatement(Statement s) {
 #ifdef MEMTRACE
   printf("Walking statement at %p\n", s);
@@ -188,43 +187,286 @@ void walkStatement(Statement s) {
           dictGenerateCode(s);
           break;
       }
-      break;
-      //EVERYTHING BELOW HERE IS WRONG AND NEEDS TO BE SWITCHED TO WALK/TYPECHECK/GENERATE
     case node:
       switch(s->deriv.node) {
         case nodeCreate:
-          freeIdentifier(s->sub1.i);
+          walkIdentifier(s->sub1.i);
+          nodeCreationTypeCheck(s);
+          nodeCreationGenerateCode(s);
           break;
         case nodeAssignment:
-          freeIdentifier(s->sub1.i);
-          freeExpression(s->sub2.e);
+          walkIdentifier(s->sub1.i);
+          walkExpression(s->sub2.e);
+          nodeAssignmentTypeCheck(s);
+          nodeAssignmentGenerateCode(s);
           break;
         case nodeDictAssignment:
-          freeIdentifier(s->sub1.i);
-          freeCompoundStatement(s->sub2.cs);
+          walkIdentifier(s->sub1.i);
+          walkCompoundStatement(s->sub2.cs);
+          nodeDictionaryTypeCheck(s);
+          nodeDictionaryGenerateCode(s);
           break;
       }
       break;
     case edge:
       switch(s->deriv.edge) {
         case none:
-          freeIdentifier(s->sub1.i);
+          walkIdentifier(s->sub1.i);
+          edgeCreationTypeCheck(s);
+          edgeCreationGenerateCode(s);
           break;
         default:
-          freeIdentifier(s->sub1.i);
-          freeExpression(s->sub2.e);
-          freeExpression(s->sub3.e);
+          walkIdentifier(s->sub1.i);
+          walkExpression(s->sub2.e);
+          walkExpression(s->sub3.e);
+          edgeStatementTypeCheck(s);
+          edgeStatementGenerateCode(s);
           break;
       }
       break;
     case none:
-      freeStatement(s->sub1.s);
+      walkStatement(s->sub1.s);
+      statementTypeCheck(s);
+      statementGenerateCode(s);
       break;
     default:
       break;
   }
-  free(s);
 #ifdef MEMTRACE
   printf("Statement walked at %p\n", s);
+#endif
+}
+
+void walkParameter(Parameter p) {
+#ifdef MEMTRACE
+  printf("Walking Parameter at %p\n", p);
+#endif
+  walkIdentifier(p->i);
+  parameterTypeCheck(p);
+  parameterGenerateCode(p);
+#ifdef MEMTRACE
+  printf("Parameter walked at %p\n", p);
+#endif
+}
+
+void walkExpression(Expression e) {
+#ifdef MEMTRACE
+  printf("Walking expression at %p\n", e);
+#endif
+  if(e == NULL) {
+    fprintf(stderr, "Null child Expression\n");
+    return;
+  }
+  switch (e->type) {
+    case postfix:
+      switch (e->deriv.postfix) {
+        case identifier:
+          walkIdentifier(e->sub2.i);
+          walkExpression(e->sub1.e);
+          postfixIdentifierTypeCheck(e);
+          postfixIdentifierGenerateCode(e);
+          break;
+        case postdecr:
+          walkExpression(e->sub1.e);
+          postfixDecrementTypeCheck(e);
+          postfixDecrementGenerateCode(e);
+          break;
+        case postincr:
+          walkExpression(e->sub1.e);
+          postfixIncrementTypeCheck(e);
+          postfixIncrementGenerateCode(e);
+          break;
+        case arg:
+          walkExpression(e->sub1.e);
+          walkGrammarList(e->sub2.l);
+          postfixArgumentTypeCheck(e);
+          postfixArgumentGenerateCode(e);          
+          break;
+        case bracket:
+          walkExpression(e->sub1.e);
+          walkExpression(e->sub2.e);
+          postfixArgumentTypeCheck(e);
+          postfixArgumentGenerateCode(e);          
+          break;
+        case 0:
+          walkExpression(e->sub1.e);
+          passupExpressionType(e);
+          passupExpressionCode(e);
+          break;
+      }
+      break;
+    case unary:
+      walkExpression(e->sub1.e);
+      unaryExpressionTypeCheck(e);
+      unaryExpressionGenerateCode(e);
+      break;
+    case cast:
+      switch(e->deriv.cast){
+        case typed:
+          walkExpression(e->sub2.e);
+          castTypedExpressionTypeCheck(e);
+          castTypedExpressionGenerateCode(e);
+          break;
+        case 0:
+          walkExpression(e->sub1.e);
+          passupExpressionType(e);
+          passupExpressionCode(e);
+          break;
+      }
+      break;
+    case mult:
+      switch(e->deriv.mult){
+        case 0:
+          walkExpression(e->sub1.e);
+          passupExpressionType(e);
+          passupExpressionCode(e);
+          break;
+        default:
+          walkExpression(e->sub1.e);
+          walkExpression(e->sub2.e);
+          multExpressionTypeCheck(e);
+          multExpressionGenerateCode(e);
+          break;
+      }
+      break;
+    case add:
+      switch(e->deriv.add){
+        case 0:
+          walkExpression(e->sub1.e);
+          passupExpressionType(e);
+          passupExpressionCode(e);
+          break;
+        default:
+          walkExpression(e->sub1.e);
+          walkExpression(e->sub2.e);
+          addExpressionTypeCheck(e);
+          addExpressionGenerateCode(e);
+          break;
+      }
+      break;
+    case relat:
+      switch(e->deriv.relat){
+        case 0:
+          walkExpression(e->sub1.e);
+          passupExpressionType(e);
+          passupExpressionCode(e);
+          break;
+        default:
+          walkExpression(e->sub1.e);
+          walkExpression(e->sub2.e);
+          relatExpressionTypeCheck(e);
+          relatExpressionGenerateCode(e);
+          break;
+      }
+      break;
+    case eq:
+      switch(e->deriv.eq){
+        case 0:
+          walkExpression(e->sub1.e);
+          passupExpressionType(e);
+          passupExpressionCode(e);
+          break;
+        default:
+          walkExpression(e->sub1.e);
+          walkExpression(e->sub2.e);
+          eqExpressionTypeCheck(e);
+          eqExpressionGenerateCode(e);
+          break;
+      }
+      break;
+    case cond:
+      switch(e->deriv.eq){
+        case 0:
+          walkExpression(e->sub1.e);
+          passupExpressionType(e);
+          passupExpressionCode(e);
+          break;
+        default:
+          walkExpression(e->sub1.e);
+          walkExpression(e->sub2.e);
+          condExpressionTypeCheck(e);
+          condExpressionGenerateCode(e);
+          break;
+      }
+      break;
+    case assignment:
+      switch(e->deriv.assign){
+        case init:
+          walkIdentifier(e->sub2.i);
+          walkExpression(e->sub3.e);
+          assignmentInitExpressionTypeCheck(e);
+          assignmentInitExpressionGenerateCode(e);
+          break;
+        case 0:
+          walkExpression(e->sub1.e);
+          passupExpressionType(e);
+          passupExpressionCode(e);
+          break;
+        case assign_left:
+        case assign_right:
+        case assign_both:
+        case assign_all:
+          walkExpression(e->sub1.e);
+          walkExpression(e->sub2.e);
+          edgeExpressionTypeCheck(e);
+          edgeExpressionGenerateCode(e);
+          break;
+        case eqassign:
+        case multeq:
+        case pluseq:
+        case diveq:
+        case minuseq:
+        case modeq:
+          walkExpression(e->sub1.e);
+          walkExpression(e->sub2.e);
+          assignmentExpressionTypeCheck(e);
+          assignmentExpressionGenerateCode(e);
+          break;
+      } 
+      break;
+    case primary:
+      walkIdentifier(e->sub1.i);
+      primaryExpressionTypeCheck(e);
+      primaryExpressionGenerateCode(e);
+      break;
+    case function:
+      walkIdentifier(e->sub1.i);
+      walkGrammarList(e->sub2.l);
+      functionExpressionTypeCheck(e);
+      functionExpressionGenerateCode(e);
+      break;
+    case none:
+      if(!e->deriv.none)  {
+        walkExpression(e->sub1.e);
+        passupExpressionType(e);
+        passupExpressionCode(e);
+      }
+      else if(e->deriv.none == comma) {
+        walkExpression(e->sub1.e);
+        walkExpression(e->sub2.e);
+        twoExpressionTypeCheck(e);
+        twoExpressionGenerateCode(e);
+      }
+      break;
+    default:
+      break;
+  }
+#ifdef MEMTRACE
+  printf("Expression walked at %p\n", e);
+#endif
+}
+
+void walkIdentifier(Identifier i) {
+#ifdef MEMTRACE
+  printf("walking identifier at %p\n", i);
+#endif
+  if(i == NULL) {
+    fprintf(stderr, "Null child Identifier\n");
+    return;
+  }  
+  identifierTypeCheck(i);
+  identifierCodeGeneration(i);
+#ifdef MEMTRACE
+  printf("Identifier walked at %p\n", i);
 #endif
 }
