@@ -1,9 +1,22 @@
 #include "walker.h"
 
-/**
- * Recursively walk a function definition, generating
- * code and checking types.
- */
+void walkTranslationUnit(TranslationUnit t) {
+#ifdef MEMTRACE
+  printf("Walking translation unit at %p\n", t);
+#endif
+
+  if(t == NULL) {
+    fprintf(stderr, "Null child TranslationUnit\n");
+    return;
+  }
+  walkFunctionDefinition(t->f);
+  translationUnitTypeCheck(t);
+  translationUnitGenerateCode(t);
+#ifdef MEMTRACE
+  printf("Translation unit walked at %p\n", t);
+#endif
+}
+
 void walkFunctionDefinition(FunctionDefinition f) {
 #ifdef MEMTRACE
   printf("Walking function definition at %p\n", f);
@@ -36,23 +49,6 @@ void walkDeclarator(Declarator d) {
   declaratorGenerateCode(d);
 #ifdef MEMTRACE
   printf("Declarator walked at %p\n", d);
-#endif
-}
-
-void walkTranslationUnit(TranslationUnit t) {
-#ifdef MEMTRACE
-  printf("Walking translation unit at %p\n", t);
-#endif
-
-  if(t == NULL) {
-    fprintf(stderr, "Null child TranslationUnit\n");
-    return;
-  }
-  walkFunctionDefinition(t->f);
-  translationUnitTypeCheck(t);
-  translationUnitGenerateCode(t);
-#ifdef MEMTRACE
-  printf("Translation unit walked at %p\n", t);
 #endif
 }
 
