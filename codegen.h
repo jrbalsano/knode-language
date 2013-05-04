@@ -4,19 +4,36 @@
 #include "absyn.h"
 #include <stdio.h>
 
-void functionDefinitionGenerateCode(FunctionDefinition f);
-
-void declaratorGenerateCode(Declarator d);
-
+/************************************************
+ * Translation Units
+ ************************************************/
 void translationUnitGenerateCode(translationUnit t);
 
+/************************************************
+ * Function Definitions
+ ************************************************/
+void functionDefinitionGenerateCode(FunctionDefinition f);
+
+/************************************************
+ * Declarators
+ ************************************************/
+void declaratorGenerateCode(Declarator d);
+
+/************************************************
+ * Compound Statements
+ ************************************************/
 void compoundStatementGenerateCode(CompoundStatement cs);
 
+/************************************************
+ * Grammar Lists
+ ************************************************/
 void expressionListGenerateCode(GrammarList g);
+void statementListGenerateCode(GrammarList g);
+void parameterListGenerateCode(GrammarList g);
 
-/****
+/************************************************
  * Statements
- ****/
+ ************************************************/
 /* Iteration */
 void forStatementGenerateCode(Statement s);
 void whileStatementGenerateCode(Statement s);
@@ -35,6 +52,9 @@ void nodeDictionaryGenerateCode(Statement s);
 /* Generic */
 void statementGenerateCode(Statement s);
 
+/************************************************
+ * Statements
+ ************************************************/
 /**
  * This function should just take the code of e->sub1.e
  * and make the code of e. It's for cases where we convert

@@ -4,21 +4,36 @@
 #include "absyn.h"
 #include <stdio.h>
 
-void functionDefinitionTypeCheck(FunctionDefinition f);
-
-void declaratorTypeCheck(Declarator d);
-
+/************************************************
+ * TranslationUnits
+ ************************************************/
 void translationUnitTypeCheck(TranslationUnit t);
 
+/************************************************
+ * FunctionDefinitions
+ ************************************************/
+void functionDefinitionTypeCheck(FunctionDefinition f);
+
+/************************************************
+ * Declarators
+ ************************************************/
+void declaratorTypeCheck(Declarator d);
+
+/************************************************
+ * Compounds Statements
+ ************************************************/
 void compoundStatementTypeCheck(CompoundStatement cs);
 
+/************************************************
+ * Grammar Lists
+ ************************************************/
 void expressionListTypeCheck(GrammarList g);
 void statementListTypeCheck(GrammarList g);
 void parameterListTypeCheck(GrammarList g);
 
-/**
+/************************************************
  * Statements
- */
+ ************************************************/
 /* Iteration */
 void forStatementTypeCheck(Statement s);
 void whileStatementTypeCheck(Statement s);
@@ -36,7 +51,9 @@ void nodeDictionaryTypeCheck(Statement s);
 /* Statement */
 void statementTypeCheck(s);
 
-
+/************************************************
+ * Expressions
+ ************************************************/
 void passupExpressionType(Expression e);
 void postfixIdentifierTypeCheck(Expression e);
 void postfixDecrementTypeCheck(Expression e);
@@ -66,6 +83,8 @@ void functionExpressionTypeCheck(Expression e);
 
 void twoExpressionTypeCheck(Expression e);
 
-
+/************************************************
+ * Identifiers
+ ************************************************/
 void identifierTypeCheck(Identifier i);
 #endif
