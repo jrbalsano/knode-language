@@ -145,6 +145,10 @@ void edgeStatementTypeCheck(Statement s);
  */
 void statementTypeCheck(Statement s);
 
+void expressionStatementTypeCheck(Statement s);
+
+void declStatementTypeCheck(Statement s);
+
 /************************************************
  * Parameters
  ************************************************/
@@ -310,4 +314,6 @@ int exactTypeMatch(TypeCheckType t1, TypeCheckType t2);
  */
 int castTypeMatch(TypeCheckType t1, TypeCheckType t2);
 
+/**Copies Type of tt recursively*/
+TypeCheckType copyTypeCheckType(TypeCheckType tt);
 #endif

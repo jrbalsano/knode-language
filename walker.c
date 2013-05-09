@@ -134,7 +134,13 @@ void walkStatement(Statement s, Scope scope) {
   switch(s->type) {
     case expression:
       walkExpression(s->sub1.e, s->s);
+      expressionStatementTypeCheck(s);
+      expressionStatementGenerateCode(s); 
       break;
+    case decl:
+      walkIdentifier(s->sub1.i);
+      declStatementTypeCheck(s);
+      declStatementGenerateCode(s);
     case iteration:
       switch(s->deriv.iteration) {
         case forIter:
@@ -287,6 +293,11 @@ void walkExpression(Expression e, Scope s) {
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);          
           break;
+        case argEmpty:
+          walkExpression(e->sub1.e);
+          postfixArgumentTypeCheck(e);
+          postfixArgumentGenerateCode(e);
+          break;
         case bracket:
           walkExpression(e->sub1.e, e->s);
           walkExpression(e->sub2.e, e->s);
@@ -430,9 +441,22 @@ void walkExpression(Expression e, Scope s) {
       } 
       break;
     case primary:
-      walkIdentifier(e->sub1.i, e->s);
-      primaryExpressionTypeCheck(e);
-      primaryExpressionGenerateCode(e);
+      switch(e->deriv.primary){
+        case primString:
+          walkIdentifier(e->sub1.i, s->s);
+          primaryExpressionTypeCheck(e);
+          primaryExpressionGenerateCode(e);
+          break;
+        case primIdentifier:
+          walkIdentifier(e->sub1.i, s->s);
+          primaryExpressionTypeCheck(e);
+          primaryExpressionGenerateCode(e);
+          break;
+        case parenthesis:
+          walkExpression(e->sub1.e, s->s);
+          primaryExpressionTypeCheck(e);
+          primaryExpressionGenerateCode(e);
+      }
       break;
     case function:
       walkIdentifier(e->sub1.i, e->s);
