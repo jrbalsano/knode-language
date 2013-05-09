@@ -979,7 +979,7 @@ void freeExpression(Expression e) {
     case decl:
       switch(e->deriv.decl){
         case declarator:
-          freeIdentifier(e->sub1.i);
+          freeIdentifier(e->sub2.i);
           break;
         case 0:
           freeExpression(e->sub1.e);

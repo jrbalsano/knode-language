@@ -176,7 +176,7 @@ GrammarList newArgumentExpressionList(Expression e);
 GrammarList appendToPList(GrammarList pList,Parameter param);
 GrammarList addFront(GrammarList g, void *data);
 
-Parameter getTypedParameter(int typname, Identifier i);
+Parameter getTypedParameter(int typename, Identifier i);
 
 CompoundStatement newCompoundStatement(GrammarList sList);
 
