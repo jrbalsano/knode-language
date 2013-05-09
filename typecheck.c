@@ -85,7 +85,7 @@ void expressionStatementTypeCheck(Statement s){
 }
 
 void declStatementTypeCheck(Statement s) {
-  TypeCheckType tt;
+  TypeCheckType tt = NULL;
   TypeCheckType hold;
   switch(s->sub1.typnam) {
     case INT:
@@ -116,7 +116,7 @@ void declStatementTypeCheck(Statement s) {
   hold = tt;
   tt = addSymbolToScope(s->s, s->sub2.i->symbol, tt);
   if(!tt) {
-    fprintf(stderr, "Error: Declaration of already declared variable `%s`", s->sub2.i->symbol);
+    fprintf(stderr, "Error: Declaration of already declared variable `%s`\n", s->sub2.i->symbol);
     free(hold);
     exit(1);
   }

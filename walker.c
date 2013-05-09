@@ -138,7 +138,7 @@ void walkStatement(Statement s, Scope scope) {
       expressionStatementGenerateCode(s); 
       break;
     case decl:
-      walkIdentifier(s->sub1.i, s->s);
+      walkIdentifier(s->sub2.i, s->s);
       declStatementTypeCheck(s);
       declStatementGenerateCode(s);
     case iteration:
