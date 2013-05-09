@@ -19,6 +19,25 @@ Symtab symlook(char *symbol, Symtab table) {
     return symbolPointer;
 }
 
+/**
+ * Checks to see if a symbol exists in the table already and adds it if it
+ * doesn't. Returns the table record if it was successfully added, or NULL
+ * otherwise.
+ */
+Symtab addSymbol(Symtab table, char *symbol) {
+  //Create a pointer to store the sumbol that we get back.
+  Symtab lookupResult = NULL;
+  //try to find the symbol in our table
+  HASH_FIND_STR(table, symbol, lookupResult);
+  if(!lookupResult) {
+    symbolPointer = (Symtab)malloc(sizeof(struct symtab));
+    strncpy(lookupResult->name, symbol, sizeof(symbolPointer->name));
+    HASH_ADD_STR(table, name, symbolPointer);
+    return symbolPointer;
+  }
+  return NULL;
+}
+
 TypeCheckType findType(Symtab table, char *symbol) {
   //Create a pointer to store the symbol that we get back in.
   Symtab lookupResult = NULL;
