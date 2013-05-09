@@ -485,6 +485,13 @@ void freeStatement(Statement s) {
           break;
       }
       break;
+    case decl:
+      switch(s->deriv.decl){
+        case declarator:
+          freeIdentifier(s->sub2.i);
+          break;
+      }
+      break; 
     case selection:
       switch(s->deriv.selection) {
         case ifStatement:
@@ -948,8 +955,8 @@ Expression getExpressionAssignmentExpression(Expression e1, Expression e2) {
   return ret;
 }
 
-Expression getDeclaration(int token, Identifier i){
-  Expression ret = (Expression)malloc(sizeof(struct expression_));
+Statement getDeclaration(int token, Identifier i){
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = decl;
   ret->deriv.decl = declarator;
   ret->sub1.typnam = token;
@@ -957,13 +964,6 @@ Expression getDeclaration(int token, Identifier i){
   return ret;
 }
 
-Expression getDeclExpression(Expression e){
-  Expression ret = (Expression)malloc(sizeof(struct expression_));
-  ret->type = decl;
-  ret->deriv.decl = none;
-  ret->sub1.e = e;
-  return ret;
-}
 /**
  * Recursively free an expression and its children in postorder
  */
@@ -975,17 +975,7 @@ void freeExpression(Expression e) {
     fprintf(stderr, "Null child Expression\n");
     return;
   }
-  switch (e->type) {
-    case decl:
-      switch(e->deriv.decl){
-        case declarator:
-          freeIdentifier(e->sub2.i);
-          break;
-        case 0:
-          freeExpression(e->sub1.e);
-          break;
-      }
-      break;    
+  switch (e->type) { 
     case postfix:
       switch (e->deriv.postfix) {
         case identifier:
