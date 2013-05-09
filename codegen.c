@@ -84,6 +84,10 @@ void expressionStatementGenerateCode(Statement s){
 
 }
 
+void declStatementGenerateCode(Statement s){
+
+}
+
 void parameterGenerateCode(Parameter p) {
 
 }

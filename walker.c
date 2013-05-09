@@ -130,7 +130,8 @@ void walkStatement(Statement s) {
       break;
     case decl:
       walkIdentifier(s->sub1.i);
-
+      declStatementTypeCheck(s);
+      declStatementGenerateCode(s);
     case iteration:
       switch(s->deriv.iteration) {
         case forIter:
