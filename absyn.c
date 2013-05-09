@@ -628,6 +628,17 @@ Expression getPostfixExpression(Expression e1){
 }
 
 /**
+ * Creates a new Postfix Expression with an empty argument
+ */
+Expression getPostfixEmptyArgument(Expression e){
+    Expression ret = (Expression)malloc(sizeof(struct expression_));
+    ret->type = postfix;
+    ret->sub1.e = e;
+    ret->deriv.postfix = argEmpty;
+    return ret;
+}
+
+/**
  * Creates a new Postfix Expression from an existing expression followed
  * by square brackets encompassing a second expression
  */
@@ -975,6 +986,9 @@ void freeExpression(Expression e) {
         case arg:
           freeExpression(e->sub1.e);
           freeGrammarList(e->sub2.l);
+          break;
+        case arg:
+          freeExpression(e->sub1.e);
           break;
         case bracket:
           freeExpression(e->sub1.e);

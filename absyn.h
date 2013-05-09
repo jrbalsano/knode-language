@@ -65,7 +65,7 @@ struct expression_ {
     GrammarList l;
   } sub3;
   union {
-    enum{postfix_none = none, postincr, postdecr, bracket, identifier, arg} postfix;
+    enum{postfix_none = none, postincr, postdecr, bracket, identifier, arg,argEmpty} postfix;
     enum{unary_none = none, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
     enum{cast_none = none, typed} cast;
     enum{mult_none = none, times = '*', divide = '/', mod = '%'} mult;
@@ -206,6 +206,7 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id);
 Expression getPostfixIncr(Expression e);
 Expression getPostfixDecr(Expression e);
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
+Expression getPostfixEmptyArgument(Expression e);
 Expression getUnaryExpression(Expression e);
 Expression getUnaryIncr(Expression e);
 Expression getUnaryDecr(Expression e);
