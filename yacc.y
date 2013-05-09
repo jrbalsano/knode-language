@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "absyn.h"
+#include "walker.h"
 
 
 void yyerror(char *s);
@@ -156,7 +157,7 @@ statement : expressionstatement { $$ = getStatement($1); }
   | edgestatement { $$ = getStatement($1); }
   | declstatement { $$ = getStatement($1); } 
   ;
-declstatement : typename identifier NEWLINE { $$ = getDeclarationStatement($1, $2); printf("here") }
+declstatement : typename identifier NEWLINE { $$ = getDeclarationStatement($1, $2); }
   ;
 dictstatement : DICT identifier NEWLINE { $$ = getDictDecStatement($2); }
   | DICT identifier NEWLINE compoundstatement { $$ = getDictDefStatement($2, $4); }
@@ -277,6 +278,7 @@ void yyerror(char *s) {
 
 int main(void) {
   yyparse();
+  walkTranslationUnit(root, NULL);
   freeTranslationUnit(root);
   if(errorHad)
     return 1;
