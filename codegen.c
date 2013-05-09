@@ -2,41 +2,60 @@
 
 void translationUnitGenerateCode(TranslationUnit t) {
 
-  t->code = t->fd->code;
+  t->code = getAllocatedString(t->f->code);
   //does not deal with case where t also has a translation unit
 
 }
 
 void functionDefinitionGenerateCode(FunctionDefinition f) {
 
-  switch(f->type_name)
-  {
-    case 0:
-      f->code = f->d->code + f->cs->code;
-      break;
-    case type:
-  }
+/*NOTE: I have no idea why, but I get tons of errors when this switch statement is uncommented out... halp?!*/
+
+//  switch(f->type_name)
+//  {
+//    case 0:
+      Declarator dec = f->d;
+      char *c = dec->code;
+      char *c1 = f->cs->code;
+      strcat(c,c1);
+      f->code = getAllocatedString(c);
+//      break;
+//    default: 
+//      break;//will need to be filled in for all types
+//  }
         
 }
 
 void declaratorGenerateCode(Declarator d) {
 
-  d->code = d->name->code + "():\n";
+  char *c = d->name->code;
+  char *c2 = "():\n";
+  strcat(c,c2);
+  d->code = getAllocatedString(c);
 
   //TODO: deal with d->p case
 }
 
 void compoundStatementGenerateCode(CompoundStatement cs) {
 
-  cs.code = "\n  " + cs->sList->code; //this might not work so nicely if it's not just for hello world... :/ might need to do something icky with the grammar list ick :/
+  char *c1 = cs->sList->code;
+  char *c2 = "\n ";
+  strcat(c2, c1);
+  cs->code = getAllocatedString(c2);
 
 }
 
 void expressionListGenerateCode(GrammarList g) {
 
-//popfront n'at, come back and do later
+  char *str = ""; 
+  void *current = g->head;
+  while (current)
+  {
+    char *c = ((Expression)current)->code;
+    strcat(str, c);
+  }
 
-//set g.code equal to something PLEASE
+  g->code = getAllocatedString(str);
 }
 
 void statementListGenerateCode(GrammarList g) {
@@ -123,7 +142,12 @@ void postfixArgumentGenerateCode(Expression e) {
 
   if (e->deriv.postfix == arg)
   {
-       e.code = e->sub1.e->code + "(" + e->sub2.l->code + ")";  
+    char *str = e->sub1.e->code;
+    char *str2 = e->sub2.l->code;
+    strcat(str, "(");
+    strcat(str, str2);
+    strcat(str, ")");
+    e->code = getAllocatedString(str);  
   }
 }
 
@@ -185,7 +209,8 @@ void twoExpressionGenerateCode(Expression e) {
 
 void identifierGenerateCode(Identifier i) {
 
-  i->code = i->symbol;
+  char *c = getAllocatedString(i->symbol);
+  i->code = c;
 
 }
 
