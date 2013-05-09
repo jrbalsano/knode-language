@@ -93,7 +93,7 @@ struct symtab *symtable = NULL;
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression declexpression
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist
@@ -185,8 +185,11 @@ edge: BOTHEDGE
   | LEFTEDGE
   | RIGHTEDGE
   ;
-expression : assignmentexpression { $$ = getExpression($1); }
-  | expression ',' assignmentexpression { $$ = getExpressionAssignmentExpression($1, $3); }
+expression : declexpression { $$ = getExpression($1); }
+  | expression ',' declexpression { $$ = getExpressionAssignmentExpression($1, $3); }
+  ;
+declexpression : typename identifier { $$ = getDeclaration($1, $2) }
+  | assignmentexpression { $$ = getDeclExpression($1) }
   ;
 assignmentexpression : conditionalexpression { $$ = getAssign($1); }
   | unaryexpression assignmentoperator assignmentexpression { $$ = getTokenizedAssignment($1, $2, $3); }
@@ -236,6 +239,7 @@ castexpression : unaryexpression { $$ = getCastExpression($1); }
 typename : INT
   | DOUBLE
   | CHAR
+  | BOOLEAN
   | STRING
   ;
 unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }

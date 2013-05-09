@@ -46,7 +46,7 @@ struct typeCheckType_ {
 struct expression_ {
   TypeCheckType tt;
   char *code;
-  enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment} type;
+  enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment, decl} type;
   union {
     Expression e;
     Identifier i;
@@ -78,6 +78,7 @@ struct expression_ {
     enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ,
       pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ, assign_left = LEFTEDGE,
       assign_right = RIGHTEDGE, assign_both = BOTHEDGE, assign_all = ALLEDGE } assign;
+    enum{ decl_none = none, declarator } decl;
   } deriv;
 };
 
@@ -237,6 +238,8 @@ Expression getAssignment(Expression e1, Expression e2);
 Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression e2);
 Expression getInit(int token, Identifier i, Expression e);
 Expression getPrimaryParenExpression(Expression e);
+Expression getDeclaration(int token, Identifier i);
+Expression getDeclExpression(Expression e);
 
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
