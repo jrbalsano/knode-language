@@ -29,6 +29,6 @@ TypeCheckType findSymbol(Scope s, char *id);
  * on success, or null on failure. Fails when there is already a symbol
  * of the same name declared in this scope.
  */
-TypeCheckType addSymbol(Scope s, char *id);
+TypeCheckType addSymbolToScope(Scope s, char *id);
 
 #endif

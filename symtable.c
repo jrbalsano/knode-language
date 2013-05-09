@@ -30,7 +30,7 @@ Symtab addSymbol(Symtab table, char *symbol) {
   //try to find the symbol in our table
   HASH_FIND_STR(table, symbol, lookupResult);
   if(!lookupResult) {
-    symbolPointer = (Symtab)malloc(sizeof(struct symtab));
+    Symtab symbolPointer = (Symtab)malloc(sizeof(struct symtab));
     strncpy(lookupResult->name, symbol, sizeof(symbolPointer->name));
     HASH_ADD_STR(table, name, symbolPointer);
     return symbolPointer;

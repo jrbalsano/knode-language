@@ -15,7 +15,7 @@ TypeCheckType findSymbol(Scope s, char *id) {
   return ret;
 }
 
-TypeCheckType addSymbol(Scope s, char *id) {
+TypeCheckType addSymbolToScope(Scope s, char *id) {
   Symtab s = addSymbol(s->symbolTable, id);
   if(s)
     return s->type;
