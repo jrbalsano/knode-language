@@ -9,13 +9,11 @@
 #include <stdio.h>
 #include <string.h>
 #include "absyn.h"
-#include "symtable.h"
 
 
 void yyerror(char *s);
 int errorHad = 0;
 TranslationUnit root = NULL;
-struct symtab *symtable = NULL;
 
 %}
 

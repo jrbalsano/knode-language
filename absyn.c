@@ -1107,7 +1107,6 @@ void freeExpression(Expression e) {
 Identifier getIdentifier(char *s) {
   Identifier i = (Identifier)malloc(sizeof(struct identifier_));
   i->symbol = s;
-  i->sp = symlook(s);
   return i;
 }
 

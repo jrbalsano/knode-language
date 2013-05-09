@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "absyn.h"
-#include "symtable.h"
 
 %}
 
@@ -82,20 +81,7 @@ boolean   "TRUE"|"FALSE"
                                   return STRING_LITERAL; 
                                 }
 [a-z_][a-zA-Z0-9_]*             {
-                                    /*
-                                     * NOTE: THIS IS A SUPER HACKY WAY TO
-                                     * RECOGNIZE IDENTIFIERS, AND IS ONLY A
-                                     * STOPGAP SOLUTION FOR NOW. IT ONLY WORKS
-                                     * BECAUSE IT'S IN THE LAST POSITION
-                                     * TODO: fix this by moving identifier
-                                     * recognition into symbol table with used
-                                     * variables/keywords
-                                     */
                                     printf("IDENTIFIER\n");
-                                    //check the symbol table with symlook and return a pointer to the symbol table
-                                    char *symbol = yytext;
-                                    struct symtab *sp = symlook(symbol);
-                                    yylval.symp = sp;
                                     return IDENTIFIER;
                                 }
 %%

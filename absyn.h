@@ -84,7 +84,6 @@ struct identifier_ {
   char *code;
   char *symbol;
   TypeCheckType tt;
-  struct symtab *sp;
 };
 struct declarator_ {
   char *code;
