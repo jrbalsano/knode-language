@@ -45,7 +45,6 @@ struct expression_ {
     GrammarList l;
   } sub3;
   union {
-    enum{primary_none = none, primary_identifier} primary;
     enum{postfix_none = none, postincr, postdecr, bracket, identifier, arg, argEmpty} postfix;
     enum{unary_none = none, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
     enum{cast_none = none, typed} cast;
@@ -55,7 +54,7 @@ struct expression_ {
     enum{eq_none = none, equal, notequal} eq;
     enum{gen_none = none, comma = ','} none;
     enum{cond_none = none, cond_or, cond_and} cond;
-    enum{parenthesis,primString,primIdentifier} primary;
+    enum{primary_none = none, parentheses , primary_string, primary_identifier} primary;
     enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ,
       pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ, assign_left = LEFTEDGE,
       assign_right = RIGHTEDGE, assign_both = BOTHEDGE, assign_all = ALLEDGE } assign;

@@ -2,8 +2,10 @@
 
 Scope newScope(Scope parent) {
   Scope ret = (Scope)malloc(sizeof(struct scope_));
+  printf("Creating new scope at %p, with parent %p\n", ret, parent);
   ret->parent = parent;
   ret->symbolTable = NULL;
+  return ret;
 }
 
 TypeCheckType findSymbol(Scope s, char *id) {
@@ -15,10 +17,10 @@ TypeCheckType findSymbol(Scope s, char *id) {
   return ret;
 }
 
-TypeCheckType addSymbolToScope(Scope s, char *id) {
-  Symtab s = addSymbol(s->symbolTable, id);
-  if(s)
-    return s->type;
+TypeCheckType addSymbolToScope(Scope s, char *id, TypeCheckType tt) {
+  Symtab table = addSymbol(s->symbolTable, id, tt);
+  if(table)
+    return table->type;
   else
     return NULL;
 }

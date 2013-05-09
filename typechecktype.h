@@ -18,7 +18,7 @@ typedef struct typeCheckType_ *TypeCheckType;
  * the ar_sub to denote its type as mentioned above.
  */
 struct typeCheckType_ {
-  enum {indeterminable, int_, double_, string_, char_, node_, edge_, dict_, function_, array_} base;
+  enum {indeterminable, int_, double_, boolean_, string_, char_, node_, edge_, dict_, function_, array_} base;
   TypeCheckType ar_sub;
   TypeCheckType fn_sub;
 };

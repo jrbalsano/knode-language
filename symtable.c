@@ -24,16 +24,17 @@ Symtab symlook(char *symbol, Symtab table) {
  * doesn't. Returns the table record if it was successfully added, or NULL
  * otherwise.
  */
-Symtab addSymbol(Symtab table, char *symbol) {
+Symtab addSymbol(Symtab table, char *symbol, TypeCheckType tt) {
   //Create a pointer to store the sumbol that we get back.
   Symtab lookupResult = NULL;
   //try to find the symbol in our table
   HASH_FIND_STR(table, symbol, lookupResult);
   if(!lookupResult) {
-    Symtab symbolPointer = (Symtab)malloc(sizeof(struct symtab));
-    strncpy(lookupResult->name, symbol, sizeof(symbolPointer->name));
-    HASH_ADD_STR(table, name, symbolPointer);
-    return symbolPointer;
+    lookupResult = (Symtab)malloc(sizeof(struct symtab));
+    strncpy(lookupResult->name, symbol, sizeof(lookupResult->name));
+    lookupResult->type = tt;
+    HASH_ADD_STR(table, name, lookupResult);
+    return lookupResult;
   }
   return NULL;
 }

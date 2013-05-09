@@ -80,6 +80,48 @@ void statementTypeCheck(Statement s) {
 
 }
 
+void expressionStatementTypeCheck(Statement s){
+
+}
+
+void declStatementTypeCheck(Statement s) {
+  TypeCheckType tt;
+  TypeCheckType hold;
+  switch(s->sub1.typnam) {
+    case INT:
+      tt = getTypeCheckType(int_);
+      break;
+    case DOUBLE:
+      tt = getTypeCheckType(double_);
+      break;
+    case CHAR:
+      tt = getTypeCheckType(char_);
+      break;
+    case BOOLEAN:
+      tt = getTypeCheckType(boolean_);
+      break;
+    case STRING:
+      tt = getTypeCheckType(string_);
+      break;
+    case NODE:
+      tt = getTypeCheckType(node_);
+      break;
+    case DICT:
+      tt = getTypeCheckType(dict_);
+      break;
+    case EDGE:
+      tt = getTypeCheckType(edge_);
+      break;
+  }
+  hold = tt;
+  tt = addSymbolToScope(s->s, s->sub2.i->symbol, tt);
+  if(!tt) {
+    fprintf(stderr, "Error: Declaration of already declared variable `%s`", s->sub2.i->symbol);
+    free(hold);
+    exit(1);
+  }
+}
+
 void parameterTypeCheck(Parameter p) {
 
 }
@@ -176,9 +218,6 @@ void identifierTypeCheck(Identifier i) {
   i->tt = findSymbol(i->s, i->symbol);
 }
 
-void expressionStatementTypeCheck(Statement s){
-
-}
 
 TypeCheckType copyTypeCheckType(TypeCheckType tt) {
   if(tt==NULL)
