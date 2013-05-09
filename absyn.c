@@ -486,11 +486,7 @@ void freeStatement(Statement s) {
       }
       break;
     case decl:
-      switch(s->deriv.decl){
-        case declarator:
-          freeIdentifier(s->sub2.i);
-          break;
-      }
+      freeIdentifier(s->sub2.i);
       break; 
     case selection:
       switch(s->deriv.selection) {
@@ -958,7 +954,6 @@ Expression getExpressionAssignmentExpression(Expression e1, Expression e2) {
 Statement getDeclaration(int token, Identifier i){
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = decl;
-  ret->deriv.decl = declarator;
   ret->sub1.typnam = token;
   ret->sub2.i = i;
   return ret;

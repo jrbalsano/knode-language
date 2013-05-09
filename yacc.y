@@ -156,10 +156,9 @@ statement : expressionstatement { $$ = getStatement($1); }
   | dictstatement { $$ = getStatement($1); }
   | dictlist { $$ = getStatement($1); }
   | edgestatement { $$ = getStatement($1); }
-  | declstatement 
+  | declstatement { $$ = getStatement($1); } 
   ;
-declstatement : typename identifier { $$ = getDeclaration($1, $2) }
-  | assignmentexpression { $$ = getDeclExpression($1) }
+declstatement : typename identifier NEWLINE { $$ = getDeclaration($1, $2); printf("here") }
   ;
 dictstatement : DICT identifier NEWLINE { $$ = getDictDecStatement($2); }
   | DICT identifier NEWLINE compoundstatement { $$ = getDictDefStatement($2, $4); }

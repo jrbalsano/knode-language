@@ -121,7 +121,6 @@ struct statement_ {
     enum {ifStatement, ifelseStatement} selection;
     enum {dict_none = none, definitions} dict;
     enum {nodeCreate, nodeAssignment, nodeDictAssignment} node;
-    enum{ decl_none = none, declarator } decl;
     enum {edge_none = none, all = ALLEDGE, both = BOTHEDGE, left = LEFTEDGE, right = RIGHTEDGE} edge;
   } deriv;
 };
