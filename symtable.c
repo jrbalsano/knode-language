@@ -29,15 +29,6 @@ void deleteSymbol(Symtab table, char *symbol) {
     }
 }
 
-void storeData(Symtab table, char *symbol, void *data) {
-    struct symtab *symbolPointer;
-    HASH_FIND_STR(table, symbol, symbolPointer);
-    if (symbolPointer) {
-        void *store = (void *)malloc(sizeof(*data));
-        symbolPointer->value = store;
-    }
-}
-
 //iterate through the hash table and delete/free everything
 void freeHashTable(Symtab table) {
     struct symtab *curr, *tmp;
