@@ -19,6 +19,19 @@ Symtab symlook(char *symbol, Symtab table) {
     return symbolPointer;
 }
 
+TypeCheckType findType(Symtab table, char *symbol) {
+  //Create a pointer to store the symbol that we get back in.
+  Symtab lookupResult = NULL;
+  //try to find the symbol in our table
+  HASH_FIND_STR(table, symbol, lookupResult);
+  //get space for the type
+  TypeCheckType result = NULL;
+  if(lookupResult) {
+    result = lookupResult->type;
+  }
+  return lookupResult;
+}
+
 //delete the symbol in the hash table that has the corresponding symbol
 void deleteSymbol(Symtab table, char *symbol) {
     struct symtab *symbolPointer;

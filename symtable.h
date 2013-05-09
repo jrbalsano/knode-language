@@ -14,6 +14,8 @@ struct symtab {
 
 Symtab symlook(char *symbol, Symtab table); 
 
+TypeCheckType findType(Symtab table, char *symbol);
+
 void deleteSymbol(Symtab table, char *symbol);
 
 void freeHashTable(Symtab table);
