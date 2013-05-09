@@ -948,6 +948,22 @@ Expression getExpressionAssignmentExpression(Expression e1, Expression e2) {
   return ret;
 }
 
+Expression getDeclaration(int token, Identifier i){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = decl;
+  ret->deriv.decl = declarator;
+  ret->sub1.typnam = token;
+  ret->sub2.i = i;
+  return ret;
+}
+
+Expression getDeclExpression(Expression e){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->type = decl;
+  ret->deriv.decl = none;
+  ret->sub1.e = e;
+  return ret;
+}
 /**
  * Recursively free an expression and its children in postorder
  */
@@ -960,6 +976,16 @@ void freeExpression(Expression e) {
     return;
   }
   switch (e->type) {
+    case decl:
+      switch(e->deriv.decl){
+        case declarator:
+          freeIdentifier(e->sub1.i);
+          break;
+        case 0:
+          freeExpression(e->sub1.e);
+          break;
+      }
+      break;    
     case postfix:
       switch (e->deriv.postfix) {
         case identifier:
