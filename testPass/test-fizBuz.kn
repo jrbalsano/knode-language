@@ -6,7 +6,7 @@ main():
       print("Fizz")
     if(i%5==0)
       print("Buzz")
-    else(i%3 !=0 && i%5 !=0)
+    else
       print(i)
     print("\n")
 #testing while loops
@@ -17,12 +17,13 @@ main():
     boolean isPrime=TRUE
     while(primeTester<counter)
       if(counter%primeTester==0)
-        isPrime=FALSE;
+        isPrime=FALSE
       primeTester++
     if(isPrime)
       sumOfPrimes = sumOfPrimes + counter
     counter++
-  String sumOfPrimesString = (String) sumOfPrimes
-  String printString = "Sum of Primes to 100 is " + sumOfPrimesString
-  print(printString)
+  string sumOfPrimesString = (string) sumOfPrimes
+  string result = "The sum of primes from 1 to 100 is " + sumOfPrimes
+  print(result)
+ 
     

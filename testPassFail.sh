@@ -74,13 +74,13 @@ passFiles="testPass/test-*.kn"
 failFiles="testFail/test-*.kn"
 
 #for each file in files, run them and print them to .out files
-echo -e "\033[36mNOW TESTING FAILED FILES\033[0m"
+echo -e "\033[36mNOW TESTING PASS FILES\033[0m"
 for f in $passFiles
 do
 Check $f
 done
 isTestingPass=$(( $isTestingPass + 1 ))
-echo -e "\033[36mNOW TESTING PASS FILES\033[0m"
+echo -e "\033[36mNOW TESTING FAIL FILES\033[0m"
 for f in $failFiles
 do
 Check $f
