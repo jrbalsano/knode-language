@@ -29,7 +29,7 @@ TypeCheckType findType(Symtab table, char *symbol) {
   if(lookupResult) {
     result = lookupResult->type;
   }
-  return lookupResult;
+  return result;
 }
 
 //delete the symbol in the hash table that has the corresponding symbol
