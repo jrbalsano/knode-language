@@ -83,6 +83,7 @@ bool_literal   "TRUE"|"FALSE"
                                 }
 [a-z_][a-zA-Z0-9_]*             {
                                     printf("IDENTIFIER\n");
+                                    yylval.sval = yytext;
                                     return IDENTIFIER;
                                 }
 %%

@@ -1360,7 +1360,8 @@ Identifier getIdentifier(char *s) {
   i->s = NULL;
   i->tt = NULL;
   i->code = NULL;
-  i->symbol = s;
+  printf("Creating an identifier with symbol %s\n", s);
+  strncpy(i->symbol, s, sizeof(i->symbol));
   return i;
 }
 

@@ -63,7 +63,7 @@ struct expression_ {
 
 struct identifier_ {
   char *code;
-  char *symbol;
+  char symbol[128];
   Scope s;
   TypeCheckType tt;
 };
