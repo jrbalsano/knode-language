@@ -202,6 +202,7 @@ Identifier getIdentifier(char *s);
 
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
 Expression getPrimaryStringExpression(char *s);
+Expression getPrimaryParenExpression(Expression e);
 Expression getPrimaryIdentifierExpression(Identifier id);
 Expression getPostfixExpression(Expression e1);
 Expression getPostfixBracketExpression(Expression e1, Expression e2);
