@@ -80,6 +80,10 @@ void statementGenerateCode(Statement s) {
 
 }
 
+void expressionStatementGenerateCode(Statement s){
+
+}
+
 void parameterGenerateCode(Parameter p) {
 
 }

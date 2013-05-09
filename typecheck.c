@@ -164,6 +164,10 @@ void identifierTypeCheck(Identifier i) {
 
 }
 
+void expressionStatementTypeCheck(Statement s){
+
+}
+
 TypeCheckType getTypeCheckType(int type) {
   TypeCheckType ret = (TypeCheckType)malloc(sizeof(struct typeCheckType_));
   ret->base = type;

@@ -125,7 +125,12 @@ void walkStatement(Statement s) {
   switch(s->type) {
     case expression:
       walkExpression(s->sub1.e);
+      expressionStatementTypeCheck(s);
+      expressionStatementGenerateCode(s); 
       break;
+    case decl:
+      walkIdentifier(s->sub1.i);
+
     case iteration:
       switch(s->deriv.iteration) {
         case forIter:
