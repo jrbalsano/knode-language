@@ -15,4 +15,10 @@ TypeCheckType findSymbol(Scope s, char *id) {
   return ret;
 }
 
-void freeScope(Scope s);
+TypeCheckType addSymbol(Scope s, char *id) {
+  Symtab s = addSymbol(s->symbolTable, id);
+  if(s)
+    return s->type;
+  else
+    return NULL;
+}

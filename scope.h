@@ -11,6 +11,10 @@ struct scope_ {
   Symtab symbolTable;
 };
 
+/**
+ * Creates a new scope with the specified parent. ALWAYS use this
+ * function to create a new scope.
+ */
 Scope newScope(Scope parent);
 
 /**
@@ -19,5 +23,12 @@ Scope newScope(Scope parent);
  * value of null indicates that the symbol does not exist.
  */
 TypeCheckType findSymbol(Scope s, char *id);
+
+/**
+ * Adds a symbol to the current scope. Returns the type of the symbol
+ * on success, or null on failure. Fails when there is already a symbol
+ * of the same name declared in this scope.
+ */
+TypeCheckType addSymbol(Scope s, char *id);
 
 #endif
