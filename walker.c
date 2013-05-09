@@ -118,7 +118,7 @@ void walkGrammarList(GrammarList g, Scope s) {
       break;
   }
 #ifdef MEMTRACE
-  printf("Grammar list walked at %p\n", g, Scope s);
+  printf("Grammar list walked at %p\n", g);
 #endif
 }
 
@@ -491,7 +491,7 @@ void walkIdentifier(Identifier i, Scope s) {
 #ifdef MEMTRACE
   printf("walking identifier at %p\n", i);
 #endif
-  if(i == NULL) {
+  if(i) {
     fprintf(stderr, "Null child Identifier\n");
     return;
   }  
