@@ -94,7 +94,7 @@ struct symtab *symtable = NULL;
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression declexpression
 %type<identifier> identifier
 %type<declarator> declarator
 %type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist
@@ -186,8 +186,11 @@ edge: BOTHEDGE
   | LEFTEDGE
   | RIGHTEDGE
   ;
-expression : assignmentexpression { $$ = getExpression($1); }
-  | expression ',' assignmentexpression { $$ = getExpressionAssignmentExpression($1, $3); }
+expression : declexpression { $$ = getExpression($1); }
+  | expression ',' declexpression { $$ = getExpressionAssignmentExpression($1, $3); }
+  ;
+declexpression : typename identifier { $$ = getDeclaration($1, $2) }
+  | assignmentexpression { $$ = getDeclExpression($1) }
   ;
 assignmentexpression : conditionalexpression { $$ = getAssign($1); }
   | unaryexpression assignmentoperator assignmentexpression { $$ = getTokenizedAssignment($1, $2, $3); }
@@ -237,6 +240,7 @@ castexpression : unaryexpression { $$ = getCastExpression($1); }
 typename : INT
   | DOUBLE
   | CHAR
+  | BOOLEAN
   | STRING
   ;
 unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
@@ -254,7 +258,7 @@ postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
   | postfixexpression '.' identifier { $$ = getPostfixIdentifierExpression($1, $3); }
   | postfixexpression PLUSPLUS { $$ = getPostfixIncr($1); }
   | postfixexpression MINUSMINUS { $$ = getPostfixDecr($1); }
-  | postfixexpression '(' ')' { $$ = $1; } //TODO: FIX THIS
+  | postfixexpression '(' ')' { $$ = getPostfixEmptyArgument($1); }
   | postfixexpression '(' argumentexpressionlist ')' { $$ = getPostfixArgumentExpression($1, $3); }
   ;
 primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }
@@ -262,7 +266,7 @@ primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval
   | BOOLEAN { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
   | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getPrimaryStringExpression(x); }
   | identifier { $$ = getPrimaryIdentifierExpression($1); }
-  | '(' expression ')' { $$ = $2} //TODO: FIX THIS
+  | '(' expression ')' { $$ = getPrimaryParenExpression($2);} 
   ;
 argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
   | argumentexpressionlist ',' assignmentexpression { $$ = addFront($1, $3); }

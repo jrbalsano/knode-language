@@ -46,7 +46,7 @@ struct typeCheckType_ {
 struct expression_ {
   TypeCheckType tt;
   char *code;
-  enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment} type;
+  enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment, decl} type;
   union {
     Expression e;
     Identifier i;
@@ -65,7 +65,7 @@ struct expression_ {
     GrammarList l;
   } sub3;
   union {
-    enum{postfix_none = none, postincr, postdecr, bracket, identifier, arg} postfix;
+    enum{postfix_none = none, postincr, postdecr, bracket, identifier, arg,argEmpty} postfix;
     enum{unary_none = none, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
     enum{cast_none = none, typed} cast;
     enum{mult_none = none, times = '*', divide = '/', mod = '%'} mult;
@@ -74,9 +74,11 @@ struct expression_ {
     enum{eq_none = none, equal, notequal} eq;
     enum{gen_none = none, comma = ','} none;
     enum{cond_none = none, cond_or, cond_and} cond;
+    enum{parenthesis,primString,primIdentifier} primary;
     enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ,
       pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ, assign_left = LEFTEDGE,
       assign_right = RIGHTEDGE, assign_both = BOTHEDGE, assign_all = ALLEDGE } assign;
+    enum{ decl_none = none, declarator } decl;
   } deriv;
 };
 
@@ -206,6 +208,7 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id);
 Expression getPostfixIncr(Expression e);
 Expression getPostfixDecr(Expression e);
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
+Expression getPostfixEmptyArgument(Expression e);
 Expression getUnaryExpression(Expression e);
 Expression getUnaryIncr(Expression e);
 Expression getUnaryDecr(Expression e);
@@ -235,6 +238,9 @@ Expression getTokenizedAssignment(Expression e1, int op, Expression e2);
 Expression getAssignment(Expression e1, Expression e2);
 Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression e2);
 Expression getInit(int token, Identifier i, Expression e);
+Expression getPrimaryParenExpression(Expression e);
+Expression getDeclaration(int token, Identifier i);
+Expression getDeclExpression(Expression e);
 
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
