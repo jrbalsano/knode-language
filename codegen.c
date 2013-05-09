@@ -33,7 +33,7 @@ void declaratorGenerateCode(Declarator d) {
   strcat(c,c2);
   d->code = getAllocatedString(c);
 
-  //TODO: deal with d->p case
+  //TODO: deal with d->p case (The case where the function has a parameter list)
 }
 
 void compoundStatementGenerateCode(CompoundStatement cs) {

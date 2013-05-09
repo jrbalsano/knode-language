@@ -10,6 +10,7 @@
 #include <string.h>
 #include "absyn.h"
 #include "symtable.h"
+#include "walker.h"
 
 
 void yyerror(char *s);
@@ -274,6 +275,7 @@ void yyerror(char *s) {
 
 int main(void) {
   yyparse();
+  walkTranslationUnit(root);
   freeTranslationUnit(root);
   if(errorHad)
     return 1;
