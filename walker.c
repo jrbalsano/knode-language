@@ -276,6 +276,11 @@ void walkExpression(Expression e) {
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);          
           break;
+        case argEmpty:
+          walkExpression(e->sub1.e);
+          postfixArgumentTypeCheck(e);
+          postfixArgumentGenerateCode(e);
+          break;
         case bracket:
           walkExpression(e->sub1.e);
           walkExpression(e->sub2.e);
