@@ -12,7 +12,7 @@ rm -f $globallog
 #errors
 error=0
 globalerror=0
-
+isTestingPass=0
 keep=0
 
 #error handling
@@ -49,6 +49,7 @@ rm -f "$1.out"
 Run "$KNODE" "$1" > "$1.out"
 # Report the status and clean up the generated files
 echo "Done testing"
+if[ $isTestingPass -eq 0]
 if [ $error -eq 0 ] ; then
 echo -e "\033[32mOK\033[0m"
 echo "###### SUCCESS" >> $globallog
@@ -57,12 +58,32 @@ echo -e "\033[31mFAILED\033[0m"
 echo "###### FAILED" >> $globallog
 globalerror=$error
 fi
+else
+if [ $error -eq 0 ] ; then
+echo -e "\033[32mOK\033[0m"
+echo "###### FAILED" >> $globallog
+else
+echo -e "\033[31mFAILED\033[0m"
+echo "###### PASSED" >> $globallog
+globalerror=$error
+fi
+fi
 }
 #Get all of the test scripts and store their names in $files
-files="tests/test-*.kn"
+passFiles="testPass/test-*.kn"
+failFiles="testFail/test-*.kn"
 
 #for each file in files, run them and print them to .out files
-for f in $files
+echo "Now testing pass files"
+for f in $passFiles
 do
 Check $f
 done
+isTestingPass = 1
+echo "Now testing fail files"
+for f in $failFiles
+do
+Check $f
+done
+
+
