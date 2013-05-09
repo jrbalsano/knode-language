@@ -606,6 +606,7 @@ Expression getPrimaryIdentifierExpression(Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = primary;
   ret->sub1.i = id;
+  ret->deriv.primary = primIdentifier;
   return ret;
 }
 
@@ -616,9 +617,18 @@ Expression getPrimaryStringExpression(char *s) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = string;
   ret->sub1.s = s;
+  ret->deriv.primary = primString;
   return ret;
 }
 
+/**Get parenthesized primary expression*/
+Expression getPrimaryParenExpression(Expression e) {
+    Expression ret = (Expression)malloc(sizeof(struct expression_));
+    ret->type = primary;
+    ret->deriv.primary = parenthesis;
+    ret->sub1.e = e;
+    return ret;
+}
 /**
  * Creates a new Postfix Expression from an existing expression
  */
@@ -628,6 +638,17 @@ Expression getPostfixExpression(Expression e1){
   ret->sub1.e = e1;
   ret->type = postfix;
   return ret;
+}
+
+/**
+ * Creates a new Postfix Expression with an empty argument
+ */
+Expression getPostfixEmptyArgument(Expression e){
+    Expression ret = (Expression)malloc(sizeof(struct expression_));
+    ret->type = postfix;
+    ret->sub1.e = e;
+    ret->deriv.postfix = argEmpty;
+    return ret;
 }
 
 /**
@@ -987,6 +1008,9 @@ void freeExpression(Expression e) {
           freeExpression(e->sub1.e);
           freeGrammarList(e->sub2.l);
           break;
+        case argEmpty:
+          freeExpression(e->sub1.e);
+          break;
         case bracket:
           freeExpression(e->sub1.e);
           freeExpression(e->sub2.e);
@@ -1081,7 +1105,17 @@ void freeExpression(Expression e) {
       } 
       break;
     case primary:
-      freeIdentifier(e->sub1.i);
+      switch(e->deriv.primary){
+        case primString:
+          freeIdentifier(e->sub1.i);
+          break;
+        case primIdentifier:
+          freeIdentifier(e->sub1.i);
+          break;
+        case parenthesis:
+          freeExpression(e->sub1.e);
+          break;
+      }
       break;
     case function:
       freeIdentifier(e->sub1.i);

@@ -168,6 +168,18 @@ void expressionStatementTypeCheck(Statement s){
 
 }
 
+TypeCheckType copyTypeCheckType(TypeCheckType tt) {
+  if(tt==NULL)
+  {
+    return NULL;
+  }
+  TypeCheckType ret= (TypeCheckType)malloc(sizeof(struct typeCheckType_));
+  ret->base = tt->base;
+  ret->fn_sub = copyTypeCheckType(tt->fn_sub);
+  ret->ar_sub = copyTypeCheckType(tt->ar_sub);
+  return ret;
+}
+
 TypeCheckType getTypeCheckType(int type) {
   TypeCheckType ret = (TypeCheckType)malloc(sizeof(struct typeCheckType_));
   ret->base = type;

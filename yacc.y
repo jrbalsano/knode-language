@@ -258,7 +258,7 @@ postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
   | postfixexpression '.' identifier { $$ = getPostfixIdentifierExpression($1, $3); }
   | postfixexpression PLUSPLUS { $$ = getPostfixIncr($1); }
   | postfixexpression MINUSMINUS { $$ = getPostfixDecr($1); }
-  | postfixexpression '(' ')' { $$ = $1; } //TODO: FIX THIS
+  | postfixexpression '(' ')' { $$ = getPostfixEmptyArgument($1); }
   | postfixexpression '(' argumentexpressionlist ')' { $$ = getPostfixArgumentExpression($1, $3); }
   ;
 primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }
@@ -266,7 +266,7 @@ primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval
   | BOOL_LITERAL { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
   | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getPrimaryStringExpression(x); }
   | identifier { $$ = getPrimaryIdentifierExpression($1); }
-  | '(' expression ')' { $$ = $2} //TODO: FIX THIS
+  | '(' expression ')' { $$ = getPrimaryParenExpression($2);} 
   ;
 argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
   | argumentexpressionlist ',' assignmentexpression { $$ = addFront($1, $3); }
