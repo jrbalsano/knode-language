@@ -46,7 +46,7 @@ struct typeCheckType_ {
 struct expression_ {
   TypeCheckType tt;
   char *code;
-  enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment, decl} type;
+  enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment} type;
   union {
     Expression e;
     Identifier i;
@@ -78,7 +78,6 @@ struct expression_ {
     enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ,
       pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ, assign_left = LEFTEDGE,
       assign_right = RIGHTEDGE, assign_both = BOTHEDGE, assign_all = ALLEDGE } assign;
-    enum{ decl_none = none, declarator } decl;
   } deriv;
 };
 
@@ -97,11 +96,12 @@ struct declarator_ {
 struct statement_ {
   char *code;
   TypeCheckType tt;
-  enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge, dictlist, dict} type;
+  enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge, dictlist, dict, decl} type;
   union {
     Expression e;
     Statement s;
     Identifier i;
+    int typnam;
     struct {
       Expression e1;
       Expression e2;
@@ -177,7 +177,7 @@ GrammarList newArgumentExpressionList(Expression e);
 GrammarList appendToPList(GrammarList pList,Parameter param);
 GrammarList addFront(GrammarList g, void *data);
 
-Parameter getTypedParameter(int typname, Identifier i);
+Parameter getTypedParameter(int typnam, Identifier i);
 
 CompoundStatement newCompoundStatement(GrammarList sList);
 
@@ -196,11 +196,13 @@ Statement newNodeAssignmentStatement(Identifier id, Expression e);
 Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs);
 Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnector, Expression e2);
 Statement getEdgeDeclaration(Identifier i);
+Statement getDeclarationStatement(int token, Identifier i);
 
 Identifier getIdentifier(char *s);
 
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
 Expression getPrimaryStringExpression(char *s);
+Expression getPrimaryParenExpression(Expression e);
 Expression getPrimaryIdentifierExpression(Identifier id);
 Expression getPostfixExpression(Expression e1);
 Expression getPostfixBracketExpression(Expression e1, Expression e2);
@@ -238,9 +240,6 @@ Expression getTokenizedAssignment(Expression e1, int op, Expression e2);
 Expression getAssignment(Expression e1, Expression e2);
 Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression e2);
 Expression getInit(int token, Identifier i, Expression e);
-Expression getPrimaryParenExpression(Expression e);
-Expression getDeclaration(int token, Identifier i);
-Expression getDeclExpression(Expression e);
 
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);

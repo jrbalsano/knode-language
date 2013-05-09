@@ -148,6 +148,14 @@ void statementGenerateCode(Statement s) {
 
 }
 
+void expressionStatementGenerateCode(Statement s){
+
+}
+
+void declStatementGenerateCode(Statement s){
+
+}
+
 void parameterGenerateCode(Parameter p) {
 
 }
