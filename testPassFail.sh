@@ -49,24 +49,24 @@ rm -f "$1.out"
 Run "$KNODE" "$1" > "$1.out"
 # Report the status and clean up the generated files
 echo "Done testing"
-if[ $isTestingPass -eq 0]
-if [ $error -eq 0 ] ; then
-echo -e "\033[32mOK\033[0m"
-echo "###### SUCCESS" >> $globallog
+if [ $isTestingPass -eq 0 ] ; then
+  if [ $error -eq 0 ] ; then
+    echo -e "\033[32mOK\033[0m"
+    echo "###### SUCCESS" >> $globallog
+  else
+    echo -e "\033[31mFAILED\033[0m"
+    echo "###### FAILED" >> $globallog
+    globalerror=$error
+  fi
 else
-echo -e "\033[31mFAILED\033[0m"
-echo "###### FAILED" >> $globallog
-globalerror=$error
-fi
-else
-if [ $error -eq 0 ] ; then
-echo -e "\033[32mOK\033[0m"
-echo "###### FAILED" >> $globallog
-else
-echo -e "\033[31mFAILED\033[0m"
-echo "###### PASSED" >> $globallog
-globalerror=$error
-fi
+  if [ $error -eq 0 ] ; then
+    echo -e "\033[31mFAILED\033[0m"
+    echo "###### FAILED" >> $globallog
+  else
+    echo -e "\033[32mOK\033[0m"
+    echo "###### SUCCESS" >> $globallog
+    globalerror=$error
+  fi
 fi
 }
 #Get all of the test scripts and store their names in $files
@@ -74,13 +74,13 @@ passFiles="testPass/test-*.kn"
 failFiles="testFail/test-*.kn"
 
 #for each file in files, run them and print them to .out files
-echo "Now testing pass files"
+echo -e "\033[36mNOW TESTING FAILED FILES\033[0m"
 for f in $passFiles
 do
 Check $f
 done
-isTestingPass = 1
-echo "Now testing fail files"
+isTestingPass=$(( $isTestingPass + 1 ))
+echo -e "\033[36mNOW TESTING PASS FILES\033[0m"
 for f in $failFiles
 do
 Check $f
