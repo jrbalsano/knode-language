@@ -605,6 +605,7 @@ Expression getFunctionExpression(Identifier id, GrammarList argExpList) {
 Expression getPrimaryIdentifierExpression(Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = primary;
+  ret->deriv.primary = primary_identifier;
   ret->sub1.i = id;
   return ret;
 }

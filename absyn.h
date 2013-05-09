@@ -46,6 +46,7 @@ struct expression_ {
   } sub3;
   union {
     enum{postfix_none = none, postincr, postdecr, bracket, identifier, arg} postfix;
+    enum{primary_none = none, primary_identifier} primary;
     enum{unary_none = none, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
     enum{cast_none = none, typed} cast;
     enum{mult_none = none, times = '*', divide = '/', mod = '%'} mult;

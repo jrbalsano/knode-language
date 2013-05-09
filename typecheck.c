@@ -149,7 +149,19 @@ void assignmentExpressionTypeCheck(Expression e) {
 }
 
 void primaryExpressionTypeCheck(Expression e) {
-
+  switch(e->deriv.primary) {
+  case primary_identifier:
+    if(e->sub1.i->tt)
+      e->tt = e->sub1.i->tt;
+    else {
+      fprintf(stderr, "Undeclared variable used.\n");
+      exit(1);
+    }
+    break;
+  default:
+    //do other things
+    break;
+  }
 }
 
 void functionExpressionTypeCheck(Expression e) {
@@ -161,7 +173,7 @@ void twoExpressionTypeCheck(Expression e) {
 }
 
 void identifierTypeCheck(Identifier i) {
-
+  i->tt = findSymbol(i->s, i->symbol);
 }
 
 TypeCheckType getTypeCheckType(int type) {
