@@ -158,7 +158,7 @@ statement : expressionstatement { $$ = getStatement($1); }
   | edgestatement { $$ = getStatement($1); }
   | declstatement { $$ = getStatement($1); } 
   ;
-declstatement : typename identifier NEWLINE { $$ = getDeclaration($1, $2); printf("here") }
+declstatement : typename identifier NEWLINE { $$ = getDeclarationStatement($1, $2); printf("here") }
   ;
 dictstatement : DICT identifier NEWLINE { $$ = getDictDecStatement($2); }
   | DICT identifier NEWLINE compoundstatement { $$ = getDictDefStatement($2, $4); }

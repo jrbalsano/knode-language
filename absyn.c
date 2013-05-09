@@ -565,9 +565,9 @@ void freeStatement(Statement s) {
 /**
  * Create a parameter from a typed argument
  */
-Parameter getTypedParameter(int typename, Identifier i){
+Parameter getTypedParameter(int typnam, Identifier i){
   Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-  ret->type=typename;
+  ret->type=typnam;
   ret->i = i;
   return ret;
 }
@@ -951,7 +951,7 @@ Expression getExpressionAssignmentExpression(Expression e1, Expression e2) {
   return ret;
 }
 
-Statement getDeclaration(int token, Identifier i){
+Statement getDeclarationStatement(int token, Identifier i){
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = decl;
   ret->sub1.typnam = token;

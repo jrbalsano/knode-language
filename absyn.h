@@ -176,7 +176,7 @@ GrammarList newArgumentExpressionList(Expression e);
 GrammarList appendToPList(GrammarList pList,Parameter param);
 GrammarList addFront(GrammarList g, void *data);
 
-Parameter getTypedParameter(int typename, Identifier i);
+Parameter getTypedParameter(int typnam, Identifier i);
 
 CompoundStatement newCompoundStatement(GrammarList sList);
 
@@ -195,7 +195,7 @@ Statement newNodeAssignmentStatement(Identifier id, Expression e);
 Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs);
 Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnector, Expression e2);
 Statement getEdgeDeclaration(Identifier i);
-Statement getDeclaration(int token, Identifier i);
+Statement getDeclarationStatement(int token, Identifier i);
 
 Identifier getIdentifier(char *s);
 
