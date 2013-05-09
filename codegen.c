@@ -2,22 +2,41 @@
 
 void translationUnitGenerateCode(TranslationUnit t) {
 
+  t->code = t->fd->code;
+  //does not deal with case where t also has a translation unit
+
 }
 
 void functionDefinitionGenerateCode(FunctionDefinition f) {
 
+  switch(f->type_name)
+  {
+    case 0:
+      f->code = f->d->code + f->cs->code;
+      break;
+    case type:
+  }
+        
 }
 
 void declaratorGenerateCode(Declarator d) {
 
+  d->code = d->name->code + "():\n";
+
+  //TODO: deal with d->p case
 }
 
 void compoundStatementGenerateCode(CompoundStatement cs) {
+
+  cs.code = "\n  " + cs->sList->code; //this might not work so nicely if it's not just for hello world... :/ might need to do something icky with the grammar list ick :/
 
 }
 
 void expressionListGenerateCode(GrammarList g) {
 
+//popfront n'at, come back and do later
+
+//set g.code equal to something PLEASE
 }
 
 void statementListGenerateCode(GrammarList g) {
@@ -102,6 +121,10 @@ void postfixIncrementGenerateCode(Expression e) {
 
 void postfixArgumentGenerateCode(Expression e) {
 
+  if (e->deriv.postfix == arg)
+  {
+       e.code = e->sub1.e->code + "(" + e->sub2.l->code + ")";  
+  }
 }
 
 void postfixBracketGenerateCode(Expression e) {
@@ -161,6 +184,8 @@ void twoExpressionGenerateCode(Expression e) {
 }
 
 void identifierGenerateCode(Identifier i) {
+
+  i->code = i->symbol;
 
 }
 
