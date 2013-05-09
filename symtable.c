@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct symtab *symlook(char *symbol) {
+Symtab symlook(char *symbol, Symtab table) {
     //create a symbol pointer
     struct symtab *symbolPointer;
     //try to find the symbol in our table
-    HASH_FIND_STR(symtable, symbol, symbolPointer);
+    HASH_FIND_STR(table, symbol, symbolPointer);
     //if we find the symbol, then return the pointer to it
     if (symbolPointer) {
         return symbolPointer;
@@ -15,23 +15,23 @@ struct symtab *symlook(char *symbol) {
     //if we don't find the symbol, add it to the table and return the pointer
     symbolPointer = (struct symtab*)malloc(sizeof(struct symtab));
     strncpy(symbolPointer->name, symbol, sizeof(symbolPointer->name));
-    HASH_ADD_STR(symtable, name, symbolPointer);
+    HASH_ADD_STR(table, name, symbolPointer);
     return symbolPointer;
 }
 
 //delete the symbol in the hash table that has the corresponding symbol
-void deleteSymbol(char *symbol) {
+void deleteSymbol(Symtab table, char *symbol) {
     struct symtab *symbolPointer;
-    HASH_FIND_STR(symtable, symbol, symbolPointer);
+    HASH_FIND_STR(table, symbol, symbolPointer);
     if (symbolPointer) {
-        HASH_DEL(symtable, symbolPointer);
+        HASH_DEL(table, symbolPointer);
         free(symbolPointer);
     }
 }
 
-void storeData(char *symbol, void *data) {
+void storeData(Symtab table, char *symbol, void *data) {
     struct symtab *symbolPointer;
-    HASH_FIND_STR(symtable, symbol, symbolPointer);
+    HASH_FIND_STR(table, symbol, symbolPointer);
     if (symbolPointer) {
         void *store = (void *)malloc(sizeof(*data));
         symbolPointer->value = store;
@@ -39,10 +39,10 @@ void storeData(char *symbol, void *data) {
 }
 
 //iterate through the hash table and delete/free everything
-void freeHashTable() {
+void freeHashTable(Symtab table) {
     struct symtab *curr, *tmp;
-    HASH_ITER(hh, symtable, curr, tmp) {
-        HASH_DEL(symtable, curr);
+    HASH_ITER(hh, table, curr, tmp) {
+        HASH_DEL(table, curr);
         free(curr);
     }
 }

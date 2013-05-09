@@ -4,7 +4,7 @@
 #include "./libs/uthash.h"
 #include "absyn.h"
 
-typedef struct symtab *symtab;
+typedef struct symtab *Symtab;
 
 struct symtab {
     char name[128];
@@ -13,14 +13,12 @@ struct symtab {
     UT_hash_handle hh;
 };
 
-struct symtab *symtable;
+Symtab symlook(char *symbol, Symtab table); 
 
-struct symtab *symlook(char *symbol); 
+void deleteSymbol(Symtab table, char *symbol);
 
-void deleteSymbol(char *symbol);
+void storeData(Symtab table, char *symbol, void *data);
 
-void storeData(char *symbol, void *data);
-
-void freeHashTable();
+void freeHashTable(Symtab table);
 
 #endif
