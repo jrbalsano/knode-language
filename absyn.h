@@ -46,7 +46,7 @@ struct typeCheckType_ {
 struct expression_ {
   TypeCheckType tt;
   char *code;
-  enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment, decl} type type;
+  enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment, decl} type;
   union {
     Expression e;
     Identifier i;
