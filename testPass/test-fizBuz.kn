@@ -1,0 +1,28 @@
+main():
+  for(int i= 1; i<=100;i++)
+    if(i%15==0)
+      print("FizzBuzz")
+    if(i%3==0)
+      print("Fizz")
+    if(i%5==0)
+      print("Buzz")
+    else(i%3 !=0 && i%5 !=0)
+      print(i)
+    print("\n")
+#testing while loops
+  int sumOfPrimes=0
+  int counter = 0
+  while(counter<=100)
+    int primeTester=2
+    boolean isPrime=TRUE
+    while(primeTester<counter)
+      if(counter%primeTester==0)
+        isPrime=FALSE;
+      primeTester++
+    if(isPrime)
+      sumOfPrimes = sumOfPrimes + counter
+    counter++
+  String sumOfPrimesString = (String) sumOfPrimes
+  String printString = "Sum of Primes to 100 is " + sumOfPrimesString
+  print(printString)
+    
