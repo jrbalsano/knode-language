@@ -94,10 +94,10 @@ struct symtab *symtable = NULL;
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression declexpression
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist
+%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist declstatement
 %type<functionDefinition> functiondefinition
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist statementlist
@@ -156,6 +156,10 @@ statement : expressionstatement { $$ = getStatement($1); }
   | dictstatement { $$ = getStatement($1); }
   | dictlist { $$ = getStatement($1); }
   | edgestatement { $$ = getStatement($1); }
+  | declstatement 
+  ;
+declstatement : typename identifier { $$ = getDeclaration($1, $2) }
+  | assignmentexpression { $$ = getDeclExpression($1) }
   ;
 dictstatement : DICT identifier NEWLINE { $$ = getDictDecStatement($2); }
   | DICT identifier NEWLINE compoundstatement { $$ = getDictDefStatement($2, $4); }
@@ -186,11 +190,8 @@ edge: BOTHEDGE
   | LEFTEDGE
   | RIGHTEDGE
   ;
-expression : declexpression { $$ = getExpression($1); }
-  | expression ',' declexpression { $$ = getExpressionAssignmentExpression($1, $3); }
-  ;
-declexpression : typename identifier { $$ = getDeclaration($1, $2) }
-  | assignmentexpression { $$ = getDeclExpression($1) }
+expression : assignmentexpression { $$ = getExpression($1); }
+  | expression ',' assignmentexpression { $$ = getExpressionAssignmentExpression($1, $3); }
   ;
 assignmentexpression : conditionalexpression { $$ = getAssign($1); }
   | unaryexpression assignmentoperator assignmentexpression { $$ = getTokenizedAssignment($1, $2, $3); }
