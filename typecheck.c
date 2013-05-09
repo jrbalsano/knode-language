@@ -214,9 +214,9 @@ int castTypeMatch(TypeCheckType t1, TypeCheckType t2) {
   else if(t1->base == t2->base)
     return 1;
   else {
-    int intToDub = (t1->base == int_ && t2->base == double_);
-    int intToString = (t1->base == int_ && t2->base == string_);
-    int dubToString = (t1->base == double_ && t2->base == string_);
+    int intToDub = (t2->base == int_ && t1->base == double_);
+    int intToString = (t2->base == int_ && t1->base == string_);
+    int dubToString = (t2->base == double_ && t1->base == string_);
     if(intToDub || intToString || dubToString)
       return 2;
     else
