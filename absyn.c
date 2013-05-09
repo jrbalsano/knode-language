@@ -603,7 +603,7 @@ Expression getPrimaryIdentifierExpression(Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = primary;
   ret->sub1.i = id;
-  ret->deriv.primary = identifier;
+  ret->deriv.primary = primIdentifier;
   return ret;
 }
 
@@ -614,14 +614,14 @@ Expression getPrimaryStringExpression(char *s) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = string;
   ret->sub1.s = s;
-  ret->deriv.primary = string;
+  ret->deriv.primary = primString;
   return ret;
 }
 
 /**Get parenthesized primary expression*/
 Expression getPrimaryParenExpression(Expression e) {
     Expression ret = (Expression)malloc(sizeof(struct expression_));
-    ret->type = primaryParen;
+    ret->type = primary;
     ret->deriv.primary = parenthesis;
     ret->sub1.e = e;
     return ret;
@@ -1081,10 +1081,10 @@ void freeExpression(Expression e) {
       break;
     case primary:
       switch(e->deriv.primary){
-        case string:
+        case primString:
           freeIdentifier(e->sub1.i);
           break;
-        case identifier:
+        case primIdentifier:
           freeIdentifier(e->sub1.i);
           break;
         case parenthesis:

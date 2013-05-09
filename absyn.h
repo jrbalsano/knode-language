@@ -74,7 +74,7 @@ struct expression_ {
     enum{eq_none = none, equal, notequal} eq;
     enum{gen_none = none, comma = ','} none;
     enum{cond_none = none, cond_or, cond_and} cond;
-    enum{parenthesis,string,identifier} primary;
+    enum{parenthesis,primString,primIdentifier} primary;
     enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ,
       pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ, assign_left = LEFTEDGE,
       assign_right = RIGHTEDGE, assign_both = BOTHEDGE, assign_all = ALLEDGE } assign;
@@ -236,7 +236,7 @@ Expression getTokenizedAssignment(Expression e1, int op, Expression e2);
 Expression getAssignment(Expression e1, Expression e2);
 Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression e2);
 Expression getInit(int token, Identifier i, Expression e);
-Expression getPrimaryParenExpression(Expression e)
+Expression getPrimaryParenExpression(Expression e);
 
 void freeTranslationUnit(TranslationUnit t); 
 void freeFunctionDefinition(FunctionDefinition f);
