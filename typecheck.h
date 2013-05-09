@@ -145,6 +145,10 @@ void edgeStatementTypeCheck(Statement s);
  */
 void statementTypeCheck(Statement s);
 
+void expressionStatementTypeCheck(Statement s);
+
+void declStatementTypeCheck(Statement s);
+
 /************************************************
  * Parameters
  ************************************************/

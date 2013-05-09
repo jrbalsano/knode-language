@@ -35,6 +35,10 @@ void parameterListGenerateCode(GrammarList g);
 /************************************************
  * Statements
  ************************************************/
+/* Expression */
+void expressionStatementGenerateCode(Statement s);
+/* Declarations */
+void declStatementGenerateCode(Statement s);
 /* Iteration */
 void forStatementGenerateCode(Statement s);
 void whileStatementGenerateCode(Statement s);

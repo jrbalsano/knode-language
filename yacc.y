@@ -63,6 +63,7 @@ struct symtab *symtable = NULL;
 %token NE
 %left AND
 %left OR
+%token BOOL_LITERAL
 %token BOOLEAN
 %token PLUSEQ
 %token MINUSEQ
@@ -89,14 +90,14 @@ struct symtab *symtable = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator edge alledge LEFTEDGE RIGHTEDGE ALLEDGE BOTHEDGE
+%type<ival> INTEGER BOOLEAN typename INT BOOL_LITERAL DOUBLE CHAR STRING NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator edge alledge LEFTEDGE RIGHTEDGE ALLEDGE BOTHEDGE
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
-%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression declexpression
+%type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist
+%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist declstatement
 %type<functionDefinition> functiondefinition
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist statementlist
@@ -155,6 +156,9 @@ statement : expressionstatement { $$ = getStatement($1); }
   | dictstatement { $$ = getStatement($1); }
   | dictlist { $$ = getStatement($1); }
   | edgestatement { $$ = getStatement($1); }
+  | declstatement { $$ = getStatement($1); } 
+  ;
+declstatement : typename identifier NEWLINE { $$ = getDeclarationStatement($1, $2); printf("here") }
   ;
 dictstatement : DICT identifier NEWLINE { $$ = getDictDecStatement($2); }
   | DICT identifier NEWLINE compoundstatement { $$ = getDictDefStatement($2, $4); }
@@ -185,11 +189,8 @@ edge: BOTHEDGE
   | LEFTEDGE
   | RIGHTEDGE
   ;
-expression : declexpression { $$ = getExpression($1); }
-  | expression ',' declexpression { $$ = getExpressionAssignmentExpression($1, $3); }
-  ;
-declexpression : typename identifier { $$ = getDeclaration($1, $2) }
-  | assignmentexpression { $$ = getDeclExpression($1) }
+expression : assignmentexpression { $$ = getExpression($1); }
+  | expression ',' assignmentexpression { $$ = getExpressionAssignmentExpression($1, $3); }
   ;
 assignmentexpression : conditionalexpression { $$ = getAssign($1); }
   | unaryexpression assignmentoperator assignmentexpression { $$ = getTokenizedAssignment($1, $2, $3); }
@@ -262,7 +263,7 @@ postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
   ;
 primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }
   | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
-  | BOOLEAN { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
+  | BOOL_LITERAL { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
   | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getPrimaryStringExpression(x); }
   | identifier { $$ = getPrimaryIdentifierExpression($1); }
   | '(' expression ')' { $$ = getPrimaryParenExpression($2);} 
