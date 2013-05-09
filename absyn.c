@@ -30,6 +30,7 @@ void freeTranslationUnit(TranslationUnit t) {
   freeFunctionDefinition(t->f);
   if(t->code)
     free(t->code);
+  free(t->s);
   free(t);
 #ifdef MEMTRACE
   printf("Translation unit freed\n");
@@ -77,6 +78,7 @@ void freeFunctionDefinition(FunctionDefinition f) {
   freeTypeCheckType(f->tt);
   if(f->code)
     free(f->code);
+  free(f->s);
   free(f);
 #ifdef MEMTRACE
   printf("Function definition freed\n");
@@ -549,6 +551,7 @@ void freeStatement(Statement s) {
   freeTypeCheckType(s->tt);
   if(s->code)
     free(s->code);
+  free(s->s);
   free(s);
 #ifdef MEMTRACE
   printf("Statement freed\n");
