@@ -18,10 +18,34 @@ typedef struct grammarList_ *GrammarList;
 typedef struct grammarNode_ *GrammarNode;
 typedef struct translationUnit_ *TranslationUnit;
 typedef struct parameter_ *Parameter;
+typedef struct typeCheckType_ *TypeCheckType;
 
 #include "yacc.tab.h"
 
+/**
+ * Defines a structure for the type of a node in the tree to be used while typechecking. Indeterminable
+ * is reserved for those situations where the nature of knode makes it impossible to determine the type.
+ * If at all possible try to avoid the use of indeterminable because those will cause headaches during
+ * code generation.
+ *
+ * int, double, string, char, node, edge, and dict should all be fairly straightforward types.
+ *
+ * For arrays, set "ar_sub" to be another TypeCheckType of the type the array is. If its an array of
+ * arrays then "sub" should be another array_ type with another sub and so on.
+ *
+ * For functions, use fn_sub, with the first fn_sub being the return type of the function and each
+ * subsequent fn_sub being the type of each argument. In the event that an argument is an array, use
+ * the ar_sub to denote its type as mentioned above.
+ */
+struct typeCheckType_ {
+  enum {indeterminable, int_, double_, string_, char_, node_, edge_, dict_, function_, array_} base;
+  TypeCheckType ar_sub;
+  TypeCheckType fn_sub;
+};
+
 struct expression_ {
+  TypeCheckType tt;
+  char *code;
   enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment} type;
   union {
     Expression e;
@@ -57,14 +81,20 @@ struct expression_ {
 };
 
 struct identifier_ {
+  char *code;
   char *symbol;
+  TypeCheckType tt;
   struct symtab *sp;
 };
 struct declarator_ {
+  char *code;
   Identifier name;
+  TypeCheckType tt;
   GrammarList p; //A list of parameters
 };
 struct statement_ {
+  char *code;
+  TypeCheckType tt;
   enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge, dictlist, dict} type;
   union {
     Expression e;
@@ -94,23 +124,31 @@ struct statement_ {
   } deriv;
 };
 struct parameter_ {
+  char *code;
+  TypeCheckType tt;
   int type;
   Identifier i;
 };
 struct functionDefinition_ {
+  char *code;
+  TypeCheckType tt;
   enum {typ_void = none, typ_int = INT, typ_double = DOUBLE, typ_char = CHAR, typ_string = STRING,
     typ_node = NODE, typ_edge = EDGE, typ_dict = DICT} type_name;
   Declarator d;
   CompoundStatement cs;
 };
 struct compoundStatement_ {
-  GrammarList dlist; //A list of declarations
+  char *code;
+  TypeCheckType tt;
   GrammarList sList; //A list of statements
 };
 struct translationUnit_ {
+  char *code;
   FunctionDefinition f;
 };
 struct grammarList_ {
+  char *code;
+  TypeCheckType tt;
   enum {argument, statement,parameterList,expressionList} type;
   GrammarNode head;
 };
@@ -118,6 +156,9 @@ struct grammarNode_ {
   GrammarNode next;
   void *data;
 };
+
+
+void *popFront(GrammarList g);
 
 TranslationUnit getTranslationUnit(FunctionDefinition fd);
 
@@ -204,5 +245,6 @@ void freeStatement(Statement s);
 void freeExpression(Expression e);
 void freeIdentifier(Identifier i);
 void freeParameter(Parameter p);
+void freeTypeCheckType(TypeCheckType t);
 
 #endif
