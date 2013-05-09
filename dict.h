@@ -20,10 +20,10 @@ struct entry {
 
 struct dict {
     char name[128];
-    Entry *entries;
+    Entry entries;
 };
 
-void access(char *key);
+Entry access(Dict d, char *key);
 
 void freeDict(Dict dictionary);
 
