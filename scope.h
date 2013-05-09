@@ -11,7 +11,9 @@ struct scope_ {
   Symtab symbolTable;
 };
 
-TypeCheckType findSymbol(char *id);
+Scope newScope(Scope parent);
+
+TypeCheckType findSymbol(Scope s, char *id);
 
 void freeScope(Scope s);
 
