@@ -485,6 +485,9 @@ void freeStatement(Statement s) {
           break;
       }
       break;
+    case decl:
+      freeIdentifier(s->sub2.i);
+      break; 
     case selection:
       switch(s->deriv.selection) {
         case ifStatement:
@@ -562,9 +565,9 @@ void freeStatement(Statement s) {
 /**
  * Create a parameter from a typed argument
  */
-Parameter getTypedParameter(int typename, Identifier i){
+Parameter getTypedParameter(int typnam, Identifier i){
   Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
-  ret->type=typename;
+  ret->type=typnam;
   ret->i = i;
   return ret;
 }
@@ -603,6 +606,7 @@ Expression getPrimaryIdentifierExpression(Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = primary;
   ret->sub1.i = id;
+  ret->deriv.primary = primIdentifier;
   return ret;
 }
 
@@ -613,9 +617,18 @@ Expression getPrimaryStringExpression(char *s) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
   ret->type = string;
   ret->sub1.s = s;
+  ret->deriv.primary = primString;
   return ret;
 }
 
+/**Get parenthesized primary expression*/
+Expression getPrimaryParenExpression(Expression e) {
+    Expression ret = (Expression)malloc(sizeof(struct expression_));
+    ret->type = primary;
+    ret->deriv.primary = parenthesis;
+    ret->sub1.e = e;
+    return ret;
+}
 /**
  * Creates a new Postfix Expression from an existing expression
  */
@@ -625,6 +638,17 @@ Expression getPostfixExpression(Expression e1){
   ret->sub1.e = e1;
   ret->type = postfix;
   return ret;
+}
+
+/**
+ * Creates a new Postfix Expression with an empty argument
+ */
+Expression getPostfixEmptyArgument(Expression e){
+    Expression ret = (Expression)malloc(sizeof(struct expression_));
+    ret->type = postfix;
+    ret->sub1.e = e;
+    ret->deriv.postfix = argEmpty;
+    return ret;
 }
 
 /**
@@ -948,22 +972,14 @@ Expression getExpressionAssignmentExpression(Expression e1, Expression e2) {
   return ret;
 }
 
-Expression getDeclaration(int token, Identifier i){
-  Expression ret = (Expression)malloc(sizeof(struct expression_));
+Statement getDeclarationStatement(int token, Identifier i){
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->type = decl;
-  ret->deriv.decl = declarator;
   ret->sub1.typnam = token;
   ret->sub2.i = i;
   return ret;
 }
 
-Expression getDeclExpression(Expression e){
-  Expression ret = (Expression)malloc(sizeof(struct expression_));
-  ret->type = decl;
-  ret->deriv.decl = none;
-  ret->sub1.e = e;
-  return ret;
-}
 /**
  * Recursively free an expression and its children in postorder
  */
@@ -975,17 +991,7 @@ void freeExpression(Expression e) {
     fprintf(stderr, "Null child Expression\n");
     return;
   }
-  switch (e->type) {
-    case decl:
-      switch(e->deriv.decl){
-        case declarator:
-          freeIdentifier(e->sub1.i);
-          break;
-        case 0:
-          freeExpression(e->sub1.e);
-          break;
-      }
-      break;    
+  switch (e->type) { 
     case postfix:
       switch (e->deriv.postfix) {
         case identifier:
@@ -1001,6 +1007,9 @@ void freeExpression(Expression e) {
         case arg:
           freeExpression(e->sub1.e);
           freeGrammarList(e->sub2.l);
+          break;
+        case argEmpty:
+          freeExpression(e->sub1.e);
           break;
         case bracket:
           freeExpression(e->sub1.e);
@@ -1096,7 +1105,17 @@ void freeExpression(Expression e) {
       } 
       break;
     case primary:
-      freeIdentifier(e->sub1.i);
+      switch(e->deriv.primary){
+        case primString:
+          freeIdentifier(e->sub1.i);
+          break;
+        case primIdentifier:
+          freeIdentifier(e->sub1.i);
+          break;
+        case parenthesis:
+          freeExpression(e->sub1.e);
+          break;
+      }
       break;
     case function:
       freeIdentifier(e->sub1.i);
