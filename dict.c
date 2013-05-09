@@ -14,6 +14,30 @@ Entry access(Dict d, char *key) {
   return e;
 }
 
-void freeDict(Dict dictionary) {
 
+/**
+ * Adds the key-value pair to the dictionary specified
+ */
+Entry addEntry(Entry entries, char *key, char *val) {
+  Entry entry = (Entry)malloc(sizeof(struct entry));
+  strncpy(entry->key, key, sizeof(entry->key));
+  strncpy(entry->value, val, sizeof(entry->value));
+  HASH_ADD_STR(entries, key, entry);
+  return entry;
+}
+
+Entry addToDict(Dict d, char *key, char *val) {
+  Entry entry = (Entry)malloc(sizeof(struct entry));
+  strncpy(entry->key, key, sizeof(entry->key));
+  strncpy(entry->value, val, sizeof(entry->value));
+  HASH_ADD_STR(d->entries, key, entry);
+  return entry;
+}
+
+void freeEntries(Entry entries) {
+  struct entry *curr, *tmp;
+  HASH_ITER(hh, entries, curr, tmp) {
+    HASH_DEL(entries, curr);
+    free(curr);
+  }
 }
