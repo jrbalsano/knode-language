@@ -265,7 +265,7 @@ primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval
   | BOOLEAN { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
   | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getPrimaryStringExpression(x); }
   | identifier { $$ = getPrimaryIdentifierExpression($1); }
-  | '(' expression ')' { $$ = $2} //TODO: FIX THIS
+  | '(' expression ')' { $$ = getPrimaryParenExpression($2);} 
   ;
 argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
   | argumentexpressionlist ',' assignmentexpression { $$ = addFront($1, $3); }
