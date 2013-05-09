@@ -987,7 +987,7 @@ void freeExpression(Expression e) {
           freeExpression(e->sub1.e);
           freeGrammarList(e->sub2.l);
           break;
-        case arg:
+        case argEmpty:
           freeExpression(e->sub1.e);
           break;
         case bracket:
