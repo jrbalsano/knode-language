@@ -2,6 +2,7 @@
 #include "dict.h"
 
 /**
+ * TODO
  * Checks through the entries of the dictionary to see if the entry exists and
  * returns the value for the key if it exists. Otherwise, it returns null.
  */
@@ -21,21 +22,27 @@ Dict initDict() {
 }
 
 /**
- * Adds the key-value pair to the dictionary specified
+ * Adds the key-value pair to the dictionary specified, with the value specified
  */
-Entry addToDict(Dict d, char *key, char *val) {
+Entry addToDict(Dict d, int et, char *key, void *value) {
   Entry entry = (Entry)malloc(sizeof(struct entry));
   strncpy(entry->key, key, sizeof(entry->key));
-  strncpy(entry->value, val, sizeof(entry->value));
+  switch(et) {
+    case echar:
+      printf("adding a char star!\n");
+      //char *tmp = &value;
+      strncpy(entry->value.str, (char *)value, sizeof(entry->key));
+      break;
+    case eint:
+      printf("adding an int!\n");
+      entry->value.num = *(int *)value;
+      break;
+    case edouble:
+      printf("adding a double!\n");
+      entry->value.dub = *(double *)value;
+      break;
+  }
   HASH_ADD_STR(d->entries, key, entry);
-  return entry;
-}
-
-Entry addEntry(Entry entries, char *key, char *val) {
-  Entry entry = (Entry)malloc(sizeof(struct entry));
-  strncpy(entry->key, key, sizeof(entry->key));
-  strncpy(entry->value, val, sizeof(entry->value));
-  HASH_ADD_STR(entries, key, entry);
   return entry;
 }
 
@@ -45,4 +52,9 @@ void freeEntries(Entry entries) {
     HASH_DEL(entries, curr);
     free(curr);
   }
+}
+
+void freeDict(Dict d) {
+  freeEntries(d->entries);
+  free(d); 
 }
