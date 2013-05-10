@@ -162,7 +162,8 @@ void parameterGenerateCode(Parameter p) {
 }
 
 void passupExpressionCode(Expression e) {
-
+  e->code = e->sub1.e->code;
+  printf("passing up code");
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
@@ -182,15 +183,9 @@ void postfixArgumentGenerateCode(Expression e) {
   if (e->deriv.postfix == arg)
   {
     char *str = e->sub1.e->code;
-/*    if (e->sub1.e->code)
-    {
-      str = e->sub1.e->code;
-    }*/
-//    else
-      str = "ERROR on postfixarg";
 //    printf("e->sub1.e->code %s\n" , str);
 //    char *str2 = e->sub2.l->code;
-      char *str2 = "WHY DIS AINT WERKIN";
+    char *str2 = "postfix grammar list should go here";
 //    printf("e->sub2.l->code %s\n", str2);
     int length = strlen(str) + strlen(str2) + 3;
     char result[length];
@@ -208,7 +203,7 @@ void postfixBracketGenerateCode(Expression e) {
 }
 
 void unaryExpressionGenerateCode(Expression e) {
-
+  e->code = e->sub1.e->code;
 }
 
 void castTypedExpressionGenerateCode(Expression e) {
@@ -256,7 +251,8 @@ void primaryExpressionGenerateCode(Expression e) {
      break;
     case string:
       e->code = getAllocatedString(e->sub1.s);
-    default: 
+    default:
+      e->code = getAllocatedString(e->sub1.s); 
       break;
   }
 
@@ -282,8 +278,7 @@ void identifierGenerateCode(Identifier i) {
   //here is the temporary fix
   char *c = "id-goes-here";
   i->code = getAllocatedString(c);
-  if (i->code == NULL)
-      printf("identifier code is null. this is a problem.");
+
 }
 
 char *getAllocatedString(char *s) {
