@@ -48,8 +48,8 @@ void declaratorGenerateCode(Declarator d) {
 
 void compoundStatementGenerateCode(CompoundStatement cs) {
 
-  char *c1 = ""; //cs->sList->code;
-  printf(cs->sList->code);
+  char *c1 = cs->sList->code;
+//printf("Let's see if cs->slist->code actually goes to something! %s \n", cs->sList->code);
   char *c2 = "\n ";
   int length = strlen(c1)+strlen(c2)+1;
   char result[length];
@@ -62,6 +62,9 @@ void compoundStatementGenerateCode(CompoundStatement cs) {
 //this needs a better fix
 void expressionListGenerateCode(GrammarList g) {
 //
+}
+
+void statementListGenerateCode(GrammarList g) {
   int buffer = 1024;
   char *str = malloc(sizeof(char)*buffer);
   GrammarNode current = g->head;
@@ -86,9 +89,7 @@ void expressionListGenerateCode(GrammarList g) {
   g->code = getAllocatedString(str);
   printf("grammarList code~ %s ~", g->code);
   free(str);
-}
 
-void statementListGenerateCode(GrammarList g) {
 
 }
 
@@ -246,6 +247,16 @@ void assignmentExpressionGenerateCode(Expression e) {
 }
 
 void primaryExpressionGenerateCode(Expression e) {
+  switch(e->type)
+  {
+    case string:
+      e->code = e->sub1.s;
+      break;
+    default:
+      break;
+  }
+
+  printf("primaryExpression code~ %s ~", e->code);
 
 }
 
