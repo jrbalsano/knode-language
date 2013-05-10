@@ -6,11 +6,6 @@ Node initNode() {
   return n;
 }
 
-void freeNode(Node n) {
-  if (n->dictlist)
-    freeDict(n->dictlist);
-  free(n);
-}
 
 void addIntToNode(Node n, char *key, int value) {
   int tmp = value;
@@ -29,16 +24,22 @@ void addStrToNode(Node n, char *key, char *value) {
 }
 
 int getIntFromNode(Node n, char *key) {
-  Entry e = access(n->dictlist, key);
+  Entry e = getEntryForKey(n->dictlist, key);
   return e->value.num;
 }
 
 double getDubFromNode(Node n, char *key) {
-  Entry e = access(n->dictlist, key);
+  Entry e = getEntryForKey(n->dictlist, key);
   return e->value.dub;
 }
 
 char *getStrFromNode(Node n, char *key) {
-  Entry e = access(n->dictlist, key);
+  Entry e = getEntryForKey(n->dictlist, key);
   return e->value.str;
+}
+
+void freeNode(Node n) {
+  if (n->dictlist)
+    freeDict(n->dictlist);
+  free(n);
 }

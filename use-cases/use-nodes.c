@@ -25,15 +25,14 @@ int main(int argc, char *argv[]) {
   addStrToNode(n, "sup dude and dudette", "not much, you?");
 
   //print out the entry in the dictionary of the node
-  printf("Node's dictionary says: %s\n", access(n->dictlist, "hello")->value.str);
-  printf("Node's dictionary says: %d\n", access(n->dictlist, "hello again")->value.num);
-  printf("Node's dictionary says: %f\n", access(n->dictlist, "hello yet again")->value.dub);
+  printf("Node's dictionary says: %s\n", getEntryForKey(n->dictlist, "hello")->value.str);
+  printf("Node's dictionary says: %d\n", getEntryForKey(n->dictlist, "hello again")->value.num);
+  printf("Node's dictionary says: %f\n", getEntryForKey(n->dictlist, "hello yet again")->value.dub);
   
   //print out the entry in the dictionary of the node
   printf("Node's dictionary says: %d\n", getIntFromNode(n, "sup dude"));
-  printf("Node's dictionary says: %f\n", access(n->dictlist, "sup dudette")->value.dub);
-  printf("Node's dictionary says: %s\n", access(n->dictlist, "sup dude and dudette")->value.str);
-
+  printf("Node's dictionary says: %f\n", getDubFromNode(n, "sup dudette"));
+  printf("Node's dictionary says: %s\n", getStrFromNode(n, "sup dude and dudette"));
 
   //Free the node
   freeNode(n);
