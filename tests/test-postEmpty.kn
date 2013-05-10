@@ -1,3 +1,6 @@
+method(int x, int y, int z):
+  print("Sub method!")
+
 main():
   int a
   int i

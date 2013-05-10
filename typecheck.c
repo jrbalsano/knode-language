@@ -5,11 +5,21 @@ void translationUnitTypeCheck(TranslationUnit t) {
 }
 
 void functionDefinitionTypeCheck(FunctionDefinition f) {
-
+  TypeCheckType tt = NULL;
+  TypeCheckType hold;
+  tt = copyTypeCheckType(f->d->tt);
+  hold = tt;
+  tt = addSymbolToScope(f->s, f->d->name->symbol, tt);
+  if(!tt) {
+    fprintf(stderr, "Error: Declaration of already declared variable `%s`\n", f->d->name->symbol);
+    free(hold);
+    exit(1);
+  }
 }
 
 void declaratorTypeCheck(Declarator d) {
-
+  //TODO: Fully implement this. Currently hacky
+  d->tt = getTypeCheckType(function_);
 }
 
 void compoundStatementTypeCheck(CompoundStatement cs) {
@@ -253,6 +263,8 @@ TypeCheckType copyTypeCheckType(TypeCheckType tt) {
 
 TypeCheckType getTypeCheckType(int type) {
   TypeCheckType ret = (TypeCheckType)malloc(sizeof(struct typeCheckType_));
+  ret->fn_sub = NULL;
+  ret->ar_sub = NULL;
   ret->base = type;
   return ret;
 }
