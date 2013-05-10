@@ -1,6 +1,14 @@
 #include "walker.h"
 
-void walkTranslationUnit(TranslationUnit t) {
+void startWalk(TranslationUnit root) {
+  Scope s = newScope(NULL);
+  TypeCheckType printType = getTypeCheckType(void_);
+  printType->fn_sub = getTypeCheckType(string_);
+  addSymbolToScope(s, "print", printType);
+  walkTranslationUnit(root, s); 
+}
+
+void walkTranslationUnit(TranslationUnit t, Scope s) {
 #ifdef MEMTRACE
   printf("Walking translation unit at %p\n", t);
 #endif
@@ -9,7 +17,11 @@ void walkTranslationUnit(TranslationUnit t) {
     fprintf(stderr, "Null child TranslationUnit\n");
     return;
   }
-  walkFunctionDefinition(t->f);
+  if(!s) {
+    s = newScope(NULL);
+  }
+  t->s = s;
+  walkFunctionDefinition(t->f, s);
   translationUnitTypeCheck(t);
   translationUnitGenerateCode(t);
 #ifdef MEMTRACE
@@ -17,16 +29,17 @@ void walkTranslationUnit(TranslationUnit t) {
 #endif
 }
 
-void walkFunctionDefinition(FunctionDefinition f) {
+void walkFunctionDefinition(FunctionDefinition f, Scope s) {
 #ifdef MEMTRACE
   printf("Walking function definition at %p\n", f);
 #endif
   if(f == NULL) {
     fprintf(stderr, "Null child FunctionDefinition\n");
     return;
-  }  
-  walkDeclarator(f->d);
-  walkCompoundStatement(f->cs);
+  }
+  f->s = newScope(s);
+  walkDeclarator(f->d, s);
+  walkCompoundStatement(f->cs, s);
   functionDefinitionTypeCheck(f);
   functionDefinitionGenerateCode(f);
 #ifdef MEMTRACE
@@ -34,17 +47,18 @@ void walkFunctionDefinition(FunctionDefinition f) {
 #endif
 }
 
-void walkDeclarator(Declarator d) {
+void walkDeclarator(Declarator d, Scope s) {
 #ifdef MEMTRACE
   printf("Walking declarator at %p\n", d);
 #endif
   if(d == NULL) {
     fprintf(stderr, "Null child Declarator\n");
     return;
-  }  
+  }
+  d->s = s;
   if(d->p)
-    walkGrammarList(d->p);
-  walkIdentifier(d->name);
+    walkGrammarList(d->p, d->s);
+  walkIdentifier(d->name, d->s->parent); //we want the id to be register in top level namespace
   declaratorTypeCheck(d);
   declaratorGenerateCode(d);
 #ifdef MEMTRACE
@@ -52,7 +66,7 @@ void walkDeclarator(Declarator d) {
 #endif
 }
 
-void walkCompoundStatement(CompoundStatement c) {
+void walkCompoundStatement(CompoundStatement c, Scope s) {
 #ifdef MEMTRACE
   printf("Walking compound statement at %p\n", c);
 #endif
@@ -60,7 +74,8 @@ void walkCompoundStatement(CompoundStatement c) {
     fprintf(stderr, "Null child CompoundStatement\n");
     return;
   }
-  walkGrammarList(c->sList);
+  c->s = newScope(s);
+  walkGrammarList(c->sList, c->s);
   compoundStatementTypeCheck(c);
   compoundStatementGenerateCode(c);
 #ifdef MEMTRACE
@@ -68,7 +83,7 @@ void walkCompoundStatement(CompoundStatement c) {
 #endif
 }
 
-void walkGrammarList(GrammarList g) {
+void walkGrammarList(GrammarList g, Scope s) {
 #ifdef MEMTRACE
   printf("Walking grammar list at %p\n", g);
 #endif
@@ -76,18 +91,19 @@ void walkGrammarList(GrammarList g) {
     fprintf(stderr, "Null child GrammarList\n");
     return;
   }  
+  g->s = s;
   while(g->head) {
     void *d = popFront(g);
     switch(g->type) {
       case argument:
       case expressionList:
-        walkExpression((Expression)d);
+        walkExpression((Expression)d, g->s);
         break;
       case statement:
-        walkStatement((Statement)d);
+        walkStatement((Statement)d, g->s);
         break;
       case parameterList:
-        walkParameter((Parameter)d);
+        walkParameter((Parameter)d, g->s);
         break;
     }
   }
@@ -114,7 +130,7 @@ void walkGrammarList(GrammarList g) {
 #endif
 }
 
-void walkStatement(Statement s) {
+void walkStatement(Statement s, Scope scope) {
 #ifdef MEMTRACE
   printf("Walking statement at %p\n", s);
 #endif
@@ -122,29 +138,31 @@ void walkStatement(Statement s) {
     fprintf(stderr, "Null child Statement\n");
     return;
   }  
+  s->s = scope;
   switch(s->type) {
     case expression:
-      walkExpression(s->sub1.e);
+      walkExpression(s->sub1.e, s->s);
       expressionStatementTypeCheck(s);
       expressionStatementGenerateCode(s); 
       break;
     case decl:
-      walkIdentifier(s->sub1.i);
+      walkIdentifier(s->sub2.i, s->s);
       declStatementTypeCheck(s);
       declStatementGenerateCode(s);
+      break;
     case iteration:
       switch(s->deriv.iteration) {
         case forIter:
-          walkExpression(s->sub1.forloop.e1);
-          walkExpression(s->sub1.forloop.e2);
-          walkExpression(s->sub1.forloop.e3);
-          walkCompoundStatement(s->sub2.cs);
+          walkExpression(s->sub1.forloop.e1, s->s);
+          walkExpression(s->sub1.forloop.e2, s->s);
+          walkExpression(s->sub1.forloop.e3, s->s);
+          walkCompoundStatement(s->sub2.cs, s->s);
           forStatementTypeCheck(s);
           forStatementGenerateCode(s);
           break;
         case whileIter:
-          walkExpression(s->sub1.e);
-          walkCompoundStatement(s->sub2.cs);
+          walkExpression(s->sub1.e, s->s);
+          walkCompoundStatement(s->sub2.cs, s->s);
           whileStatementTypeCheck(s);
           whileStatementGenerateCode(s);
           break;
@@ -153,36 +171,36 @@ void walkStatement(Statement s) {
     case selection:
       switch(s->deriv.selection) {
         case ifStatement:
-          walkCompoundStatement(s->sub2.cs);
-          walkExpression(s->sub1.e);
+          walkCompoundStatement(s->sub2.cs, s->s);
+          walkExpression(s->sub1.e, s->s);
           ifStatementTypeCheck(s);
           ifStatementGenerateCode(s);
           break;
         case ifelseStatement:
-          walkExpression(s->sub1.e);
-          walkCompoundStatement(s->sub2.cs);
-          walkCompoundStatement(s->sub3.cs);
+          walkExpression(s->sub1.e, s->s);
+          walkCompoundStatement(s->sub2.cs, s->s);
+          walkCompoundStatement(s->sub3.cs, s->s);
           ifelseStatementTypeCheck(s);
           ifelseStatementGenerateCode(s);
           break;
       }
       break;
     case dictlist:
-      walkExpression(s->sub1.e);
-      walkExpression(s->sub2.e);
+      walkIdentifier(s->sub1.i, s->s);
+      walkExpression(s->sub2.e, s->s);
       dictlistTypeCheck(s);
       dictlistGenerateCode(s); 
       break;
     case dict:
       switch(s->deriv.dict) {
         case definitions:
-          walkIdentifier(s->sub1.i);
-          walkCompoundStatement(s->sub2.cs);
+          walkIdentifier(s->sub1.i, s->s);
+          walkCompoundStatement(s->sub2.cs, s->s);
           dictDefinitionsTypeCheck(s);
           dictDefinitionsGenerateCode(s);
           break;
         case none:
-          walkIdentifier(s->sub1.i);
+          walkIdentifier(s->sub1.i, s->s);
           dictTypeCheck(s);
           dictGenerateCode(s);
           break;
@@ -190,19 +208,19 @@ void walkStatement(Statement s) {
     case node:
       switch(s->deriv.node) {
         case nodeCreate:
-          walkIdentifier(s->sub1.i);
+          walkIdentifier(s->sub1.i, s->s);
           nodeCreationTypeCheck(s);
           nodeCreationGenerateCode(s);
           break;
         case nodeAssignment:
-          walkIdentifier(s->sub1.i);
-          walkExpression(s->sub2.e);
+          walkIdentifier(s->sub1.i, s->s);
+          walkExpression(s->sub2.e, s->s);
           nodeAssignmentTypeCheck(s);
           nodeAssignmentGenerateCode(s);
           break;
         case nodeDictAssignment:
-          walkIdentifier(s->sub1.i);
-          walkCompoundStatement(s->sub2.cs);
+          walkIdentifier(s->sub1.i, s->s);
+          walkCompoundStatement(s->sub2.cs, s->s);
           nodeDictionaryTypeCheck(s);
           nodeDictionaryGenerateCode(s);
           break;
@@ -211,21 +229,21 @@ void walkStatement(Statement s) {
     case edge:
       switch(s->deriv.edge) {
         case none:
-          walkIdentifier(s->sub1.i);
+          walkIdentifier(s->sub1.i, s->s);
           edgeCreationTypeCheck(s);
           edgeCreationGenerateCode(s);
           break;
         default:
-          walkIdentifier(s->sub1.i);
-          walkExpression(s->sub2.e);
-          walkExpression(s->sub3.e);
+          walkIdentifier(s->sub1.i, s->s);
+          walkExpression(s->sub2.e, s->s);
+          walkExpression(s->sub3.e, s->s);
           edgeStatementTypeCheck(s);
           edgeStatementGenerateCode(s);
           break;
       }
       break;
     case none:
-      walkStatement(s->sub1.s);
+      walkStatement(s->sub1.s, s->s);
       statementTypeCheck(s);
       statementGenerateCode(s);
       break;
@@ -237,11 +255,12 @@ void walkStatement(Statement s) {
 #endif
 }
 
-void walkParameter(Parameter p) {
+void walkParameter(Parameter p, Scope s) {
 #ifdef MEMTRACE
   printf("Walking Parameter at %p\n", p);
 #endif
-  walkIdentifier(p->i);
+  p->s = s;
+  walkIdentifier(p->i, p->s);
   parameterTypeCheck(p);
   parameterGenerateCode(p);
 #ifdef MEMTRACE
@@ -249,7 +268,7 @@ void walkParameter(Parameter p) {
 #endif
 }
 
-void walkExpression(Expression e) {
+void walkExpression(Expression e, Scope s) {
 #ifdef MEMTRACE
   printf("Walking expression at %p\n", e);
 #endif
@@ -257,63 +276,64 @@ void walkExpression(Expression e) {
     fprintf(stderr, "Null child Expression\n");
     return;
   }
+  e->s = s;
   switch (e->type) {
     case postfix:
       switch (e->deriv.postfix) {
         case identifier:
-          walkIdentifier(e->sub2.i);
-          walkExpression(e->sub1.e);
+          walkIdentifier(e->sub2.i, e->s);
+          walkExpression(e->sub1.e, e->s);
           postfixIdentifierTypeCheck(e);
           postfixIdentifierGenerateCode(e);
           break;
         case postdecr:
-          walkExpression(e->sub1.e);
+          walkExpression(e->sub1.e, e->s);
           postfixDecrementTypeCheck(e);
           postfixDecrementGenerateCode(e);
           break;
         case postincr:
-          walkExpression(e->sub1.e);
+          walkExpression(e->sub1.e, e->s);
           postfixIncrementTypeCheck(e);
           postfixIncrementGenerateCode(e);
           break;
         case arg:
-          walkExpression(e->sub1.e);
-          walkGrammarList(e->sub2.l);
+          walkExpression(e->sub1.e, e->s);
+          walkGrammarList(e->sub2.l, e->s);
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);          
           break;
         case argEmpty:
-          walkExpression(e->sub1.e);
+          walkExpression(e->sub1.e, e->s);
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);
           break;
         case bracket:
-          walkExpression(e->sub1.e);
-          walkExpression(e->sub2.e);
+          walkExpression(e->sub1.e, e->s);
+          walkExpression(e->sub2.e, e->s);
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);          
           break;
         case 0:
-          walkExpression(e->sub1.e);
+          walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
           break;
       }
       break;
     case unary:
-      walkExpression(e->sub1.e);
+      walkExpression(e->sub1.e, e->s);
       unaryExpressionTypeCheck(e);
       unaryExpressionGenerateCode(e);
       break;
     case cast:
       switch(e->deriv.cast){
         case typed:
-          walkExpression(e->sub2.e);
+          walkExpression(e->sub2.e, e->s);
           castTypedExpressionTypeCheck(e);
           castTypedExpressionGenerateCode(e);
           break;
         case 0:
-          walkExpression(e->sub1.e);
+          walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
           break;
@@ -322,13 +342,13 @@ void walkExpression(Expression e) {
     case mult:
       switch(e->deriv.mult){
         case 0:
-          walkExpression(e->sub1.e);
+          walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
           break;
         default:
-          walkExpression(e->sub1.e);
-          walkExpression(e->sub2.e);
+          walkExpression(e->sub1.e, e->s);
+          walkExpression(e->sub2.e, e->s);
           multExpressionTypeCheck(e);
           multExpressionGenerateCode(e);
           break;
@@ -337,13 +357,13 @@ void walkExpression(Expression e) {
     case add:
       switch(e->deriv.add){
         case 0:
-          walkExpression(e->sub1.e);
+          walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
           break;
         default:
-          walkExpression(e->sub1.e);
-          walkExpression(e->sub2.e);
+          walkExpression(e->sub1.e, e->s);
+          walkExpression(e->sub2.e, e->s);
           addExpressionTypeCheck(e);
           addExpressionGenerateCode(e);
           break;
@@ -352,13 +372,13 @@ void walkExpression(Expression e) {
     case relat:
       switch(e->deriv.relat){
         case 0:
-          walkExpression(e->sub1.e);
+          walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
           break;
         default:
-          walkExpression(e->sub1.e);
-          walkExpression(e->sub2.e);
+          walkExpression(e->sub1.e, e->s);
+          walkExpression(e->sub2.e, e->s);
           relatExpressionTypeCheck(e);
           relatExpressionGenerateCode(e);
           break;
@@ -367,13 +387,13 @@ void walkExpression(Expression e) {
     case eq:
       switch(e->deriv.eq){
         case 0:
-          walkExpression(e->sub1.e);
+          walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
           break;
         default:
-          walkExpression(e->sub1.e);
-          walkExpression(e->sub2.e);
+          walkExpression(e->sub1.e, e->s);
+          walkExpression(e->sub2.e, e->s);
           eqExpressionTypeCheck(e);
           eqExpressionGenerateCode(e);
           break;
@@ -382,13 +402,13 @@ void walkExpression(Expression e) {
     case cond:
       switch(e->deriv.eq){
         case 0:
-          walkExpression(e->sub1.e);
+          walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
           break;
         default:
-          walkExpression(e->sub1.e);
-          walkExpression(e->sub2.e);
+          walkExpression(e->sub1.e, e->s);
+          walkExpression(e->sub2.e, e->s);
           condExpressionTypeCheck(e);
           condExpressionGenerateCode(e);
           break;
@@ -397,13 +417,13 @@ void walkExpression(Expression e) {
     case assignment:
       switch(e->deriv.assign){
         case init:
-          walkIdentifier(e->sub2.i);
-          walkExpression(e->sub3.e);
+          walkIdentifier(e->sub2.i, e->s);
+          walkExpression(e->sub3.e, e->s);
           assignmentInitExpressionTypeCheck(e);
           assignmentInitExpressionGenerateCode(e);
           break;
         case 0:
-          walkExpression(e->sub1.e);
+          walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
           break;
@@ -411,8 +431,8 @@ void walkExpression(Expression e) {
         case assign_right:
         case assign_both:
         case assign_all:
-          walkExpression(e->sub1.e);
-          walkExpression(e->sub2.e);
+          walkExpression(e->sub1.e, e->s);
+          walkExpression(e->sub2.e, e->s);
           edgeExpressionTypeCheck(e);
           edgeExpressionGenerateCode(e);
           break;
@@ -422,8 +442,8 @@ void walkExpression(Expression e) {
         case diveq:
         case minuseq:
         case modeq:
-          walkExpression(e->sub1.e);
-          walkExpression(e->sub2.e);
+          walkExpression(e->sub1.e, e->s);
+          walkExpression(e->sub2.e, e->s);
           assignmentExpressionTypeCheck(e);
           assignmentExpressionGenerateCode(e);
           break;
@@ -431,37 +451,39 @@ void walkExpression(Expression e) {
       break;
     case primary:
       switch(e->deriv.primary){
-        case primString:
-          walkIdentifier(e->sub1.i);
+        case primary_string:
+          walkIdentifier(e->sub1.i, e->s);
           primaryExpressionTypeCheck(e);
           primaryExpressionGenerateCode(e);
           break;
-        case primIdentifier:
-          walkIdentifier(e->sub1.i);
+        case primary_identifier:
+          walkIdentifier(e->sub1.i, e->s);
           primaryExpressionTypeCheck(e);
           primaryExpressionGenerateCode(e);
           break;
-        case parenthesis:
-          walkExpression(e->sub1.e);
+        case parentheses:
+          walkExpression(e->sub1.e, e->s);
           primaryExpressionTypeCheck(e);
           primaryExpressionGenerateCode(e);
+        default: //unhandled case
+          break;
       }
       break;
     case function:
-      walkIdentifier(e->sub1.i);
-      walkGrammarList(e->sub2.l);
+      walkIdentifier(e->sub1.i, e->s);
+      walkGrammarList(e->sub2.l, e->s);
       functionExpressionTypeCheck(e);
       functionExpressionGenerateCode(e);
       break;
     case none:
       if(!e->deriv.none)  {
-        walkExpression(e->sub1.e);
+        walkExpression(e->sub1.e, e->s);
         passupExpressionType(e);
         passupExpressionCode(e);
       }
       else if(e->deriv.none == comma) {
-        walkExpression(e->sub1.e);
-        walkExpression(e->sub2.e);
+        walkExpression(e->sub1.e, e->s);
+        walkExpression(e->sub2.e, e->s);
         twoExpressionTypeCheck(e);
         twoExpressionGenerateCode(e);
       }
@@ -474,14 +496,15 @@ void walkExpression(Expression e) {
 #endif
 }
 
-void walkIdentifier(Identifier i) {
+void walkIdentifier(Identifier i, Scope s) {
 #ifdef MEMTRACE
   printf("walking identifier at %p\n", i);
 #endif
-  if(i == NULL) {
+  if(!i) {
     fprintf(stderr, "Null child Identifier\n");
     return;
   }  
+  i->s = s;
   identifierTypeCheck(i);
   identifierGenerateCode(i);
 #ifdef MEMTRACE

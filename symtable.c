@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct symtab *symlook(char *symbol) {
+Symtab symlook(char *symbol, Symtab table) {
     //create a symbol pointer
     struct symtab *symbolPointer;
     //try to find the symbol in our table
-    HASH_FIND_STR(symtable, symbol, symbolPointer);
+    HASH_FIND_STR(table, symbol, symbolPointer);
     //if we find the symbol, then return the pointer to it
     if (symbolPointer) {
         return symbolPointer;
@@ -15,34 +15,58 @@ struct symtab *symlook(char *symbol) {
     //if we don't find the symbol, add it to the table and return the pointer
     symbolPointer = (struct symtab*)malloc(sizeof(struct symtab));
     strncpy(symbolPointer->name, symbol, sizeof(symbolPointer->name));
-    HASH_ADD_STR(symtable, name, symbolPointer);
+    HASH_ADD_STR(table, name, symbolPointer);
     return symbolPointer;
 }
 
+/**
+ * Checks to see if a symbol exists in the table already and adds it if it
+ * doesn't. Returns the table record if it was successfully added, or NULL
+ * otherwise.
+ */
+Symtab addSymbol(Symtab *table, char *symbol, TypeCheckType tt) {
+  //Create a pointer to store the sumbol that we get back.
+  Symtab lookupResult = NULL;
+  //try to find the symbol in our table
+  HASH_FIND_STR(*table, symbol, lookupResult);
+  if(!lookupResult) {
+    lookupResult = (Symtab)malloc(sizeof(struct symtab));
+    strncpy(lookupResult->name, symbol, sizeof(lookupResult->name));
+    lookupResult->type = tt;
+    HASH_ADD_STR(*table, name, lookupResult);
+    return lookupResult;
+  }
+  return NULL;
+}
+
+TypeCheckType findType(Symtab *table, char *symbol) {
+  //Create a pointer to store the symbol that we get back in.
+  Symtab lookupResult = NULL;
+  //try to find the symbol in our table
+  HASH_FIND_STR(*table, symbol, lookupResult);
+  //get space for the type
+  TypeCheckType result = NULL;
+  if(lookupResult) {
+    result = lookupResult->type;
+  }
+  return result;
+}
+
 //delete the symbol in the hash table that has the corresponding symbol
-void deleteSymbol(char *symbol) {
+void deleteSymbol(Symtab table, char *symbol) {
     struct symtab *symbolPointer;
-    HASH_FIND_STR(symtable, symbol, symbolPointer);
+    HASH_FIND_STR(table, symbol, symbolPointer);
     if (symbolPointer) {
-        HASH_DEL(symtable, symbolPointer);
+        HASH_DEL(table, symbolPointer);
         free(symbolPointer);
     }
 }
 
-void storeData(char *symbol, void *data) {
-    struct symtab *symbolPointer;
-    HASH_FIND_STR(symtable, symbol, symbolPointer);
-    if (symbolPointer) {
-        void *store = (void *)malloc(sizeof(*data));
-        symbolPointer->value = store;
-    }
-}
-
 //iterate through the hash table and delete/free everything
-void freeHashTable() {
+void freeHashTable(Symtab table) {
     struct symtab *curr, *tmp;
-    HASH_ITER(hh, symtable, curr, tmp) {
-        HASH_DEL(symtable, curr);
+    HASH_ITER(hh, table, curr, tmp) {
+        HASH_DEL(table, curr);
         free(curr);
     }
 }

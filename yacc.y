@@ -9,13 +9,12 @@
 #include <stdio.h>
 #include <string.h>
 #include "absyn.h"
-#include "symtable.h"
+#include "walker.h"
 
 
 void yyerror(char *s);
 int errorHad = 0;
 TranslationUnit root = NULL;
-struct symtab *symtable = NULL;
 
 %}
 
@@ -133,7 +132,7 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
   ;
-parameterlist : parameterlist ',' parameterdeclaration {$$ = addFront($1,$3);}
+parameterlist : parameterlist ',' parameterdeclaration {$$ = addBack($1,$3);}
   | parameterdeclaration {$$ = newParameterList($1)}
   ;
 parameterdeclaration : typename identifier { $$ = getTypedParameter($1, $2); }
@@ -158,7 +157,7 @@ statement : expressionstatement { $$ = getStatement($1); }
   | edgestatement { $$ = getStatement($1); }
   | declstatement { $$ = getStatement($1); } 
   ;
-declstatement : typename identifier NEWLINE { $$ = getDeclarationStatement($1, $2); printf("here") }
+declstatement : typename identifier NEWLINE { $$ = getDeclarationStatement($1, $2); }
   ;
 dictstatement : DICT identifier NEWLINE { $$ = getDictDecStatement($2); }
   | DICT identifier NEWLINE compoundstatement { $$ = getDictDefStatement($2, $4); }
@@ -177,7 +176,7 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement {$$ = ne
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-dictlist : expression ':' expression NEWLINE { $$ = getDictListStatement($1, $3); }
+dictlist : identifier ':' expression NEWLINE { $$ = getDictListStatement($1, $3); }
   ;
 edgestatement: EDGE identifier '=' '[' unaryexpression edge unaryexpression ']' NEWLINE { $$ = getEdgeStatementFromNodes($2, $5, $6, $7); }
   | EDGE identifier NEWLINE { $$ = getEdgeDeclaration($2); }
@@ -198,11 +197,11 @@ assignmentexpression : conditionalexpression { $$ = getAssign($1); }
   | typename identifier '=' assignmentexpression { $$ = getInit($1, $2, $4); }
   | unaryexpression alledge unaryexpression { $$ = getAssignEdgeExpression($1, $2, $3); }
   ;
-assignmentoperator : PLUSEQ { $$ = $1; }
-  | MINUSEQ { $$ = $1; }
-  | MULTEQ { $$ = $1; }
-  | DIVEQ { $$ = $1; }
-  | MODEQ { $$ = $1; }
+assignmentoperator : PLUSEQ { $$ = PLUSEQ; }
+  | MINUSEQ { $$ = MINUSEQ; }
+  | MULTEQ { $$ = MULTEQ; }
+  | DIVEQ { $$ = DIVEQ; }
+  | MODEQ { $$ = MODEQ; }
   ;
 conditionalexpression : orexpression { $$ = getCond($1); }
   ;
@@ -237,11 +236,11 @@ castexpression : unaryexpression { $$ = getCastExpression($1); }
   | '(' DICT ')' castexpression { $$ = getTypedCast(DICT, $4); }
   | '(' EDGE ')' castexpression { $$ = getTypedCast(EDGE, $4); }
   ;
-typename : INT
-  | DOUBLE
-  | CHAR
-  | BOOLEAN
-  | STRING
+typename : INT { $$ = INT; }
+  | DOUBLE { $$ = DOUBLE; }
+  | CHAR { $$ = CHAR; }
+  | BOOLEAN { $$ = BOOLEAN; }
+  | STRING { $$ = STRING; }
   ;
 unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
   | PLUSPLUS unaryexpression { $$ = getUnaryIncr($2); }
@@ -269,7 +268,7 @@ primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval
   | '(' expression ')' { $$ = getPrimaryParenExpression($2);} 
   ;
 argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
-  | argumentexpressionlist ',' assignmentexpression { $$ = addFront($1, $3); }
+  | argumentexpressionlist ',' assignmentexpression { $$ = addBack($1, $3); }
   ;
 %%
 void yyerror(char *s) {
@@ -279,6 +278,7 @@ void yyerror(char *s) {
 
 int main(void) {
   yyparse();
+  startWalk(root);
   freeTranslationUnit(root);
   if(errorHad)
     return 1;
