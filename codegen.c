@@ -181,7 +181,7 @@ void postfixArgumentGenerateCode(Expression e) {
 
   if (e->deriv.postfix == arg)
   {
-    char *str;//= e->sub1.e->code;
+    char *str = e->sub1.e->code;
 /*    if (e->sub1.e->code)
     {
       str = e->sub1.e->code;
@@ -189,7 +189,8 @@ void postfixArgumentGenerateCode(Expression e) {
 //    else
       str = "ERROR on postfixarg";
 //    printf("e->sub1.e->code %s\n" , str);
-    char *str2 = e->sub2.l->code;
+//    char *str2 = e->sub2.l->code;
+      char *str2 = "WHY DIS AINT WERKIN";
 //    printf("e->sub2.l->code %s\n", str2);
     int length = strlen(str) + strlen(str2) + 3;
     char result[length];
@@ -247,12 +248,15 @@ void assignmentExpressionGenerateCode(Expression e) {
 }
 
 void primaryExpressionGenerateCode(Expression e) {
+  
   switch(e->type)
   {
+    case primary: 
+      e->code = e->sub1.i->code;
+     break;
     case string:
-      e->code = e->sub1.s;
-      break;
-    default:
+      e->code = getAllocatedString(e->sub1.s);
+    default: 
       break;
   }
 
@@ -270,10 +274,16 @@ void twoExpressionGenerateCode(Expression e) {
 
 void identifierGenerateCode(Identifier i) {
 
+/*  NOTE: the commented out code is what we want to do, but for some reason it results in the code being blank.
   char *c = getAllocatedString(i->symbol);
-  i->code = c;
-  printf("identfier code~ %s ~", i->code);
+  i->code = c; 
+  printf("identfier code~ %s ~", i->code);*/
 
+  //here is the temporary fix
+  char *c = "id-goes-here";
+  i->code = getAllocatedString(c);
+  if (i->code == NULL)
+      printf("identifier code is null. this is a problem.");
 }
 
 char *getAllocatedString(char *s) {
