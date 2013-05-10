@@ -186,7 +186,7 @@ void walkStatement(Statement s, Scope scope) {
       }
       break;
     case dictlist:
-      walkExpression(s->sub1.e, s->s);
+      walkIdentifier(s->sub1.i, s->s);
       walkExpression(s->sub2.e, s->s);
       dictlistTypeCheck(s);
       dictlistGenerateCode(s); 

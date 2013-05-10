@@ -176,7 +176,7 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement {$$ = ne
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-dictlist : expression ':' expression NEWLINE { $$ = getDictListStatement($1, $3); }
+dictlist : identifier ':' expression NEWLINE { $$ = getDictListStatement($1, $3); }
   ;
 edgestatement: EDGE identifier '=' '[' unaryexpression edge unaryexpression ']' NEWLINE { $$ = getEdgeStatementFromNodes($2, $5, $6, $7); }
   | EDGE identifier NEWLINE { $$ = getEdgeDeclaration($2); }

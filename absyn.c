@@ -456,14 +456,14 @@ Statement newNodeAssignmentStatement(Identifier id, Expression e) {
 /**
  * Create a new dictlist definition
  */
-Statement getDictListStatement(Expression e1, Expression e2) {
+Statement getDictListStatement(Identifier i, Expression e) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
   ret->type = dictlist;
-  ret->sub1.e = e1;
-  ret->sub2.e = e2;
+  ret->sub1.i = i;
+  ret->sub2.e = e;
   return ret;
 }
 
@@ -599,7 +599,7 @@ void freeStatement(Statement s) {
       }
       break;
     case dictlist:
-      freeExpression(s->sub1.e);
+      freeIdentifier(s->sub1.i);
       freeExpression(s->sub2.e);
       break;
     case dict:
