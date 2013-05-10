@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "dict.h"
+#include "./dict.h"
 
 int main(int argc , char *argv[]) {
   //initialize dictionary
