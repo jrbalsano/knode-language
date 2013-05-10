@@ -2,16 +2,16 @@
 
 void translationUnitGenerateCode(TranslationUnit t) {
 
-  t->code = getAllocatedString(t->f->code);
+  t->code = getAllocatedString(getValidString(t->f->code));
   //does not deal with case where t also has a translation unit
   printf("final code:\n%s\n", t->code);
 }
 void functionDefinitionGenerateCode(FunctionDefinition f) {
 
       Declarator dec = f->d;
-      char *c = dec->code;
+      char *c = getValidString(dec->code);
       char *mainFunc = "main()\n";
-      char *c1 = f->cs->code;
+      char *c1 = getValidString(f->cs->code);
       if(strcmp(c, mainFunc) == 0) {
         char *cCode = "void main()";
         int length = strlen(cCode) + strlen(c1) + 1;
@@ -31,7 +31,7 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
 
 void declaratorGenerateCode(Declarator d) {
   if(!d->p) {
-    char *c = d->name->code;
+    char *c = getValidString(d->name->code);
     char *c2 = "()\n";
     int length = strlen(c) + strlen(c2) + 1;
     char result[length];
@@ -44,7 +44,7 @@ void declaratorGenerateCode(Declarator d) {
 
 void compoundStatementGenerateCode(CompoundStatement cs) {
 
-  char *c1 = cs->sList->code;
+  char *c1 = getValidString(cs->sList->code);
   char *c2 = "{\n";
   char *c3 = "}\n";
   int length = strlen(c1)+strlen(c2)+strlen(c3)+1;
@@ -64,6 +64,7 @@ void expressionListGenerateCode(GrammarList g) {
   while (current)
   {
     char *c = ((Expression)current->data)->code;
+    c = getValidString(c);
     int newlength;
     if(i)
       newlength = strlen(str) + strlen(c) + 3;
@@ -100,6 +101,7 @@ void statementListGenerateCode(GrammarList g) {
   while (current)
   {
     char *c = ((Statement)current->data)->code;
+    c = getValidString(c);
     int newlength;
     if(i)
       newlength = strlen(str) + strlen(c) + 1;
@@ -180,14 +182,14 @@ void edgeStatementGenerateCode(Statement s) {
 }
 
 void statementGenerateCode(Statement s) {
-  char str[strlen(s->sub1.s->code)+1];
-  strcpy(str, s->sub1.s->code);
+  char str[strlen(getValidString(s->sub1.s->code))+1];
+  strcpy(str, getValidString(s->sub1.s->code));
   s->code = getAllocatedString(str);
 }
 
 void expressionStatementGenerateCode(Statement s){
-  char str[strlen(s->sub1.e->code)+2];
-  strcpy(str, s->sub1.e->code);
+  char str[strlen(getValidString(s->sub1.e->code))+2];
+  strcpy(str, getValidString(s->sub1.e->code));
   strcat(str, ";\n");
   s->code = getAllocatedString(str);
 }
@@ -201,7 +203,7 @@ void parameterGenerateCode(Parameter p) {
 }
 
 void passupExpressionCode(Expression e) {
-  e->code = getAllocatedString(e->sub1.e->code);
+  e->code = getAllocatedString(getValidString(e->sub1.e->code));
 
 }
 
@@ -221,8 +223,8 @@ void postfixArgumentGenerateCode(Expression e) {
 
   if (e->deriv.postfix == arg)
   {
-    char *str = e->sub1.e->code;
-    char *str2 = e->sub2.l->code;
+    char *str = getValidString(e->sub1.e->code);
+    char *str2 = getValidString(e->sub2.l->code);
     int length = strlen(str) + strlen(str2) + 3;
     char result[length];
     strncpy(result, str, length);
@@ -238,7 +240,7 @@ void postfixBracketGenerateCode(Expression e) {
 }
 
 void unaryExpressionGenerateCode(Expression e) {
-  e->code = getAllocatedString(e->sub1.e->code);
+  e->code = getAllocatedString(getValidString(e->sub1.e->code));
 }
 
 void castTypedExpressionGenerateCode(Expression e) {
@@ -281,13 +283,13 @@ void primaryExpressionGenerateCode(Expression e) {
   switch(e->deriv.primary)
   {
     case primary_identifier: 
-      e->code = getAllocatedString(e->sub1.i->code);
+      e->code = getAllocatedString(getValidString(e->sub1.i->code));
      break;
     case primary_string:
-      e->code = getAllocatedString(e->sub1.s);
+      e->code = getAllocatedString(getValidString(e->sub1.s));
       break;
     default: //not correct default behavior, just tryna debug
-      e->code = getAllocatedString(e->sub1.s); 
+      e->code = getAllocatedString(getValidString(e->sub1.s)); 
       break;
   }
 }
@@ -301,8 +303,8 @@ void twoExpressionGenerateCode(Expression e) {
 }
 
 void identifierGenerateCode(Identifier i) {
-  char *c;
-  if(!strcmp(i->symbol, "print"))
+  char *c = getValidString(i->symbol);
+  if(!strcmp(c, "print"))
     c = "printf";
   else
     c = i->symbol;
@@ -313,4 +315,11 @@ char *getAllocatedString(char *s) {
   char *ret = (char *)malloc((strlen(s)+1)*sizeof(char));
   strcpy(ret, s);
   return ret;
+}
+
+char *getValidString(char *s){
+  if (s)
+     return s;
+  else
+     return "";
 }
