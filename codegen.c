@@ -34,9 +34,7 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
 void declaratorGenerateCode(Declarator d) {
 
   char *c = d->name->code;
-//printf("%s", c);
   char *c2 = "():\n";
-//printf("%s", c2);
   int length = strlen(c) + strlen(c2) + 1;
   char result[length];
   strncpy(result, c, length);
@@ -49,7 +47,6 @@ void declaratorGenerateCode(Declarator d) {
 void compoundStatementGenerateCode(CompoundStatement cs) {
 
   char *c1 = cs->sList->code;
-//printf("Let's see if cs->slist->code actually goes to something! %s \n", cs->sList->code);
   char *c2 = "\n ";
   int length = strlen(c1)+strlen(c2)+1;
   char result[length];
@@ -162,8 +159,8 @@ void parameterGenerateCode(Parameter p) {
 }
 
 void passupExpressionCode(Expression e) {
-  e->code = e->sub1.e->code;
-  printf("passing up code");
+  e->code = getAllocatedString(e->sub1.e->code);
+//  printf("passing up code");
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
@@ -203,7 +200,7 @@ void postfixBracketGenerateCode(Expression e) {
 }
 
 void unaryExpressionGenerateCode(Expression e) {
-  e->code = e->sub1.e->code;
+  e->code = getAllocatedString(e->sub1.e->code);
 }
 
 void castTypedExpressionGenerateCode(Expression e) {
@@ -244,14 +241,14 @@ void assignmentExpressionGenerateCode(Expression e) {
 
 void primaryExpressionGenerateCode(Expression e) {
   
-  switch(e->type)
+  switch(e->deriv.primary)
   {
-    case primary: 
-      e->code = e->sub1.i->code;
+    case primary_identifier: 
+      e->code = getAllocatedString(e->sub1.i->code);
      break;
-    case string:
+    case primary_string:
       e->code = getAllocatedString(e->sub1.s);
-    default:
+    default: //not correct default behavior, just tryna debug
       e->code = getAllocatedString(e->sub1.s); 
       break;
   }
@@ -275,10 +272,6 @@ void identifierGenerateCode(Identifier i) {
   i->code = c; 
   printf("identfier code~ %s ~", i->code);
 
-/*  //here is the temporary fix
-  char *c = "id-goes-here";
-  i->code = getAllocatedString(c);
-*/
 }
 
 char *getAllocatedString(char *s) {
