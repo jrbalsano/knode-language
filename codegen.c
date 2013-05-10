@@ -4,7 +4,7 @@ void translationUnitGenerateCode(TranslationUnit t) {
 
   t->code = getAllocatedString(t->f->code);
   //does not deal with case where t also has a translation unit
-  printf("translationUnit code~ %s ~", t->code);
+  printf("translationUnit code: %s\n", t->code);
 }
 void functionDefinitionGenerateCode(FunctionDefinition f) {
 
@@ -23,7 +23,7 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
       strncpy(result, c, length);
       strncat(result, c1, length);
       f->code = getAllocatedString(result);
-      printf("functionDefinion code ~ %s ~", f->code);
+      printf("functionDefinition code: %s\n", f->code);
 //      break;
 //    default: 
 //      break;//will need to be filled in for all types
@@ -40,7 +40,7 @@ void declaratorGenerateCode(Declarator d) {
   strncpy(result, c, length);
   strncat(result, c2, length);
   d->code = getAllocatedString(result);
-  printf("declarator code~ %s ~", d->code);
+  printf("declarator code: %s \n", d->code);
   //TODO: deal with d->p case (The case where the function has a parameter list)
 }
 
@@ -53,12 +53,45 @@ void compoundStatementGenerateCode(CompoundStatement cs) {
   strncpy(result, c2, length);
   strncat(result, c1, length);
   cs->code = getAllocatedString(result);
-  printf("compoundStatement code~ %s ~", cs->code);
+  printf("compoundStatement code: %s\n", cs->code);
 
 }
 
 void expressionListGenerateCode(GrammarList g) {
+  int buffer = 1024;
+  char *str = malloc(sizeof(char)*buffer);
+  GrammarNode current = g->head;
+  int i = 0;
+  while (current)
+  {
+    char *c = ((Expression)current->data)->code;
+    int newlength;
+    if(i)
+      newlength = strlen(str) + strlen(c) + 3;
+    else
+      newlength = strlen(c) + 1;
+    while (newlength>buffer) {
+      buffer *= 2;
+      char *old = str;
+      str = malloc(sizeof(char)*buffer);
+      strcpy(str, old);
+      free(old);
+    }
 
+    if (i == 0)
+      strncpy(str, c, buffer);
+    else {
+      strncat(str, ", ", buffer);
+      strncat(str, c, buffer);
+    }
+    
+    current = current->next;
+    i = i + 1;
+  }
+
+  g->code = getAllocatedString(str);
+  printf("grammarList code: %s\n", g->code);
+  free(str);
 }
 
 void statementListGenerateCode(GrammarList g) {
@@ -66,13 +99,21 @@ void statementListGenerateCode(GrammarList g) {
   char *str = malloc(sizeof(char)*buffer);
   GrammarNode current = g->head;
   int i = 0;
-
   while (current)
   {
-    char *c = ((Expression)current)->code;
-    int newlength = strlen(str) + strlen(c) + 1;
-    if (newlength>buffer)
-      buffer*= 2;
+    char *c = ((Statement)current->data)->code;
+    int newlength;
+    if(i)
+      newlength = strlen(str) + strlen(c) + 1;
+    else
+      newlength = strlen(c) + 1;
+    while (newlength>buffer) {
+      buffer *= 2;
+      char *old = str;
+      str = malloc(sizeof(char)*buffer);
+      strcpy(str, old);
+      free(old);
+    }
 
     if (i == 0)
       strncpy(str, c, buffer);
@@ -84,7 +125,7 @@ void statementListGenerateCode(GrammarList g) {
   }
 
   g->code = getAllocatedString(str);
-  printf("grammarList code~ %s ~", g->code);
+  printf("grammarList code: %s\n", g->code);
   free(str);
 
 
@@ -95,6 +136,7 @@ void parameterListGenerateCode(GrammarList g) {
 }
 
 void forStatementGenerateCode(Statement s) {
+
 
 }
 
@@ -143,11 +185,16 @@ void edgeStatementGenerateCode(Statement s) {
 }
 
 void statementGenerateCode(Statement s) {
-
+  char str[strlen(s->sub1.s->code)+1];
+  strcpy(str, s->sub1.s->code);
+  s->code = getAllocatedString(str);
 }
 
 void expressionStatementGenerateCode(Statement s){
-
+  char str[strlen(s->sub1.e->code)+2];
+  strcpy(str, s->sub1.e->code);
+  strcat(str, ";");
+  s->code = getAllocatedString(str);
 }
 
 void declStatementGenerateCode(Statement s){
@@ -180,10 +227,9 @@ void postfixArgumentGenerateCode(Expression e) {
   if (e->deriv.postfix == arg)
   {
     char *str = e->sub1.e->code;
-//    printf("e->sub1.e->code %s\n" , str);
-//    char *str2 = e->sub2.l->code;
-    char *str2 = "postfix grammar list should go here";
-//    printf("e->sub2.l->code %s\n", str2);
+    printf("e->sub1.e->code %s\n" , str);
+    char *str2 = e->sub2.l->code;
+    printf("e->sub2.l->code %s\n", str2);
     int length = strlen(str) + strlen(str2) + 3;
     char result[length];
     strncpy(result, str, length);
@@ -191,7 +237,7 @@ void postfixArgumentGenerateCode(Expression e) {
     strncat(result, str2, length);
     strncat(result, ")", length);
     e->code = getAllocatedString(result);
-    printf("postfix argument code~ %s ~", e->code);  
+    printf("postfix argument code: %s\n", e->code);  
   }
 }
 
@@ -247,13 +293,15 @@ void primaryExpressionGenerateCode(Expression e) {
       e->code = getAllocatedString(e->sub1.i->code);
      break;
     case primary_string:
+      printf("getting string literal from `%s`\n", e->sub1.s);
       e->code = getAllocatedString(e->sub1.s);
+      break;
     default: //not correct default behavior, just tryna debug
       e->code = getAllocatedString(e->sub1.s); 
       break;
   }
 
-  printf("primaryExpression code~ %s ~", e->code);
+  printf("primaryExpression code: %s\n", e->code);
 
 }
 
@@ -270,7 +318,7 @@ void identifierGenerateCode(Identifier i) {
 /*  NOTE: the commented out code is what we want to do, but for some reason it results in the code being blank.*/
   char *c = getAllocatedString(i->symbol);
   i->code = c; 
-  printf("identfier code~ %s ~", i->code);
+  printf("identfier code: %s\n", i->code);
 
 }
 

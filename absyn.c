@@ -649,7 +649,6 @@ void freeStatement(Statement s) {
   freeTypeCheckType(s->tt);
   if(s->code)
     free(s->code);
-  free(s->s);
   free(s);
 #ifdef MEMTRACE
   printf("Statement freed\n");
@@ -725,8 +724,9 @@ Expression getPrimaryStringExpression(char *s) {
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
-  ret->type = string;
-  ret->sub1.s = s;
+  ret->type = primary;
+  ret->sub1.s = (char *)malloc(strlen(s)+1);
+  strcpy(ret->sub1.s, s);
   ret->deriv.primary = primary_string;
   return ret;
 }
@@ -1320,7 +1320,7 @@ void freeExpression(Expression e) {
     case primary:
       switch(e->deriv.primary){
         case primary_string:
-          freeIdentifier(e->sub1.i);
+          free(e->sub1.s);
           break;
         case primary_identifier:
           freeIdentifier(e->sub1.i);
