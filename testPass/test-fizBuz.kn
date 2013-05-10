@@ -1,5 +1,6 @@
 main():
-  for(int i= 1; i<=100;i++)
+  int i
+  for(i= 1; i<=100;i++)
     if(i%15==0)
       print("FizzBuzz")
     if(i%3==0)
@@ -10,11 +11,15 @@ main():
       print(i)
     print("\n")
 #testing while loops
-  int sumOfPrimes=0
-  int counter = 0
+  int sumOfPrimes
+  sumOfPrimes = 0
+  int counter
+  counter = 0
   while(counter<=100)
-    int primeTester=2
-    boolean isPrime=TRUE
+    int primeTester
+    primeTester = 2
+    boolean isPrime
+    isPrime=TRUE
     while(primeTester<counter)
       if(counter%primeTester==0)
         isPrime=FALSE
@@ -22,8 +27,10 @@ main():
     if(isPrime)
       sumOfPrimes = sumOfPrimes + counter
     counter++
-  string sumOfPrimesString = (string) sumOfPrimes
-  string result = "The sum of primes from 1 to 100 is " + sumOfPrimes
+  string sumOfPrimesString
+  sumOfPrimesString = (string) sumOfPrimes
+  string result
+  result = "The sum of primes from 1 to 100 is " + sumOfPrimes
   print(result)
  
     
