@@ -4,7 +4,7 @@ void translationUnitGenerateCode(TranslationUnit t) {
 
   t->code = getAllocatedString(t->f->code);
   //does not deal with case where t also has a translation unit
-  printf("translationUnit code: %s\n", t->code);
+  printf("final code:\n%s\n", t->code);
 }
 void functionDefinitionGenerateCode(FunctionDefinition f) {
 
@@ -15,6 +15,26 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
 //    case 0:
       Declarator dec = f->d;
       char *c = dec->code;
+      char *mainFunc = "main()\n";
+      char *c1 = f->cs->code;
+      if(strcmp(c, mainFunc) == 0) {
+        char *cCode = "void main()";
+        int length = strlen(cCode) + strlen(c1) + 1;
+        char result[length];
+        strncpy(result, cCode, length);
+        strncat(result, c1, length);
+        f->code = getAllocatedString(result);
+     }
+     else {
+       int length = strlen(c) + strlen(c1) + 1;
+       char result[length];
+       strncpy(result, c, length);
+       strncat(result, c1, length);
+       f->code = getAllocatedString(result);
+    }
+
+/*
+        
 //      printf("dec->code %s\n", dec->code);
       char *c1 = f->cs->code;
 //      printf("f->cs->code %s\n", f->cs->code);
@@ -22,11 +42,17 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
       char result[length];
       strncpy(result, c, length);
       strncat(result, c1, length);
+
+      //test to see if the first handful of characters is equal to "main():"
+      
+      char *mainFunc = "main():";
+      if (strcmp(result, mainFunc) == 0)
+        f->code = getAllocatedString("void main()");
       f->code = getAllocatedString(result);
 //      break;
 //    default: 
 //      break;//will need to be filled in for all types
-//  }
+//  } */
 
 }
 
