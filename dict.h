@@ -26,7 +26,6 @@ struct dict {
 Dict initDict();
 Entry addToDict(Dict d, int et, char *key, void *value);
 
-//TODO
 Entry access(Dict d, char *key);
 
 void freeEntries(Entry entries);
