@@ -262,5 +262,21 @@ int exactTypeMatch(TypeCheckType t1, TypeCheckType t2) {
 }
 
 int castTypeMatch(TypeCheckType t1, TypeCheckType t2) {
-  return 0;
+  if(t1 == NULL && t2 == NULL)
+    return 1;
+  else if(t1 == NULL || t2 == NULL)
+    return 0;
+  else if(t1->base == indeterminable || t2->base == indeterminable)
+    return -1;
+  else if(t1->base == t2->base)
+    return 1;
+  else {
+    int intToDub = (t2->base == int_ && t1->base == double_);
+    int intToString = (t2->base == int_ && t1->base == string_);
+    int dubToString = (t2->base == double_ && t1->base == string_);
+    if(intToDub || intToString || dubToString)
+      return 2;
+    else
+      return 0;
+  }
 }
