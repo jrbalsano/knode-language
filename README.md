@@ -15,15 +15,16 @@ In order to create the compiler, run the following command:
 
 Testing
 =======
-We include a folder of test programs to test different components of our language.
+For tests, there are two folders that can be found and used- that is the folders testPass and testFail. testPass is used for files that
+we expect and want to pass while testFail is used for files that are expected to fail.
 
 Running the test suite
 ----------------------
 After compiling the compiler, run:
 
-    ./testall.sh
+    ./testPassFail.sh
 
-For every test file in the folder, this should output 
+For every test file in the folder testPass, this should output 
 
     <file_name>...Done testing
     OK
@@ -33,32 +34,19 @@ if the test passed, or
     <file_name>...<ERROR TYPE>
     FAILED
     
-if the test failed.
-To add a file to the test suite, create a knode program named `test-<your_file_name>.kn`, and place it in the /tests folder.
-
-Testing Pass and Fail Files
-=======
-We include two folders in this second round of testing. One is called testPass and testFail.
-Running the test suite
-----------------------
-After compiling the compiler, run:
-
-    ./testall2.sh
-
-Make sure to place your files that are expected to pass in the passFail folder and 
-those that are expected to fail in the testFail folder. For every test file in the folders, this should output 
-
-    <file_name>...Done testing
-    OK
-    
-if the test passed, or
+For every test file in the folder testFail, this should output 
 
     <file_name>...<ERROR TYPE>
-    FAILED
+    OK
     
-if the test failed.
-If the file is in the testPass folder and it passes that means the code is working. If the file is in the testFail folder and it has an 
-Ok that means that it failed as is expected.
+if the test failed, or
+
+    <file_name>...Done testing
+    FAILED
+
+if the test passed. This is because we want files to fail if they are in testFail.
+
+To add a file to the test suite, create a knode program named `test-<your_file_name>.kn`, and place it in the correct testing folder. The correct folder for tests you want passed is ./testPass and the correct folder for tests you want failed is ./testFail
 
 Memory testing
 --------------
