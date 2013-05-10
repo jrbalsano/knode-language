@@ -2,25 +2,24 @@
 #define __SYMTABLE_H__
 
 #include "./libs/uthash.h"
-#include "absyn.h"
+#include "typechecktype.h"
 
-typedef struct symtab *symtab;
+typedef struct symtab *Symtab;
 
 struct symtab {
     char name[128];
-    void *value;
-    int num_val;
+    TypeCheckType type;
     UT_hash_handle hh;
 };
 
-struct symtab *symtable;
+Symtab symlook(char *symbol, Symtab table); 
 
-struct symtab *symlook(char *symbol); 
+Symtab addSymbol(Symtab *table, char *symbol, TypeCheckType tt);
 
-void deleteSymbol(char *symbol);
+TypeCheckType findType(Symtab *table, char *symbol);
 
-void storeData(char *symbol, void *data);
+void deleteSymbol(Symtab table, char *symbol);
 
-void freeHashTable();
+void freeHashTable(Symtab table);
 
 #endif

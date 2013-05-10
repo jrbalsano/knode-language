@@ -1,4 +1,7 @@
 main():
+  int x
+  int y
+  int z
   while(x>3)
     x = x + 1
     y = 9 + 7

@@ -2,7 +2,8 @@
 #define __ABSYN_H__
 
 #include <stdio.h>
-#include "symtable.h"
+#include "typechecktype.h"
+#include "scope.h"
 
 /**
  * Abstract Syntax Tree for Knode
@@ -18,34 +19,13 @@ typedef struct grammarList_ *GrammarList;
 typedef struct grammarNode_ *GrammarNode;
 typedef struct translationUnit_ *TranslationUnit;
 typedef struct parameter_ *Parameter;
-typedef struct typeCheckType_ *TypeCheckType;
 
 #include "yacc.tab.h"
-
-/**
- * Defines a structure for the type of a node in the tree to be used while typechecking. Indeterminable
- * is reserved for those situations where the nature of knode makes it impossible to determine the type.
- * If at all possible try to avoid the use of indeterminable because those will cause headaches during
- * code generation.
- *
- * int, double, string, char, node, edge, and dict should all be fairly straightforward types.
- *
- * For arrays, set "ar_sub" to be another TypeCheckType of the type the array is. If its an array of
- * arrays then "sub" should be another array_ type with another sub and so on.
- *
- * For functions, use fn_sub, with the first fn_sub being the return type of the function and each
- * subsequent fn_sub being the type of each argument. In the event that an argument is an array, use
- * the ar_sub to denote its type as mentioned above.
- */
-struct typeCheckType_ {
-  enum {indeterminable, int_, double_, string_, char_, node_, edge_, dict_, function_, array_} base;
-  TypeCheckType ar_sub;
-  TypeCheckType fn_sub;
-};
 
 struct expression_ {
   TypeCheckType tt;
   char *code;
+  Scope s;
   enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment} type;
   union {
     Expression e;
@@ -65,7 +45,7 @@ struct expression_ {
     GrammarList l;
   } sub3;
   union {
-    enum{postfix_none = none, postincr, postdecr, bracket, identifier, arg,argEmpty} postfix;
+    enum{postfix_none = none, postincr, postdecr, bracket, identifier, arg, argEmpty} postfix;
     enum{unary_none = none, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
     enum{cast_none = none, typed} cast;
     enum{mult_none = none, times = '*', divide = '/', mod = '%'} mult;
@@ -74,7 +54,7 @@ struct expression_ {
     enum{eq_none = none, equal, notequal} eq;
     enum{gen_none = none, comma = ','} none;
     enum{cond_none = none, cond_or, cond_and} cond;
-    enum{parenthesis,primString,primIdentifier} primary;
+    enum{primary_none = none, parentheses , primary_string, primary_identifier} primary;
     enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ,
       pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ, assign_left = LEFTEDGE,
       assign_right = RIGHTEDGE, assign_both = BOTHEDGE, assign_all = ALLEDGE } assign;
@@ -83,18 +63,20 @@ struct expression_ {
 
 struct identifier_ {
   char *code;
-  char *symbol;
+  char symbol[128];
+  Scope s;
   TypeCheckType tt;
-  struct symtab *sp;
 };
 struct declarator_ {
   char *code;
   Identifier name;
   TypeCheckType tt;
+  Scope s;
   GrammarList p; //A list of parameters
 };
 struct statement_ {
   char *code;
+  Scope s;
   TypeCheckType tt;
   enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge, dictlist, dict, decl} type;
   union {
@@ -127,12 +109,14 @@ struct statement_ {
 };
 struct parameter_ {
   char *code;
+  Scope s;
   TypeCheckType tt;
   int type;
   Identifier i;
 };
 struct functionDefinition_ {
   char *code;
+  Scope s;
   TypeCheckType tt;
   enum {typ_void = none, typ_int = INT, typ_double = DOUBLE, typ_char = CHAR, typ_string = STRING,
     typ_node = NODE, typ_edge = EDGE, typ_dict = DICT} type_name;
@@ -141,20 +125,25 @@ struct functionDefinition_ {
 };
 struct compoundStatement_ {
   char *code;
+  Scope s;
   TypeCheckType tt;
   GrammarList sList; //A list of statements
 };
 struct translationUnit_ {
+  Scope s;
   char *code;
   FunctionDefinition f;
 };
 struct grammarList_ {
   char *code;
+  Scope s;
   TypeCheckType tt;
   enum {argument, statement,parameterList,expressionList} type;
   GrammarNode head;
+  GrammarNode tail;
 };
 struct grammarNode_ {
+  Scope s;
   GrammarNode next;
   void *data;
 };
@@ -175,7 +164,7 @@ GrammarList extendStatementList(GrammarList sList, Statement s);
 GrammarList newParameterList(Parameter p);
 GrammarList newArgumentExpressionList(Expression e);
 GrammarList appendToPList(GrammarList pList,Parameter param);
-GrammarList addFront(GrammarList g, void *data);
+GrammarList addBack(GrammarList g, void *data);
 
 Parameter getTypedParameter(int typnam, Identifier i);
 
@@ -188,7 +177,7 @@ Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStateme
 Statement newWhileStatement(Expression e, CompoundStatement cs);
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs);
 Statement newBreakStatement();
-Statement getDictListStatement(Expression e1, Expression e2);
+Statement getDictListStatement(Identifier i, Expression e);
 Statement getDictDecStatement(Identifier i);
 Statement getDictDefStatement(Identifier i, CompoundStatement cs);
 Statement newNodeCreateStatement(Identifier id);
