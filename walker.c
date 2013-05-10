@@ -1,5 +1,13 @@
 #include "walker.h"
 
+void startWalk(TranslationUnit root) {
+  Scope s = newScope(NULL);
+  TypeCheckType printType = getTypeCheckType(void_);
+  printType->fn_sub = getTypeCheckType(string_);
+  addSymbolToScope(s, "print", printType);
+  walkTranslationUnit(root, s); 
+}
+
 void walkTranslationUnit(TranslationUnit t, Scope s) {
 #ifdef MEMTRACE
   printf("Walking translation unit at %p\n", t);
@@ -118,7 +126,7 @@ void walkGrammarList(GrammarList g, Scope s) {
       break;
   }
 #ifdef MEMTRACE
-  printf("Grammar list walked at %p\n", g, Scope s);
+  printf("Grammar list walked at %p\n", g);
 #endif
 }
 
@@ -134,6 +142,13 @@ void walkStatement(Statement s, Scope scope) {
   switch(s->type) {
     case expression:
       walkExpression(s->sub1.e, s->s);
+      expressionStatementTypeCheck(s);
+      expressionStatementGenerateCode(s); 
+      break;
+    case decl:
+      walkIdentifier(s->sub2.i, s->s);
+      declStatementTypeCheck(s);
+      declStatementGenerateCode(s);
       break;
     case iteration:
       switch(s->deriv.iteration) {
@@ -171,7 +186,7 @@ void walkStatement(Statement s, Scope scope) {
       }
       break;
     case dictlist:
-      walkExpression(s->sub1.e, s->s);
+      walkIdentifier(s->sub1.i, s->s);
       walkExpression(s->sub2.e, s->s);
       dictlistTypeCheck(s);
       dictlistGenerateCode(s); 
@@ -286,6 +301,11 @@ void walkExpression(Expression e, Scope s) {
           walkGrammarList(e->sub2.l, e->s);
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);          
+          break;
+        case argEmpty:
+          walkExpression(e->sub1.e, e->s);
+          postfixArgumentTypeCheck(e);
+          postfixArgumentGenerateCode(e);
           break;
         case bracket:
           walkExpression(e->sub1.e, e->s);
@@ -430,9 +450,24 @@ void walkExpression(Expression e, Scope s) {
       } 
       break;
     case primary:
-      walkIdentifier(e->sub1.i, e->s);
-      primaryExpressionTypeCheck(e);
-      primaryExpressionGenerateCode(e);
+      switch(e->deriv.primary){
+        case primary_string:
+          walkIdentifier(e->sub1.i, e->s);
+          primaryExpressionTypeCheck(e);
+          primaryExpressionGenerateCode(e);
+          break;
+        case primary_identifier:
+          walkIdentifier(e->sub1.i, e->s);
+          primaryExpressionTypeCheck(e);
+          primaryExpressionGenerateCode(e);
+          break;
+        case parentheses:
+          walkExpression(e->sub1.e, e->s);
+          primaryExpressionTypeCheck(e);
+          primaryExpressionGenerateCode(e);
+        default: //unhandled case
+          break;
+      }
       break;
     case function:
       walkIdentifier(e->sub1.i, e->s);
@@ -465,7 +500,7 @@ void walkIdentifier(Identifier i, Scope s) {
 #ifdef MEMTRACE
   printf("walking identifier at %p\n", i);
 #endif
-  if(i == NULL) {
+  if(!i) {
     fprintf(stderr, "Null child Identifier\n");
     return;
   }  

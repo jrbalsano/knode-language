@@ -20,7 +20,7 @@ integer   [1-9][0-9]*|0
 double    [0-9]+\.[0-9]+
 operator  [-+*/=%!<>]
 string    \"[^\n]*[^\\]\"
-boolean   "TRUE"|"FALSE"
+bool_literal   "TRUE"|"FALSE"
 
 
 %%
@@ -47,10 +47,10 @@ boolean   "TRUE"|"FALSE"
 {operator}                      printf("%s\n", yytext); return *yytext;
 {integer}                       printf("INTEGER\n");  yylval.ival = atoi(yytext); return INTEGER;
 {double}                        printf("DOUBLEVAL\n");  yylval.fval = atof(yytext); return DOUBLEVAL;
-{boolean}                       {
-                                    printf("BOOLEAN\n");  
+{bool_literal}                  {
+                                    printf("BOOL_LITERAL\n");
                                     yylval.ival = yytext[0] == 'T' ? 1 : 0; 
-                                    return BOOLEAN;
+                                    return BOOL_LITERAL;
                                 }
 "and"                         	printf("AND\n");  return AND; 
 "or"                      	    printf("OR\n");  return OR; 
@@ -69,6 +69,7 @@ boolean   "TRUE"|"FALSE"
 ","                             printf(",\n"); return *yytext;
 "."                             printf(".\n"); return *yytext;
 "int"                           printf("INT\n"); return INT;
+"boolean"                       printf("BOOLEAN\n"); return BOOLEAN;
 "double"                        printf("DOUBLE\n"); return DOUBLE;
 "char"                          printf("CHAR\n"); return CHAR;
 "string"                        printf("STRING\n"); return STRING;
@@ -82,6 +83,7 @@ boolean   "TRUE"|"FALSE"
                                 }
 [a-z_][a-zA-Z0-9_]*             {
                                     printf("IDENTIFIER\n");
+                                    yylval.sval = yytext;
                                     return IDENTIFIER;
                                 }
 %%

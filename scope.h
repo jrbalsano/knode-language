@@ -1,6 +1,7 @@
 #ifndef __SCOPE_H__
 #define __SCOPE_H__
 
+#include <stdio.h>
 #include "symtable.h"
 #include "typechecktype.h"
 
@@ -29,6 +30,6 @@ TypeCheckType findSymbol(Scope s, char *id);
  * on success, or null on failure. Fails when there is already a symbol
  * of the same name declared in this scope.
  */
-TypeCheckType addSymbolToScope(Scope s, char *id);
+TypeCheckType addSymbolToScope(Scope s, char *id, TypeCheckType tt);
 
 #endif

@@ -1,9 +1,0 @@
-main():
-{edge e1 = [node_a <-> node_b]
-edge e2 = [node_b -> node_c]
-edge e3 = [node_c <- node_d]
-edge e4
-node_e<=>node_f
-node_g<=>node_f[2]
-print("I work, yay :)")
-}
