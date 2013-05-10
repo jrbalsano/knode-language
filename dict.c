@@ -14,23 +14,28 @@ Entry access(Dict d, char *key) {
   return e;
 }
 
+Dict initDict() {
+  Dict d = (Dict)malloc(sizeof(struct dict));
+  d->entries = NULL;
+  return d;
+}
 
 /**
  * Adds the key-value pair to the dictionary specified
  */
-Entry addEntry(Entry entries, char *key, char *val) {
-  Entry entry = (Entry)malloc(sizeof(struct entry));
-  strncpy(entry->key, key, sizeof(entry->key));
-  strncpy(entry->value, val, sizeof(entry->value));
-  HASH_ADD_STR(entries, key, entry);
-  return entry;
-}
-
 Entry addToDict(Dict d, char *key, char *val) {
   Entry entry = (Entry)malloc(sizeof(struct entry));
   strncpy(entry->key, key, sizeof(entry->key));
   strncpy(entry->value, val, sizeof(entry->value));
   HASH_ADD_STR(d->entries, key, entry);
+  return entry;
+}
+
+Entry addEntry(Entry entries, char *key, char *val) {
+  Entry entry = (Entry)malloc(sizeof(struct entry));
+  strncpy(entry->key, key, sizeof(entry->key));
+  strncpy(entry->value, val, sizeof(entry->value));
+  HASH_ADD_STR(entries, key, entry);
   return entry;
 }
 

@@ -10,12 +10,12 @@ typedef struct dict *Dict;
 //add enums so that we can figure out what it is that we're freaking storing
 struct entry {
     char key[128];
-    //char value[128];
+    char value[128];
     union {
         char str[128];
         int num;
         double dub;
-    } value;
+    } derp;
     UT_hash_handle hh;
 };
 
@@ -24,6 +24,8 @@ struct dict {
     Entry entries;
 };
 
+
+Dict initDict();
 Entry addEntry(Entry entries, char *key, char *val);
 Entry addToDict(Dict d, char *key, char *val);
 Entry access(Dict d, char *key);
