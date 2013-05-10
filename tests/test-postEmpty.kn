@@ -1,8 +1,0 @@
-method(int x, int y, int z):
-  print("Sub method!")
-
-main():
-  int a
-  int i
-  method(i+4, a, 4)
-  method()

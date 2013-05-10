@@ -1,4 +1,0 @@
-main():
-  (4 * 3) + 4
-  (3 + 4) * 5
-  print("Hello Word")

@@ -1,7 +1,0 @@
-main():
-  int a
-  int i
-  int r
-  a = 4
-  i += 3
-  r %= 4 - 5
