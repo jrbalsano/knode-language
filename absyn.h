@@ -177,7 +177,7 @@ Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStateme
 Statement newWhileStatement(Expression e, CompoundStatement cs);
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs);
 Statement newBreakStatement();
-Statement getDictListStatement(Expression e1, Expression e2);
+Statement getDictListStatement(Identifier i, Expression e);
 Statement getDictDecStatement(Identifier i);
 Statement getDictDefStatement(Identifier i, CompoundStatement cs);
 Statement newNodeCreateStatement(Identifier id);

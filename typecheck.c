@@ -74,7 +74,16 @@ void nodeAssignmentTypeCheck(Statement s) {
 }
 
 void nodeDictionaryTypeCheck(Statement s) {
-
+  TypeCheckType tt = NULL;
+  TypeCheckType hold;
+  tt = getTypeCheckType(node_);
+  hold = tt;
+  tt = addSymbolToScope(s->s, s->sub1.i->symbol, tt);
+  if(!tt) {
+    fprintf(stderr, "Error: Declaration of already declared variable `%s`\n", s->sub2.i->symbol);
+    free(hold);
+    exit(1);
+  }
 }
 
 void edgeCreationTypeCheck(Statement s) {
