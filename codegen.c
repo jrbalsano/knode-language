@@ -8,11 +8,6 @@ void translationUnitGenerateCode(TranslationUnit t) {
 }
 void functionDefinitionGenerateCode(FunctionDefinition f) {
 
-/*NOTE: I have no idea why, but I get tons of errors when this switch statement is uncommented out... halp?!*/
-
-//  switch(f->type_name)
-//  {
-//    case 0:
       Declarator dec = f->d;
       char *c = dec->code;
       char *mainFunc = "main()\n";
@@ -31,29 +26,7 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
        strncpy(result, c, length);
        strncat(result, c1, length);
        f->code = getAllocatedString(result);
-    }
-
-/*
-        
-//      printf("dec->code %s\n", dec->code);
-      char *c1 = f->cs->code;
-//      printf("f->cs->code %s\n", f->cs->code);
-      int length = strlen(c)+strlen(c1)+1;
-      char result[length];
-      strncpy(result, c, length);
-      strncat(result, c1, length);
-
-      //test to see if the first handful of characters is equal to "main():"
-      
-      char *mainFunc = "main():";
-      if (strcmp(result, mainFunc) == 0)
-        f->code = getAllocatedString("void main()");
-      f->code = getAllocatedString(result);
-//      break;
-//    default: 
-//      break;//will need to be filled in for all types
-//  } */
-
+     }
 }
 
 void declaratorGenerateCode(Declarator d) {
@@ -151,8 +124,6 @@ void statementListGenerateCode(GrammarList g) {
 
   g->code = getAllocatedString(str);
   free(str);
-
-
 }
 
 void parameterListGenerateCode(GrammarList g) {
@@ -231,7 +202,7 @@ void parameterGenerateCode(Parameter p) {
 
 void passupExpressionCode(Expression e) {
   e->code = getAllocatedString(e->sub1.e->code);
-//  printf("passing up code");
+
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
@@ -330,7 +301,6 @@ void twoExpressionGenerateCode(Expression e) {
 }
 
 void identifierGenerateCode(Identifier i) {
-/*  NOTE: the commented out code is what we want to do, but for some reason it results in the code being blank.*/
   char *c;
   if(!strcmp(i->symbol, "print"))
     c = "printf";
