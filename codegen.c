@@ -23,7 +23,6 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
       strncpy(result, c, length);
       strncat(result, c1, length);
       f->code = getAllocatedString(result);
-      printf("functionDefinition code: %s\n", f->code);
 //      break;
 //    default: 
 //      break;//will need to be filled in for all types
@@ -32,28 +31,29 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
 }
 
 void declaratorGenerateCode(Declarator d) {
-
-  char *c = d->name->code;
-  char *c2 = "():\n";
-  int length = strlen(c) + strlen(c2) + 1;
-  char result[length];
-  strncpy(result, c, length);
-  strncat(result, c2, length);
-  d->code = getAllocatedString(result);
-  printf("declarator code: %s \n", d->code);
+  if(!d->p) {
+    char *c = d->name->code;
+    char *c2 = "()\n";
+    int length = strlen(c) + strlen(c2) + 1;
+    char result[length];
+    strncpy(result, c, length);
+    strncat(result, c2, length);
+    d->code = getAllocatedString(result);
+  }
   //TODO: deal with d->p case (The case where the function has a parameter list)
 }
 
 void compoundStatementGenerateCode(CompoundStatement cs) {
 
   char *c1 = cs->sList->code;
-  char *c2 = "\n ";
-  int length = strlen(c1)+strlen(c2)+1;
+  char *c2 = "{\n";
+  char *c3 = "}\n";
+  int length = strlen(c1)+strlen(c2)+strlen(c3)+1;
   char result[length];
   strncpy(result, c2, length);
-  strncat(result, c1, length);
+  strcat(result, c1);
+  strcat(result, c3);
   cs->code = getAllocatedString(result);
-  printf("compoundStatement code: %s\n", cs->code);
 
 }
 
@@ -90,7 +90,6 @@ void expressionListGenerateCode(GrammarList g) {
   }
 
   g->code = getAllocatedString(str);
-  printf("grammarList code: %s\n", g->code);
   free(str);
 }
 
@@ -125,7 +124,6 @@ void statementListGenerateCode(GrammarList g) {
   }
 
   g->code = getAllocatedString(str);
-  printf("grammarList code: %s\n", g->code);
   free(str);
 
 
@@ -193,7 +191,7 @@ void statementGenerateCode(Statement s) {
 void expressionStatementGenerateCode(Statement s){
   char str[strlen(s->sub1.e->code)+2];
   strcpy(str, s->sub1.e->code);
-  strcat(str, ";");
+  strcat(str, ";\n");
   s->code = getAllocatedString(str);
 }
 
@@ -227,9 +225,7 @@ void postfixArgumentGenerateCode(Expression e) {
   if (e->deriv.postfix == arg)
   {
     char *str = e->sub1.e->code;
-    printf("e->sub1.e->code %s\n" , str);
     char *str2 = e->sub2.l->code;
-    printf("e->sub2.l->code %s\n", str2);
     int length = strlen(str) + strlen(str2) + 3;
     char result[length];
     strncpy(result, str, length);
@@ -237,7 +233,6 @@ void postfixArgumentGenerateCode(Expression e) {
     strncat(result, str2, length);
     strncat(result, ")", length);
     e->code = getAllocatedString(result);
-    printf("postfix argument code: %s\n", e->code);  
   }
 }
 
@@ -286,23 +281,18 @@ void assignmentExpressionGenerateCode(Expression e) {
 }
 
 void primaryExpressionGenerateCode(Expression e) {
-  
   switch(e->deriv.primary)
   {
     case primary_identifier: 
       e->code = getAllocatedString(e->sub1.i->code);
      break;
     case primary_string:
-      printf("getting string literal from `%s`\n", e->sub1.s);
       e->code = getAllocatedString(e->sub1.s);
       break;
     default: //not correct default behavior, just tryna debug
       e->code = getAllocatedString(e->sub1.s); 
       break;
   }
-
-  printf("primaryExpression code: %s\n", e->code);
-
 }
 
 void functionExpressionGenerateCode(Expression e) {
@@ -314,12 +304,13 @@ void twoExpressionGenerateCode(Expression e) {
 }
 
 void identifierGenerateCode(Identifier i) {
-
 /*  NOTE: the commented out code is what we want to do, but for some reason it results in the code being blank.*/
-  char *c = getAllocatedString(i->symbol);
-  i->code = c; 
-  printf("identfier code: %s\n", i->code);
-
+  char *c;
+  if(!strcmp(i->symbol, "print"))
+    c = "printf";
+  else
+    c = i->symbol;
+  i->code = getAllocatedString(c); 
 }
 
 char *getAllocatedString(char *s) {
