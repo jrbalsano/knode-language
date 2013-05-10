@@ -2,7 +2,6 @@
 #include "dict.h"
 
 /**
- * TODO
  * Checks through the entries of the dictionary to see if the entry exists and
  * returns the value for the key if it exists. Otherwise, it returns null.
  */

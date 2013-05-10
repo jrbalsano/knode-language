@@ -23,6 +23,10 @@ int main(int argc , char *argv[]) {
   Entry e_double = addToDict(d, edouble, "test_double", (void *)tdp);
   printf("Dict's double says: %f\n", e_double->value.dub);
 
+  //test the access function and see that it works
+  Entry test_access = access(d, "test_double");
+  printf("Accessing Dict's 'test_double' yield: %f\n", test_access->value.dub);
+
   //free the dict, which frees the entries as well
   freeDict(d);
   return 0;
