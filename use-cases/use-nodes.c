@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   printf("Node's dictionary says: %f\n", access(n->dictlist, "hello yet again")->value.dub);
   
   //print out the entry in the dictionary of the node
-  printf("Node's dictionary says: %d\n", access(n->dictlist, "sup dude")->value.num);
+  printf("Node's dictionary says: %d\n", getIntFromNode(n, "sup dude"));
   printf("Node's dictionary says: %f\n", access(n->dictlist, "sup dudette")->value.dub);
   printf("Node's dictionary says: %s\n", access(n->dictlist, "sup dude and dudette")->value.str);
 

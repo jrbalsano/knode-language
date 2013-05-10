@@ -29,9 +29,16 @@ void addStrToNode(Node n, char *key, char *value) {
 }
 
 int getIntFromNode(Node n, char *key) {
-
+  Entry e = access(n->dictlist, key);
+  return e->value.num;
 }
 
-double getDubFromNode(Node n, char *key);
+double getDubFromNode(Node n, char *key) {
+  Entry e = access(n->dictlist, key);
+  return e->value.dub;
+}
 
-char *getStrFromNode(Node n, char *key);
+char *getStrFromNode(Node n, char *key) {
+  Entry e = access(n->dictlist, key);
+  return e->value.str;
+}
