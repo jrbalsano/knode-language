@@ -1,0 +1,11 @@
+main():
+  int x
+  int y
+  int z
+  while(x>3)
+    x = x + 1
+    y = 9 + 7
+  for(x=4;y=5;z=3)
+    x = x + 1
+    y = 10 + 3
+

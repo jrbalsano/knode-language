@@ -1,0 +1,15 @@
+main():
+  dict firstDict
+  string hello
+  dict secondDict
+    hellothar3 : hello
+    hellothar1 : "hello"
+  int yourDict
+  int hisDict
+  int herDict
+  dict myDict
+    betterThan : yourDict
+    fasterThan : hisDict
+    coolerThan : herDict
+  #thirdDict.bye = "adios"
+  #thirdDict["greeting"] = "Hola Muchachos"
