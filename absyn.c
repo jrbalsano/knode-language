@@ -11,6 +11,8 @@
  */
 TranslationUnit getTranslationUnit(FunctionDefinition fd) {
   TranslationUnit ret = (TranslationUnit)malloc(sizeof(struct translationUnit_));
+  ret->s = NULL;
+  ret->code = NULL;
   ret->f = fd;
   return ret;
 }
@@ -30,6 +32,7 @@ void freeTranslationUnit(TranslationUnit t) {
   freeFunctionDefinition(t->f);
   if(t->code)
     free(t->code);
+  free(t->s);
   free(t);
 #ifdef MEMTRACE
   printf("Translation unit freed\n");
@@ -46,6 +49,9 @@ void freeTranslationUnit(TranslationUnit t) {
  */
 FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs) {
   FunctionDefinition ret = (FunctionDefinition)malloc(sizeof(struct functionDefinition_));
+  ret->s = NULL;
+  ret->tt = NULL;
+  ret->code = NULL;
   ret->type_name = none;
   ret->d = d;
   ret->cs = cs;
@@ -57,6 +63,9 @@ FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs) {
  */
 FunctionDefinition getRetTypeFunctionDefinition(int type, Declarator d, CompoundStatement cs) {
   FunctionDefinition ret = getFunctionDefinition(d, cs);
+  ret->s = NULL;
+  ret->tt = NULL;
+  ret->code = NULL;
   ret->type_name = type;
   return ret;
 }
@@ -77,6 +86,7 @@ void freeFunctionDefinition(FunctionDefinition f) {
   freeTypeCheckType(f->tt);
   if(f->code)
     free(f->code);
+  free(f->s);
   free(f);
 #ifdef MEMTRACE
   printf("Function definition freed\n");
@@ -93,6 +103,9 @@ void freeFunctionDefinition(FunctionDefinition f) {
  */
 Declarator declaratorId(Identifier id) {
   Declarator d = (Declarator)malloc(sizeof(struct declarator_));
+  d->s = NULL;
+  d->tt = NULL;
+  d->code = NULL;
   d->name = id;
   d->p = NULL;
   return d;
@@ -103,6 +116,9 @@ Declarator declaratorId(Identifier id) {
  */
 Declarator getDeclarator(Identifier id, GrammarList pList) {
   Declarator d = (Declarator)malloc(sizeof(struct declarator_));
+  d->s = NULL;
+  d->tt = NULL;
+  d->code = NULL;
   d->name = id;
   d->p = pList;
   return d;
@@ -140,6 +156,9 @@ void freeDeclarator(Declarator d) {
  */
 CompoundStatement newCompoundStatement(GrammarList sList) {
   CompoundStatement ret = (CompoundStatement)malloc(sizeof(struct compoundStatement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->sList = sList;
   return ret;
 }
@@ -174,9 +193,13 @@ void freeCompoundStatement(CompoundStatement c) {
  */
 GrammarList newStatementList(Statement s) {
   GrammarList sList = (GrammarList)malloc(sizeof(struct grammarList_));
+  sList->s = NULL;
+  sList->code = NULL;
+  sList->tt = NULL;
   sList->type = statement;
   sList->head = 0;
-  addFront(sList, s);
+  sList->tail = 0;
+  addBack(sList, s);
   return sList;
 }
 
@@ -184,20 +207,24 @@ GrammarList newStatementList(Statement s) {
  * Adds a new statement to the front of the statementlist
  */
 GrammarList extendStatementList(GrammarList sList, Statement s) {
-  addFront(sList, s);
+  addBack(sList, s);
   return sList;
 }
 
 /**
  * Creates a new parameter list from an existing parameter. To be used in sutations
- * where a parameter list does not already exist. See addFront for cases where the
+ * where a parameter list does not already exist. See addBack for cases where the
  * list already exists.
  */
 GrammarList newParameterList(Parameter p) {
   GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
+  pList->s = NULL;
+  pList->code = NULL;
+  pList->tt = NULL;
   pList->type = parameterList;
   pList->head = 0;
-  addFront(pList, p);
+  pList->tail = 0;
+  addBack(pList, p);
   return pList;
 }
 
@@ -207,9 +234,13 @@ GrammarList newParameterList(Parameter p) {
  */
 GrammarList newArgumentExpressionList(Expression e) {
   GrammarList aeList = (GrammarList)malloc(sizeof(struct grammarList_));
+  aeList->s = NULL;
+  aeList->code = NULL;
+  aeList->tt = NULL;
   aeList->type = argument;
   aeList->head = 0;
-  addFront(aeList, e);
+  aeList->tail = 0;
+  addBack(aeList, e);
   return aeList;
 }
 /**
@@ -218,19 +249,29 @@ GrammarList newArgumentExpressionList(Expression e) {
  */
 GrammarList newExpressionList(Expression e) {
   GrammarList eList = (GrammarList)malloc(sizeof(struct grammarList_));
+  eList->s = NULL;
+  eList->code = NULL;
+  eList->tt = NULL;
   eList->type = expressionList;
   eList->head = 0;
-  addFront(eList, e);
+  eList->tail = 0;
+  addBack(eList, e);
   return eList;
 }
 /**
  * Add a node to the front of the Grammar List g, with data pointer data
  */
-GrammarList addFront(GrammarList g, void *data) {
+GrammarList addBack(GrammarList g, void *data) {
   GrammarNode n = (GrammarNode)malloc(sizeof(struct grammarNode_));
+  n->s = NULL;
   n->data = data;
-  n->next = g->head;
-  g->head = n;
+  n->next = NULL;
+  GrammarNode back = g->tail;
+  if(!back) 
+    g->head = n;
+  else 
+    g->tail->next = n;
+  g->tail = n;
   return g;
 }
 
@@ -292,6 +333,9 @@ void freeGrammarList(GrammarList g) {
  */
 Statement getStatement(Statement s) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = none;
   ret->sub1.s = s;
   return ret;
@@ -302,6 +346,9 @@ Statement getStatement(Statement s) {
  */
 Statement newIfStatement(Expression e, CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->sub1.e = e;
   ret->type = selection;
   ret->deriv.selection = ifStatement;
@@ -314,6 +361,9 @@ Statement newIfStatement(Expression e, CompoundStatement cs) {
  */
 Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStatement cs2) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->sub1.e = e;
   ret->type = selection;
   ret->deriv.selection = ifelseStatement;
@@ -326,6 +376,8 @@ Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStateme
  */
 Statement getExpressionStatement(Expression e) {
   Statement s = (Statement)malloc(sizeof(struct statement_));
+  s->code = NULL;
+  s->tt = NULL;
   s->type = expression;
   s->sub1.e = e;
   return s;
@@ -335,6 +387,9 @@ Statement getExpressionStatement(Expression e) {
  */
 Statement newWhileStatement(Expression e, CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = iteration;
   ret->deriv.iteration = whileIter;
   ret->sub1.e = e;
@@ -346,6 +401,9 @@ Statement newWhileStatement(Expression e, CompoundStatement cs) {
  */
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = iteration;
   ret->deriv.iteration = forIter;
   ret->sub1.forloop.e1 = e1;
@@ -359,6 +417,9 @@ Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundSta
  */
 Statement newBreakStatement() {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = breakStatement;
   return ret;
 }
@@ -368,6 +429,9 @@ Statement newBreakStatement() {
  */
 Statement newNodeCreateStatement(Identifier id) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = node;
   ret->deriv.node = nodeCreate;
   ret->sub1.i = id;
@@ -379,6 +443,9 @@ Statement newNodeCreateStatement(Identifier id) {
  */
 Statement newNodeAssignmentStatement(Identifier id, Expression e) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = node;
   ret->deriv.node = nodeAssignment;
   ret->sub1.i = id;
@@ -391,6 +458,9 @@ Statement newNodeAssignmentStatement(Identifier id, Expression e) {
  */
 Statement getDictListStatement(Expression e1, Expression e2) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = dictlist;
   ret->sub1.e = e1;
   ret->sub2.e = e2;
@@ -402,6 +472,9 @@ Statement getDictListStatement(Expression e1, Expression e2) {
  */
 Statement getDictDecStatement(Identifier i) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = dict;
   ret->deriv.dict = none;
   ret->sub1.i = i;
@@ -412,6 +485,9 @@ Statement getDictDecStatement(Identifier i) {
  */
 Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = node;
   ret->deriv.node = nodeDictAssignment;
   ret->sub1.i = id;
@@ -424,6 +500,9 @@ Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs) {
  */
 Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnector, Expression e2) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = edge;
   ret->deriv.edge = edgeconnector;
   ret->sub1.i = i;
@@ -437,6 +516,9 @@ Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnect
  */
 Statement getDictDefStatement(Identifier i, CompoundStatement cs) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = dict;
   ret->deriv.dict = definitions;
   ret->sub1.i = i;
@@ -450,9 +532,24 @@ Statement getDictDefStatement(Identifier i, CompoundStatement cs) {
  */
 Statement getEdgeDeclaration(Identifier i) {
   Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = edge;
   ret->deriv.edge = none;
   ret->sub1.i = i;
+  return ret;
+}
+
+Statement getDeclarationStatement(int token, Identifier i){
+  Statement ret = (Statement)malloc(sizeof(struct statement_));
+  ret->s = NULL;
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
+  ret->type = decl;
+  ret->sub1.typnam = token;
+  ret->sub2.i = i;
   return ret;
 }
 
@@ -552,6 +649,7 @@ void freeStatement(Statement s) {
   freeTypeCheckType(s->tt);
   if(s->code)
     free(s->code);
+  free(s->s);
   free(s);
 #ifdef MEMTRACE
   printf("Statement freed\n");
@@ -567,6 +665,9 @@ void freeStatement(Statement s) {
  */
 Parameter getTypedParameter(int typnam, Identifier i){
   Parameter ret = (Parameter)malloc(sizeof(struct parameter_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type=typnam;
   ret->i = i;
   return ret;
@@ -593,6 +694,9 @@ void freeParameter(Parameter p) {
  */
 Expression getFunctionExpression(Identifier id, GrammarList argExpList) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = function;
   ret->sub1.i = id;
   ret->sub2.l = argExpList;
@@ -604,9 +708,12 @@ Expression getFunctionExpression(Identifier id, GrammarList argExpList) {
  */
 Expression getPrimaryIdentifierExpression(Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = primary;
+  ret->deriv.primary = primary_identifier;
   ret->sub1.i = id;
-  ret->deriv.primary = primIdentifier;
   return ret;
 }
 
@@ -615,25 +722,34 @@ Expression getPrimaryIdentifierExpression(Identifier id){
  */
 Expression getPrimaryStringExpression(char *s) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = string;
   ret->sub1.s = s;
-  ret->deriv.primary = primString;
+  ret->deriv.primary = primary_string;
   return ret;
 }
 
 /**Get parenthesized primary expression*/
 Expression getPrimaryParenExpression(Expression e) {
-    Expression ret = (Expression)malloc(sizeof(struct expression_));
-    ret->type = primary;
-    ret->deriv.primary = parenthesis;
-    ret->sub1.e = e;
-    return ret;
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
+  ret->type = primary;
+  ret->deriv.primary = parentheses;
+  ret->sub1.e = e;
+  return ret;
 }
 /**
  * Creates a new Postfix Expression from an existing expression
  */
 Expression getPostfixExpression(Expression e1){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->deriv.postfix = none;
   ret->sub1.e = e1;
   ret->type = postfix;
@@ -644,11 +760,14 @@ Expression getPostfixExpression(Expression e1){
  * Creates a new Postfix Expression with an empty argument
  */
 Expression getPostfixEmptyArgument(Expression e){
-    Expression ret = (Expression)malloc(sizeof(struct expression_));
-    ret->type = postfix;
-    ret->sub1.e = e;
-    ret->deriv.postfix = argEmpty;
-    return ret;
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
+  ret->type = postfix;
+  ret->sub1.e = e;
+  ret->deriv.postfix = argEmpty;
+  return ret;
 }
 
 /**
@@ -657,6 +776,9 @@ Expression getPostfixEmptyArgument(Expression e){
  */
 Expression getPostfixBracketExpression(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = postfix;
   ret->sub1.e = e1;
   ret->sub2.e = e2;
@@ -670,6 +792,9 @@ Expression getPostfixBracketExpression(Expression e1, Expression e2){
  */
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = postfix;
   ret->sub1.e = e1;
   ret->sub2.l = argList;
@@ -684,6 +809,9 @@ Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
  */
 Expression getPostfixIncr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = postfix;
   ret->deriv.postfix = postincr;
   ret->sub1.e = e;
@@ -696,6 +824,9 @@ Expression getPostfixIncr(Expression e){
  */
 Expression getPostfixDecr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type=postfix;
   ret->deriv.postfix = postdecr;
   ret->sub1.e = e;
@@ -709,6 +840,9 @@ Expression getPostfixDecr(Expression e){
  */
 Expression getPostfixIdentifierExpression(Expression e, Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = postfix;
   ret->sub1.e = e;
   ret->sub2.i = id;
@@ -718,6 +852,9 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
 
 Expression getUnaryExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = unary;
   ret->deriv.unary = none;
   ret->sub1.e = e;
@@ -726,6 +863,9 @@ Expression getUnaryExpression(Expression e){
 
 Expression getUnaryIncr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = unary;
   ret->sub1.e = e;
   ret->deriv.unary = preincr;
@@ -734,6 +874,9 @@ Expression getUnaryIncr(Expression e){
 
 Expression getUnarySingleOp(char op, Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = unary;
   ret->sub1.e = e;
   ret->deriv.unary = op;
@@ -742,6 +885,9 @@ Expression getUnarySingleOp(char op, Expression e){
 
 Expression getUnaryDecr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = unary;
   ret->deriv.unary = predecr;
   ret->sub1.e = e;
@@ -750,7 +896,10 @@ Expression getUnaryDecr(Expression e){
 
 Expression getCastExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
   ret->type = cast;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->deriv.cast = none;
   ret->sub1.e = e;
   return ret;
@@ -758,6 +907,9 @@ Expression getCastExpression(Expression e){
 
 Expression getTypedCast(int token, Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = cast;
   ret->deriv.cast = typed;
   ret->sub1.typnam = token;
@@ -767,6 +919,9 @@ Expression getTypedCast(int token, Expression e){
 
 Expression getMultExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = mult;
   ret->deriv.mult = none;
   ret->sub1.e = e;
@@ -775,6 +930,9 @@ Expression getMultExpression(Expression e){
 
 Expression getMultiplyExpression(Expression e1, char c, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = mult;
   ret->deriv.mult = c;
   ret->sub1.e = e1;
@@ -784,6 +942,9 @@ Expression getMultiplyExpression(Expression e1, char c, Expression e2){
 
 Expression getAdditiveExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = add;
   ret->deriv.add = none;
   ret->sub1.e = e;
@@ -792,6 +953,9 @@ Expression getAdditiveExpression(Expression e){
 
 Expression getAddExpression(Expression e1, char c, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = add;
   ret->deriv.add = c;
   ret->sub1.e = e1;
@@ -801,6 +965,9 @@ Expression getAddExpression(Expression e1, char c, Expression e2){
 
 Expression getRelatExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = relat;
   ret->deriv.relat = none;
   ret->sub1.e = e;
@@ -809,6 +976,9 @@ Expression getRelatExpression(Expression e){
 
 Expression getSingleCharRelat(Expression e1, char c, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = relat;
   ret->deriv.relat = c;
   ret->sub1.e = e1;
@@ -818,6 +988,9 @@ Expression getSingleCharRelat(Expression e1, char c, Expression e2){
 
 Expression getLeRelat(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = relat;
   ret->deriv.relat = le;
   ret->sub1.e = e1;
@@ -827,6 +1000,9 @@ Expression getLeRelat(Expression e1, Expression e2){
 
 Expression getGeRelat(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = relat;
   ret->deriv.relat = ge;
   ret->sub1.e = e1;
@@ -836,6 +1012,9 @@ Expression getGeRelat(Expression e1, Expression e2){
 
 Expression getEqExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = eq;
   ret->deriv.eq = none;
   ret->sub1.e = e;
@@ -844,6 +1023,9 @@ Expression getEqExpression(Expression e){
 
 Expression getEqual(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = eq;
   ret->deriv.relat = equal;
   ret->sub1.e = e1;
@@ -853,6 +1035,9 @@ Expression getEqual(Expression e1, Expression e2){
 
 Expression getNotEqual(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = eq;
   ret->deriv.relat = notequal;
   ret->sub1.e = e1;
@@ -862,6 +1047,9 @@ Expression getNotEqual(Expression e1, Expression e2){
 
 Expression getAndExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = cond;
   ret->deriv.cond = none;
   ret->sub1.e = e;
@@ -870,6 +1058,9 @@ Expression getAndExpression(Expression e){
 
 Expression getAnd(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = cond;
   ret->deriv.cond = cond_and;
   ret->sub1.e = e1;
@@ -878,6 +1069,9 @@ Expression getAnd(Expression e1, Expression e2){
 }
 Expression getOrExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = cond;
   ret->deriv.cond = none;
   ret->sub1.e = e;
@@ -886,6 +1080,9 @@ Expression getOrExpression(Expression e){
 
 Expression getOr(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = cond;
   ret->deriv.cond = cond_or;
   ret->sub1.e = e1;
@@ -894,6 +1091,9 @@ Expression getOr(Expression e1, Expression e2){
 }
 Expression getCond(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = cond;
   ret->deriv.cond = none;
   ret->sub1.e = e;
@@ -902,6 +1102,9 @@ Expression getCond(Expression e){
 
 Expression getAssign(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = assignment;
   ret->deriv.assign = none;
   ret->sub1.e = e;
@@ -910,6 +1113,9 @@ Expression getAssign(Expression e){
 
 Expression getTokenizedAssignment(Expression e1, int op, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = assignment;
   ret->deriv.assign = op;
   ret->sub1.e = e1;
@@ -919,6 +1125,9 @@ Expression getTokenizedAssignment(Expression e1, int op, Expression e2){
 
 Expression getAssignment(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = assignment;
   ret->deriv.assign = eq_assign;
   ret->sub1.e = e1;
@@ -928,6 +1137,9 @@ Expression getAssignment(Expression e1, Expression e2){
 
 Expression getInit(int token, Identifier i, Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->deriv.assign = init;
   ret->type = assignment;
   ret->sub1.typnam = token;
@@ -942,6 +1154,9 @@ Expression getInit(int token, Identifier i, Expression e){
  */
 Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression e2) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = assignment;
   ret->deriv.assign = edgeconnector;
   ret->sub1.e = e1;
@@ -953,6 +1168,9 @@ Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression 
  */
 Expression getExpression(Expression e) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = none;
   ret->deriv.none = none;
   ret->sub1.e = e;
@@ -965,18 +1183,13 @@ Expression getExpression(Expression e) {
  */
 Expression getExpressionAssignmentExpression(Expression e1, Expression e2) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
   ret->type = none;
   ret->deriv.none = comma;
   ret->sub1.e = e1;
   ret->sub2.e = e2;
-  return ret;
-}
-
-Statement getDeclarationStatement(int token, Identifier i){
-  Statement ret = (Statement)malloc(sizeof(struct statement_));
-  ret->type = decl;
-  ret->sub1.typnam = token;
-  ret->sub2.i = i;
   return ret;
 }
 
@@ -1106,14 +1319,16 @@ void freeExpression(Expression e) {
       break;
     case primary:
       switch(e->deriv.primary){
-        case primString:
+        case primary_string:
           freeIdentifier(e->sub1.i);
           break;
-        case primIdentifier:
+        case primary_identifier:
           freeIdentifier(e->sub1.i);
           break;
-        case parenthesis:
+        case parentheses:
           freeExpression(e->sub1.e);
+          break;
+        default: //suppresses warnings about primary_none
           break;
       }
       break;
@@ -1151,8 +1366,10 @@ void freeExpression(Expression e) {
  */
 Identifier getIdentifier(char *s) {
   Identifier i = (Identifier)malloc(sizeof(struct identifier_));
-  i->symbol = s;
-  i->sp = symlook(s);
+  i->s = NULL;
+  i->tt = NULL;
+  i->code = NULL;
+  strncpy(i->symbol, s, sizeof(i->symbol));
   return i;
 }
 

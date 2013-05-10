@@ -1,3 +1,5 @@
 main():
+  int a
+  int i
   method(i+4, a, 4)
   method()

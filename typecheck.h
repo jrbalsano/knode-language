@@ -309,8 +309,8 @@ int exactTypeMatch(TypeCheckType t1, TypeCheckType t2);
 /**
  * Returns 1 if t1 is exactly the same type as t2. Return -1 if they are matches
  * because of an indeterminable type. Return 2 if they are matchable via an implicit
- * cast such as int or double to string, or int to double. Return 0 otherwise. Easily
- * done recursively (think pattern matcher)
+ * cast such as int or double to string, or int to double. Does not match recursively
+ * because we should never be returning a cast match for nested types.
  */
 int castTypeMatch(TypeCheckType t1, TypeCheckType t2);
 
