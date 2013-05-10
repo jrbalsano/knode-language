@@ -1,5 +1,13 @@
 #include "walker.h"
 
+void startWalk(TranslationUnit root) {
+  Scope s = newScope(NULL);
+  TypeCheckType printType = getTypeCheckType(void_);
+  printType->fn_sub = getTypeCheckType(string_);
+  addSymbolToScope(s, "print", printType);
+  walkTranslationUnit(root, s); 
+}
+
 void walkTranslationUnit(TranslationUnit t, Scope s) {
 #ifdef MEMTRACE
   printf("Walking translation unit at %p\n", t);
@@ -141,6 +149,7 @@ void walkStatement(Statement s, Scope scope) {
       walkIdentifier(s->sub2.i, s->s);
       declStatementTypeCheck(s);
       declStatementGenerateCode(s);
+      break;
     case iteration:
       switch(s->deriv.iteration) {
         case forIter:
@@ -491,7 +500,7 @@ void walkIdentifier(Identifier i, Scope s) {
 #ifdef MEMTRACE
   printf("walking identifier at %p\n", i);
 #endif
-  if(i) {
+  if(!i) {
     fprintf(stderr, "Null child Identifier\n");
     return;
   }  

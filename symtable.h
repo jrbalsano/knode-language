@@ -14,9 +14,9 @@ struct symtab {
 
 Symtab symlook(char *symbol, Symtab table); 
 
-Symtab addSymbol(Symtab table, char *symbol, TypeCheckType tt);
+Symtab addSymbol(Symtab *table, char *symbol, TypeCheckType tt);
 
-TypeCheckType findType(Symtab table, char *symbol);
+TypeCheckType findType(Symtab *table, char *symbol);
 
 void deleteSymbol(Symtab table, char *symbol);
 

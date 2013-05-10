@@ -198,7 +198,8 @@ GrammarList newStatementList(Statement s) {
   sList->tt = NULL;
   sList->type = statement;
   sList->head = 0;
-  addFront(sList, s);
+  sList->tail = 0;
+  addBack(sList, s);
   return sList;
 }
 
@@ -206,13 +207,13 @@ GrammarList newStatementList(Statement s) {
  * Adds a new statement to the front of the statementlist
  */
 GrammarList extendStatementList(GrammarList sList, Statement s) {
-  addFront(sList, s);
+  addBack(sList, s);
   return sList;
 }
 
 /**
  * Creates a new parameter list from an existing parameter. To be used in sutations
- * where a parameter list does not already exist. See addFront for cases where the
+ * where a parameter list does not already exist. See addBack for cases where the
  * list already exists.
  */
 GrammarList newParameterList(Parameter p) {
@@ -222,7 +223,8 @@ GrammarList newParameterList(Parameter p) {
   pList->tt = NULL;
   pList->type = parameterList;
   pList->head = 0;
-  addFront(pList, p);
+  pList->tail = 0;
+  addBack(pList, p);
   return pList;
 }
 
@@ -237,7 +239,8 @@ GrammarList newArgumentExpressionList(Expression e) {
   aeList->tt = NULL;
   aeList->type = argument;
   aeList->head = 0;
-  addFront(aeList, e);
+  aeList->tail = 0;
+  addBack(aeList, e);
   return aeList;
 }
 /**
@@ -251,18 +254,24 @@ GrammarList newExpressionList(Expression e) {
   eList->tt = NULL;
   eList->type = expressionList;
   eList->head = 0;
-  addFront(eList, e);
+  eList->tail = 0;
+  addBack(eList, e);
   return eList;
 }
 /**
  * Add a node to the front of the Grammar List g, with data pointer data
  */
-GrammarList addFront(GrammarList g, void *data) {
+GrammarList addBack(GrammarList g, void *data) {
   GrammarNode n = (GrammarNode)malloc(sizeof(struct grammarNode_));
   n->s = NULL;
   n->data = data;
-  n->next = g->head;
-  g->head = n;
+  n->next = NULL;
+  GrammarNode back = g->tail;
+  if(!back) 
+    g->head = n;
+  else 
+    g->tail->next = n;
+  g->tail = n;
   return g;
 }
 
@@ -1360,7 +1369,6 @@ Identifier getIdentifier(char *s) {
   i->s = NULL;
   i->tt = NULL;
   i->code = NULL;
-  printf("Creating an identifier with symbol %s\n", s);
   strncpy(i->symbol, s, sizeof(i->symbol));
   return i;
 }

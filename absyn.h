@@ -140,6 +140,7 @@ struct grammarList_ {
   TypeCheckType tt;
   enum {argument, statement,parameterList,expressionList} type;
   GrammarNode head;
+  GrammarNode tail;
 };
 struct grammarNode_ {
   Scope s;
@@ -163,7 +164,7 @@ GrammarList extendStatementList(GrammarList sList, Statement s);
 GrammarList newParameterList(Parameter p);
 GrammarList newArgumentExpressionList(Expression e);
 GrammarList appendToPList(GrammarList pList,Parameter param);
-GrammarList addFront(GrammarList g, void *data);
+GrammarList addBack(GrammarList g, void *data);
 
 Parameter getTypedParameter(int typnam, Identifier i);
 

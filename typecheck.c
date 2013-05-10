@@ -112,6 +112,9 @@ void declStatementTypeCheck(Statement s) {
     case EDGE:
       tt = getTypeCheckType(edge_);
       break;
+    default:
+      printf("Unknown token %d\n", s->sub1.typnam);
+      break;
   }
   hold = tt;
   tt = addSymbolToScope(s->s, s->sub2.i->symbol, tt);
@@ -192,17 +195,16 @@ void assignmentExpressionTypeCheck(Expression e) {
 
 void primaryExpressionTypeCheck(Expression e) {
   switch(e->deriv.primary) {
-  case primary_identifier:
-    if(e->sub1.i->tt)
-      e->tt = e->sub1.i->tt;
-    else {
-      fprintf(stderr, "Undeclared variable used.\n");
-      exit(1);
-    }
-    break;
-  default:
-    //do other things
-    break;
+    case primary_identifier:
+      e->tt = findSymbol(e->sub1.i->s, e->sub1.i->symbol);
+      if(!e->tt) {
+        fprintf(stderr, "Undeclared variable used `%s`.\n", e->sub1.i->symbol);
+        exit(1);
+      }
+      break;
+    default:
+      //do other things
+      break;
   }
 }
 
@@ -215,7 +217,7 @@ void twoExpressionTypeCheck(Expression e) {
 }
 
 void identifierTypeCheck(Identifier i) {
-  i->tt = findSymbol(i->s, i->symbol);
+  // I'm pretty sure we don't need this method
 }
 
 
