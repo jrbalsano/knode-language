@@ -59,9 +59,9 @@ void compoundStatementGenerateCode(CompoundStatement cs) {
   printf("compoundStatement code~ %s ~", cs->code);
 
 }
-//this needs a better fix
+
 void expressionListGenerateCode(GrammarList g) {
-//
+
 }
 
 void statementListGenerateCode(GrammarList g) {
@@ -270,15 +270,15 @@ void twoExpressionGenerateCode(Expression e) {
 
 void identifierGenerateCode(Identifier i) {
 
-/*  NOTE: the commented out code is what we want to do, but for some reason it results in the code being blank.
+/*  NOTE: the commented out code is what we want to do, but for some reason it results in the code being blank.*/
   char *c = getAllocatedString(i->symbol);
   i->code = c; 
-  printf("identfier code~ %s ~", i->code);*/
+  printf("identfier code~ %s ~", i->code);
 
-  //here is the temporary fix
+/*  //here is the temporary fix
   char *c = "id-goes-here";
   i->code = getAllocatedString(c);
-
+*/
 }
 
 char *getAllocatedString(char *s) {
