@@ -121,5 +121,6 @@ void identifierGenerateCode(Identifier i);
  * heap allocating the string for you.
  */
 char *getAllocatedString(char *s);
+char *getValidString(char *s);
 #endif
 

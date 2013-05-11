@@ -205,6 +205,7 @@ void walkStatement(Statement s, Scope scope) {
           dictGenerateCode(s);
           break;
       }
+      break;
     case node:
       switch(s->deriv.node) {
         case nodeCreate:

@@ -25,6 +25,9 @@ typedef struct parameter_ *Parameter;
 struct expression_ {
   TypeCheckType tt;
   char *code;
+  char *precode;
+  char *postcode;
+  char *value;
   Scope s;
   enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment} type;
   union {
