@@ -400,7 +400,7 @@ void multExpressionGenerateCode(Expression e) {
 
 void addExpressionGenerateCode(Expression e) {
  
-  char *c1 = getValidString(e->sub1.e->code);
+  /**char *c1 = getValidString(e->sub1.e->code);
   char *c2 = getValidString(e->sub2.e->code);
   char *c3;
   switch(e->deriv.add){
@@ -420,7 +420,7 @@ void addExpressionGenerateCode(Expression e) {
   strncat(result, c3, length);
   strncat(result, c2, length);
  
-  e->code = getAllocatedString(result);
+  e->code = getAllocatedString(result);*/
       
 
 
