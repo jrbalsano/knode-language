@@ -92,8 +92,9 @@ void walkGrammarList(GrammarList g, Scope s) {
     return;
   }  
   g->s = s;
-  while(g->head) {
-    void *d = popFront(g);
+  GrammarNode current = g->head;
+  while(current) {
+    void *d = current->data;
     switch(g->type) {
       case argument:
       case expressionList:
@@ -106,6 +107,7 @@ void walkGrammarList(GrammarList g, Scope s) {
         walkParameter((Parameter)d, g->s);
         break;
     }
+    current = current->next;
   }
   switch(g->type) {
     case argument:
@@ -205,6 +207,7 @@ void walkStatement(Statement s, Scope scope) {
           dictGenerateCode(s);
           break;
       }
+      break;
     case node:
       switch(s->deriv.node) {
         case nodeCreate:
@@ -452,7 +455,6 @@ void walkExpression(Expression e, Scope s) {
     case primary:
       switch(e->deriv.primary){
         case primary_string:
-          walkIdentifier(e->sub1.i, e->s);
           primaryExpressionTypeCheck(e);
           primaryExpressionGenerateCode(e);
           break;
@@ -498,7 +500,7 @@ void walkExpression(Expression e, Scope s) {
 
 void walkIdentifier(Identifier i, Scope s) {
 #ifdef MEMTRACE
-  printf("walking identifier at %p\n", i);
+  printf("Walking identifier at %p\n", i);
 #endif
   if(!i) {
     fprintf(stderr, "Null child Identifier\n");
