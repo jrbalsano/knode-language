@@ -135,20 +135,20 @@ void parameterListGenerateCode(GrammarList g) {
 void forStatementGenerateCode(Statement s) {
   char *c1 = "for(";
   char *c2 = getValidString(s->sub1.forloop.e1->code);
-  char *c3 = ";";
+  /**char *c3 = ";";*/
   char *c4 = getValidString(s->sub1.forloop.e2->code);
-  char *c5 = ";";
-  char *c6 = getValidString(s->sub1.forloop.e2->code);
+  /**char *c5 = ";";*/
+  char *c6 = getValidString(s->sub1.forloop.e3->code);
   char *c7 = ")\n";
   char *c8 = getValidString(s->sub2.cs->code);
 
-  int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + strlen(c5) + strlen(c6) + strlen(c7) + strlen(c8) + 1;
+  int length = strlen(c1) + strlen(c2) +strlen(c4) + strlen(c6) + strlen(c7) + strlen(c8) + 1;
   char result[length];
   strncpy(result, c1, length);
   strncat(result, c2, length);
-  strncat(result, c3, length);
+  /**strncat(result, c3, length);*/
   strncat(result, c4, length);
-  strncat(result, c5, length);
+  /**strncat(result, c5, length);*/
   strncat(result, c6, length);
   strncat(result, c7, length);
   strncat(result, c8, length);
@@ -256,7 +256,13 @@ void postfixDecrementGenerateCode(Expression e) {
 }
 
 void postfixIncrementGenerateCode(Expression e) {
-
+    char *s = getValidString(e->sub1.e->code);
+    char *s2 = "++;";
+    int length = strlen(s) + strlen(s2) + 1;
+    char result[length];
+    strncpy(result,s,length);
+    strncat(result,s2,length);
+    e->code = getAllocatedString(result);
 }
 
 void postfixArgumentGenerateCode(Expression e) {
@@ -296,7 +302,36 @@ void addExpressionGenerateCode(Expression e) {
 }
 
 void relatExpressionGenerateCode(Expression e) {
-
+    char *c1 ;
+    char *c2;
+    char *c3;
+    char *c4;
+    int length = 100 ;
+    char *result=malloc(length*sizeof(char));
+    switch(e->deriv.relat)
+    {
+        case le:
+          c1 = getValidString(e->sub1.e->code);
+          c2 = "<=";
+          c3 = getValidString(e->sub2.e->code);
+          c4 = ";";
+          length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
+          strncpy(result,c1,length);
+          strncat(result,c2,length);
+          strncat(result,c3,length);
+          strncat(result,c4,length);
+          e->code = getAllocatedString(result);
+          break;
+        case ge:
+          break;
+        case less:
+          break;
+        case greater:
+          break;
+        case none:
+            ;
+    }
+    free(result);
 }
 
 void eqExpressionGenerateCode(Expression e) {
