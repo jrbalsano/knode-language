@@ -207,6 +207,7 @@ void walkStatement(Statement s, Scope scope) {
           dictGenerateCode(s);
           break;
       }
+      break;
     case node:
       switch(s->deriv.node) {
         case nodeCreate:
@@ -499,7 +500,7 @@ void walkExpression(Expression e, Scope s) {
 
 void walkIdentifier(Identifier i, Scope s) {
 #ifdef MEMTRACE
-  printf("walking identifier at %p\n", i);
+  printf("Walking identifier at %p\n", i);
 #endif
   if(!i) {
     fprintf(stderr, "Null child Identifier\n");
