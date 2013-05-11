@@ -2,14 +2,15 @@
 #define __SMARTPOINTERS_H__
 
 #include <stdlib.h>
-#include "dict.h"
-#include "node.h"
-#include "edge.h"
 
 typedef struct string_ *String;
 typedef struct dictPointer_ *SmartDict;
 typedef struct nodePointer_ *SmartNode;
 typedef struct edgePointer_ *SmartEdge;
+
+#include "dict.h"
+#include "node.h"
+#include "edge.h"
 
 struct string_ {
   int *count;

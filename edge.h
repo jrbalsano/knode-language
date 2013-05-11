@@ -8,10 +8,11 @@
 typedef struct edge *Edge;
 
 #include "node.h"
+#include "smartpointers.h"
 
 struct edge {
-  Node a;
-  Node b;
+  SmartNode a;
+  SmartNode b;
   enum {atob, btoa, both} edge_dir;
   int aindex;
   int bindex;
@@ -21,12 +22,12 @@ struct edge {
 /* *
  * Initialize an edge with two nodes
  */
-Edge initEdge(Node a, Node b, int edge_dir);
+Edge initEdge(SmartNode sa, SmartNode sb, int edge_dir);
 
 /* *
  * Set the name of the edge
  */
-void setEdgeName(Edge e, char *name);
+void setSmartEdgeName(SmartEdge se, char *name);
 
 /* *
  * Free the edge itself, and nothing more

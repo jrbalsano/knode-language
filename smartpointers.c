@@ -17,7 +17,7 @@ String copyString(String p) {
   String ret = (String)malloc(sizeof(struct string_));
   ret->count = p->count;
   ret->pointer = p->pointer;
-  *(ret->count)++;
+  (*(ret->count))++;
   return ret;
 }
 
@@ -29,7 +29,7 @@ void freeString(String p) {
   free(p);
 }
 
-SmartDict newDict() {
+SmartDict newSmartDict() {
   SmartDict ret = (SmartDict)malloc(sizeof(struct dictPointer_));
   ret->count = (int *)malloc(sizeof(int));
   ret->pointer = initDict();
@@ -45,7 +45,7 @@ SmartDict copySmartDict(SmartDict p) {
   SmartDict ret = (SmartDict)malloc(sizeof(struct dictPointer_));
   ret->count = p->count;
   ret->pointer = p->pointer;
-  *(ret->count)++;
+  (*(ret->count))++;
   return ret;
 }
 
@@ -57,11 +57,13 @@ void freeSmartDict(SmartDict p) {
   free(p);
 }
 
-SmartNode newNode() {
+SmartNode newSmartNode() {
   SmartNode ret = (SmartNode)malloc(sizeof(struct nodePointer_));
   ret->count = (int *)malloc(sizeof(int));
   ret->pointer = initNode();
   *(ret->count) = 1;
+  ret->pointer;
+  ret;
   return ret;
 }
 
@@ -73,7 +75,7 @@ SmartNode copySmartNode(SmartNode p) {
   SmartNode ret = (SmartNode)malloc(sizeof(struct nodePointer_));
   ret->count = p->count;
   ret->pointer = p->pointer;
-  *(ret->count)++;
+  (*(ret->count))++;
   return ret;
 }
 
@@ -85,11 +87,13 @@ void freeSmartNode(SmartNode p) {
   free(p);
 }
 
-SmartEdge newEdge(SmartNode n1, SmartNode n2, int edge_dir) {
+SmartEdge newSmartEdge(SmartNode n1, SmartNode n2, int edge_dir) {
   SmartEdge ret = (SmartEdge)malloc(sizeof(struct edgePointer_));
   ret->count = (int *)malloc(sizeof(int));
-  ret->pointer = initEdge();
+  ret->pointer = initEdge(n1, n2, edge_dir);
   *(ret->count) = 1;
+  //add edge to a and b's edgelist
+  addSmartEdge(copySmartNode(n1), copySmartNode(n2), copySmartEdge(ret));
   return ret;
 }
 
@@ -101,7 +105,7 @@ SmartEdge copySmartEdge(SmartEdge p) {
   SmartEdge ret = (SmartEdge)malloc(sizeof(struct edgePointer_));
   ret->count = p->count;
   ret->pointer = p->pointer;
-  *(ret->count)++;
+  (*(ret->count))++;
   return ret;
 }
 
