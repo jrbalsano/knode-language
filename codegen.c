@@ -303,7 +303,7 @@ void expressionStatementGenerateCode(Statement s) {
 void declStatementGenerateCode(Statement s){
   char *c2 = testForSemicolon(getValidString(s->sub2.i->code));
   char *c3 = ";\n";
-  char *c4 = " ";
+  char *c4 = "";
   char *c1 = getValidString(getTypnamString(s->sub1.typnam));
   int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
   char result[length];
@@ -623,23 +623,23 @@ char *getValidString(char *s){
 char *getTypnamString(int typ){
   switch(typ){
     case INT:
-      return "int";
+      return "int ";
     case DOUBLE:
-      return "double";
+      return "double ";
     case CHAR:
-      return "char";
+      return "char ";
     case BOOLEAN:
-      return "int"; //this happens because C doesn't do booleans
+      return "int "; //this happens because C doesn't do booleans
     case STRING:
       return "char *"; //temporary way of dealing with strings in C
     case NODE:
-      return "node";
+      return "node ";
     case EDGE:
-      return "edge";
+      return "edge ";
     case DICT:
-      return "dict";
+      return "dict ";
     default:
-      return "not any normal type";
+      return "not any normal type ";
   }
 }
 
