@@ -371,6 +371,9 @@ void postfixArgumentGenerateCode(Expression e) {
       }
    }
   }
+  else{
+    str3 = "";
+  }
   int length = strlen(str) + strlen(str2) + strlen(str3) + 3;
   char result[length];
   strncpy(result, str, length);
