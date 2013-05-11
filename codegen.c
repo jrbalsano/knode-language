@@ -177,7 +177,21 @@ void ifStatementGenerateCode(Statement s) {
 }
 
 void ifelseStatementGenerateCode(Statement s) {
-
+    char *c1 = "if(";
+    char *c2 = getValidString(s->sub1.e->code);
+    char *c3 = ")";
+    char *c4 = getValidString(s->sub2.cs->code);
+    char *c5 = "else";
+    char *c6 = getValidString(s->sub3.cs->code);
+    int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + strlen(c5) + strlen(c6);
+    char result[length];
+    strncpy(result, c1, length);
+    strncat(result, c2, length);
+    strncat(result, c3, length);
+    strncat(result, c4, length);
+    strncat(result, c5, length);
+    strncat(result, c6, length);
+    s->code = getAllocatedString(result);
 }
 
 void dictlistGenerateCode(Statement s) {
