@@ -260,7 +260,17 @@ void dictGenerateCode(Statement s) {
 }
 
 void nodeCreationGenerateCode(Statement s) {
-
+  char *c1 = "Node ";
+  char *c2 = getValidString(s->sub1.i->code);
+  char *c3 = " = ";
+  char *c4 = "initNode();\n";
+  int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4);
+  char result[length];
+  strncpy(result, c1, length);
+  strncat(result, c2, length);
+  strncat(result, c3, length);
+  strncat(result, c4, length);
+  s->code = getAllocatedString(result);
 }
 
 void nodeAssignmentGenerateCode(Statement s) {
