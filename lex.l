@@ -35,10 +35,10 @@ bool_literal   "TRUE"|"FALSE"
 "<="                            printf("<=\n"); return LE;
 "=="                            printf("==\n"); return EQ;
 "!="                            printf("!=\n"); return NE;
-"<=>"				                    printf("ALLEDGE\n"); return ALLEDGE;
-"<->"				                    printf("BOTHEDGE\n"); return BOTHEDGE;
-"<-"				                    printf("LEFTEDGE\n"); return LEFTEDGE;
-"->"				                    printf("RIGHTEDGE\n"); return RIGHTEDGE;
+"<=>"				            printf("ALLEDGE\n"); return ALLEDGE;
+"<->"				            printf("BOTHEDGE\n"); return BOTHEDGE;
+"<-"				            printf("LEFTEDGE\n"); return LEFTEDGE;
+"->"				            printf("RIGHTEDGE\n"); return RIGHTEDGE;
 "while"                         printf("WHILE\n"); return WHILE;
 "if"                            printf("IF\n"); return IF;
 "else"                          printf("ELSE\n"); return ELSE;
