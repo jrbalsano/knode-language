@@ -311,7 +311,7 @@ void addExpressionGenerateCode(Expression e) {
   sprintf(k, "%d", knodetemp++);
 
   // this char pointer is the length of the precode without the input.
-  const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, %s);\n";
+  const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, \"%s\");\n";
   char *s1 = getValidString(e->sub1.e->code);
   char *s2 = getValidString(e->sub2.e->code);
 
