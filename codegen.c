@@ -286,8 +286,9 @@ void addExpressionGenerateCode(Expression e) {
 
   //postcode, none
 
-  printf("%s", e->precode);
-  printf("%s", e->value);
+  printf("PRECODE: %s\n", e->precode);
+  printf("VALUE: %s\n", e->value);
+  printf("SUB1 CODE: %s\n", e->sub1.e->code);
 
 }
 
@@ -320,12 +321,15 @@ void primaryExpressionGenerateCode(Expression e) {
   {
     case primary_identifier: 
       e->code = getAllocatedString(getValidString(e->sub1.i->code));
+      printf("PRIMARY IDENTIFIER: %s", e->code); 
      break;
     case primary_string:
       e->code = getAllocatedString(getValidString(e->sub1.s));
+      printf("PRIMARY STRING: %s", e->code); 
       break;
     default: //not correct default behavior, just tryna debug
-      e->code = getAllocatedString(getValidString(e->sub1.s)); 
+      e->code = getAllocatedString(getValidString(e->sub1.s));
+      printf("DEFAULT: %s", e->code); 
       break;
   }
 }
