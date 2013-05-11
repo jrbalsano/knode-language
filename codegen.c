@@ -133,8 +133,29 @@ void parameterListGenerateCode(GrammarList g) {
 }
 
 void forStatementGenerateCode(Statement s) {
+  char *c1 = "for(";
+  char *c2 = getValidString(s->sub1.forloop.e1->code);
+  char *c3 = ";";
+  char *c4 = getValidString(s->sub1.forloop.e2->code);
+  char *c5 = ";";
+  char *c6 = getValidString(s->sub1.forloop.e2->code);
+  char *c7 = ")\n";
+  char *c8 = getValidString(s->sub2.cs->code);
 
+  int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + strlen(c5) + strlen(c6) + strlen(c7) + strlen(c8) + 1;
+  char result[length];
+  strncpy(result, c1, length);
+  strncat(result, c2, length);
+  strncat(result, c3, length);
+  strncat(result, c4, length);
+  strncat(result, c5, length);
+  strncat(result, c6, length);
+  strncat(result, c7, length);
+  strncat(result, c8, length);
 
+  s->code = getAllocatedString(result);
+  
+          
 }
 
 void whileStatementGenerateCode(Statement s) {
@@ -186,7 +207,7 @@ void statementGenerateCode(Statement s) {
 
 //   }
 //  else {
-    //figure out what kind of statement this code from hello world is
+   //figure out what kind of statement this code from hello world is
     char str[strlen(getValidString(s->sub1.s->code))+1];
     strcpy(str, getValidString(s->sub1.s->code));
     s->code = getAllocatedString(str);
