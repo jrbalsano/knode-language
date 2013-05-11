@@ -165,7 +165,7 @@ void whileStatementGenerateCode(Statement s) {
 
   char *c1 = "while(";
   char *c2 = getValidString(s->sub1.e->code);
-  
+// printf("in while with c2 = %s", getValidString(s->sub1.e->code));
   //remove semicolon from end of c2
   c2[strlen(c2)-1] = '\0';
 
@@ -366,6 +366,7 @@ void addExpressionGenerateCode(Expression e) {
 }
 
 void relatExpressionGenerateCode(Expression e) {
+    printf("\nin relatExpressionGenerateCode with e->sub1.e->code %s and e->sub2.e->code %s\n", e->sub1.e->code, e->sub2.e->code);
     char *c1 ;
     char *c2;
     char *c3;
@@ -482,7 +483,7 @@ void assignmentExpressionGenerateCode(Expression e) {
             strncat(result, c3, length);
             strncat(result, c2, length);
             strncat(result, c4, length);
-            printf("result: %s\n", result);
+      //      printf("result: %s\n", result);
             e->code = getAllocatedString(result);
         // }
 //          break;

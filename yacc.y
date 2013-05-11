@@ -217,8 +217,8 @@ equalityexpression : relationalexpression { $$ = getEqExpression($1); }
   | equalityexpression NE relationalexpression { $$ = getNotEqual($1, $3); }
   ;
 relationalexpression : additiveexpression { $$ = getRelatExpression($1); }
-  | relationalexpression '<' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
-  | relationalexpression '>' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
+  | relationalexpression '<' additiveexpression { $$ = getSingleCharRelat($1, '<', $3); }
+  | relationalexpression '>' additiveexpression { $$ = getSingleCharRelat($1, '>', $3); }
   | relationalexpression LE additiveexpression { $$ = getLeRelat($1, $3); }
   | relationalexpression GE additiveexpression { $$ = getGeRelat($1, $3); }
   ;
