@@ -194,12 +194,24 @@ void castTypedExpressionTypeCheck(Expression e) {
 }
 
 void multExpressionTypeCheck(Expression e) {
+  int int1 = e->sub1.e->tt->base == int_;
+  int double1 = e->sub1.e->tt->base == double_;
+  int int2 = e->sub2.e->tt->base == int_;
+  int double2 = e->sub2.e->tt->base == double_;
+  if (int1 && int2){
+    e->tt = getTypeCheckType(int_);
+  }
 
+  else if ((double1 && double2) || (int1 && double2) || (double1 && int2)){
+    e->tt = getTypeCheckType(double_);
+  }
+  else{
+    fprintf(stderr, "TYPE CHECK ERROR: additive expression"); 
+    exit(1);
+  }
 }
 
-
 void addExpressionTypeCheck(Expression e) {
-
   int int1 = e->sub1.e->tt->base == int_;
   int double1 = e->sub1.e->tt->base == double_;
   int int2 = e->sub2.e->tt->base == int_;

@@ -359,12 +359,14 @@ void walkExpression(Expression e, Scope s) {
           walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
+          printf("We went here\n");
           break;
         default:
           walkExpression(e->sub1.e, e->s);
           walkExpression(e->sub2.e, e->s);
           multExpressionTypeCheck(e);
           multExpressionGenerateCode(e);
+          printf("We went there\n");
           break;
       }
       break;

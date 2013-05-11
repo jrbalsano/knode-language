@@ -297,7 +297,9 @@ void castTypedExpressionGenerateCode(Expression e) {
 }
 
 void multExpressionGenerateCode(Expression e) {
-
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
+  e->code = getAllocatedString(getValidString(e->sub1.e->code));
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
 void addExpressionGenerateCode(Expression e) {
