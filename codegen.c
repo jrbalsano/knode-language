@@ -289,7 +289,7 @@ void statementGenerateCode(Statement s) {
 
 void expressionStatementGenerateCode(Statement s) {
   char *pre = getValidString(s->sub1.e->precode);
-  char *code = getValidString(s->sub1.e->code);
+  char *code = testForSemicolon(getValidString(s->sub1.e->code));
   char *post = getValidString(s->sub1.e->postcode);
   int length = strlen(pre)+ strlen(code) + strlen(post) + 2;
   char str[length];
