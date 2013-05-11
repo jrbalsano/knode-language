@@ -15,13 +15,13 @@ struct edge {
   enum {atob, btoa, both} edge_dir;
   int aindex;
   int bindex;
-  char *edge_name;
+  char edge_name[42];
 };
 
 /* *
  * Initialize an edge with two nodes
  */
-Edge initEdge(Node n1, Node n2, int edge_dir);
+Edge initEdge(Node a, Node b, int edge_dir);
 
 /* *
  * Set the name of the edge

@@ -14,7 +14,9 @@ int main(int argc, char *argv[]) {
 
   //Initialize an edge
   Edge e = initEdge(a, b, atob);
-  setEdgeName(e, "faja");
+  setEdgeName(e, "merpderp");
+  Edge f = initEdge(a, b, atob);
+  setEdgeName(f, "herpderp");
 
   //Follow the edge
   printf("Edge e found this on node a: %d\n", getIntFromNode(e->a, "a's first int"));
@@ -31,10 +33,18 @@ int main(int argc, char *argv[]) {
       break;
   }
 
-  printf("Testing out addedge: %d", a->edgelist[e->aindex]->aindex);
+  printf("Testing out addedge: %d\n", a->edgelist[e->aindex]->aindex);
+  printf("Testing out edgename: %s\n", a->edgelist[e->aindex]->edge_name);
+
+  printf("Testing out addedge: %d\n", a->edgelist[f->aindex]->aindex);
+  printf("Testing out edgename: %s\n", a->edgelist[f->aindex]->edge_name);
+
+  //remove edge e from the edgelist of both a and b
+  removeEdge(a, e);
 
   //free the edge, then the nodes
-  freeEdge(e);
+  //freeEdge(e);
+  //freeEdge(f);
 
   freeNode(a);
   freeNode(b);

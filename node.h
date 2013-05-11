@@ -22,15 +22,20 @@ struct node {
 Node initNode();
 
 /* *
- * Free the node, the dictionary of the node, and the entries in the dictionary
- * of the node
+ * Free the node, the dictionary of the node, the entries in the dictionary of
+ * the node, and the edges in the edgelist of the node
  */
 void freeNode(Node n);
 
 /* *
  * add an edge to the node's edgelist
  */
-void addEdge(Node n, Edge e);
+void addEdge(Node a, Node b, Edge e);
+
+/* *
+ * remove an edge from the edgelists of both nodes, then free the edge
+ */
+void removeEdge(Node n, Edge e);
 
 /* *
  * Add an int to the dictionary of the node
