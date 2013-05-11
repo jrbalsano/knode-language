@@ -371,7 +371,7 @@ void walkExpression(Expression e, Scope s) {
       }
       break;
     case add:
-      printf("encountered add in walker");
+      printf("encountered add in walker\n");
       switch(e->deriv.add){
         case 0:
           walkExpression(e->sub1.e, e->s);
@@ -379,7 +379,9 @@ void walkExpression(Expression e, Scope s) {
           passupExpressionCode(e);
           break;
         default:
+          printf("==========================================================\n");
           walkExpression(e->sub1.e, e->s);
+          printf("==========================================================\n");
           walkExpression(e->sub2.e, e->s);
           addExpressionTypeCheck(e);
           addExpressionGenerateCode(e);
@@ -511,6 +513,7 @@ void walkExpression(Expression e, Scope s) {
   }
   printf("Finishing Walking Expression with type %d\n", e->type);
   printf("PRECODE: %s\n", e->precode);
+  printf("tt: %p\n", e->tt);
 #ifdef MEMTRACE
   printf("Expression walked at %p\n", e);
 #endif

@@ -282,12 +282,15 @@ void primaryExpressionTypeCheck(Expression e) {
     case primary_double:
       e->tt = getTypeCheckType(double_);
       break;
+    case parentheses:
+      e->tt = copyTypeCheckType(e->sub1.e->tt);
+      break;
     default:
+      printf("Priamry expression type: %d\n", e->deriv.primary);
       printf("Priamry expression tt address: %p\n", e->tt);
       //do other things
       break;
   }
-  printf("Priamry expression tt address: %p\n", e->tt);
 }
 
 void functionExpressionTypeCheck(Expression e) {
