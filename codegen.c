@@ -399,70 +399,70 @@ void multExpressionGenerateCode(Expression e) {
 }
 
 void addExpressionGenerateCode(Expression e) {
- 
-  /**char *c1 = getValidString(e->sub1.e->code);
-  char *c2 = getValidString(e->sub2.e->code);
-  char *c3;
-  switch(e->deriv.add){
-    case plus:
-         c3 = "+";
-         break;
-   case minus:
-        c3 = "-";
-        break;
-   case 0:
-       ;
+  if ((e->tt->base == int_) | (e->tt->base == double_)){ 
+    char *c1 = getValidString(e->sub1.e->code);
+    char *c2 = getValidString(e->sub2.e->code);
+    char *c3;
+    switch(e->deriv.add){
+      case plus:
+           c3 = "+";
+           break;
+     case minus:
+          c3 = "-";
+          break;
+     case 0:
+         ;
+    }
+
+    int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
+    char result[length];
+    strncpy(result, c1, length);
+    strncat(result, c3, length);
+    strncat(result, c2, length);
+   
+    e->code = getAllocatedString(result);
+      
   }
 
-  int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
-  char result[length];
-  strncpy(result, c1, length);
-  strncat(result, c3, length);
-  strncat(result, c2, length);
- 
-  e->code = getAllocatedString(result);*/
-      
+  else if (e->tt->base == string_){
+    // k is the string of the value of the current knodetemp.
+    // k is incremented after use here for the next knodetemp.
+    char k[15];
+    sprintf(k, "%d", knodetemp++);
 
+    // this char pointer is the length of the precode without the input.
+    const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, \"%s\");\n";
+    char *s1 = getValidString(e->sub1.e->code);
+    char *s2 = getValidString(e->sub2.e->code);
 
- // printf("Sub 1 type: %d\n", e->sub1.e->tt->base); 
-  //printf("Sub 2 type: %d\n", e->sub2.e->tt->base); 
-  // k is the string of the value of the current knodetemp.
-  // k is incremented after use here for the next knodetemp.
-  char k[15];
-  sprintf(k, "%d", knodetemp++);
+    //  print for debugging
+    printf("%s\n", s1);
+    printf("%s\n", s2);
 
-  // this char pointer is the length of the precode without the input.
-  const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, \"%s\");\n";
-  char *s1 = getValidString(e->sub1.e->code);
-  char *s2 = getValidString(e->sub2.e->code);
+    // the length of the precode
+    int length = strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(format) + 1;
 
-  //  print for debugging
-  printf("%s\n", s1);
-  printf("%s\n", s2);
+    // sets the size of the precode
+    e->precode = (char *)malloc(length * sizeof(char));
 
-  // the length of the precode
-  int length = strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(format) + 1;
+    // sets this expression's precode.
+    sprintf(e->precode, format, s1, s2, k, k, s1, k, s2);
+     
+    //precode = 
+    //int length = strlen(string1) + strlen(string2);
+    //char __knodetemp#[length]
+    //strcpy(__knodetemp#, string1);
+    //strcat(__knodetemp#, string2);
 
-  // sets the size of the precode
-  e->precode = (char *)malloc(length * sizeof(char));
+    //val = __knodetemp#
+    
+    const char *valformat = "__knodetemp%s";
+    int vallength = strlen(format) + 1 + strlen(k);
+    e->code = (char *)malloc(vallength * sizeof(char));
+    sprintf(e->code, valformat, k);
 
-  // sets this expression's precode.
-  sprintf(e->precode, format, s1, s2, k, k, s1, k, s2);
-   
-  //precode = 
-  //int length = strlen(string1) + strlen(string2);
-  //char __knodetemp#[length]
-  //strcpy(__knodetemp#, string1);
-  //strcat(__knodetemp#, string2);
-
-  //val = __knodetemp#
-  
-  const char *valformat = "__knodetemp%s";
-  int vallength = strlen(format) + 1 + strlen(k);
-  e->code = (char *)malloc(vallength * sizeof(char));
-  sprintf(e->code, valformat, k);
-
-  //postcode, none
+    //postcode, none
+  }
 }
 
 void relatExpressionGenerateCode(Expression e) {
