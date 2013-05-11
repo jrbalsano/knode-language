@@ -37,6 +37,9 @@ void removeSmartEdge(SmartEdge se) {
   freeSmartEdge(getNode(so)->edgelist[oindex]);
   getNode(so)->edgelist[oindex] = getNode(so)->edgelist[getNode(so)->edgecount - 1];
   getNode(so)->edgecount -= 1;
+  //update the aindex and bindex of the edge plugging the hole
+  getEdge(getNode(sn)->edgelist[nindex])->aindex = nindex;
+  getEdge(getNode(so)->edgelist[oindex])->bindex = oindex;
   
   //finally, set the edge free
   freeSmartEdge(se);
