@@ -141,7 +141,7 @@ void forStatementGenerateCode(Statement s) {
   char *c6 = getValidString(s->sub2.cs->code);
   
   /*problem: c8 likely has a semicolon at the end of it. the next line gets rid of it.*/
-  c4[strlen(c4)-1]='\0';
+  //c4[strlen(c4)-1]='\0';
   
   int length = strlen(c1) + strlen(c2) +strlen(c3) + strlen(c4) + strlen(c5) + strlen(c6) + 1;
   char result[length];
@@ -251,10 +251,11 @@ void statementGenerateCode(Statement s) {
 
 void expressionStatementGenerateCode(Statement s){
 
-  char str[strlen(getValidString(s->sub1.e->code))+1];//2];
-  strcpy(str, getValidString(s->sub1.e->code));
-//  strcat(str, ";\n");
-  s->code = getAllocatedString(str);
+  char *str = testForSemicolon(getValidString(s->sub1.e->code));
+  char str1[strlen(getValidString(s->sub1.e->code))+2];
+  strcpy(str1, str);
+  strcat(str1, ";\n");
+  s->code = getAllocatedString(str1);
 }
 
 void declStatementGenerateCode(Statement s){
@@ -292,7 +293,7 @@ void postfixDecrementGenerateCode(Expression e) {
 
 void postfixIncrementGenerateCode(Expression e) {
   char *s = getValidString(e->sub1.e->code);
-  char *s2 = "++;";
+  char *s2 = "++";
   int length = strlen(s) + strlen(s2) + 1;
   char result[length];
   strncpy(result,s,length);
@@ -458,11 +459,13 @@ void assignmentExpressionGenerateCode(Expression e) {
   char *c1 = getValidString(e->sub1.e->code);
   char *c2 = getValidString(e->sub2.e->code);
   char *c3 = "=";
-  int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
+  char *c4 = ";";
+  int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
   char result[length];
   strncpy(result, c1, length);
   strncat(result, c3, length);
   strncat(result, c2, length);
+  strncat(result, c4, length);
   e->code = getAllocatedString(result);
 }
 
@@ -532,4 +535,14 @@ char *getTypnamString(int typ){
       return "not any normal type";
   }
 }
-   
+
+char *testForSemicolon(char *s){
+  char a = ';';
+  char b = s[strlen(s)-1];
+  if (a == b){
+    s[strlen(s)-1] = '\0';
+    return s;
+  }
+  else
+    return s;
+}    
