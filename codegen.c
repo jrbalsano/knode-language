@@ -204,7 +204,7 @@ void parameterGenerateCode(Parameter p) {
 
 void passupExpressionCode(Expression e) {
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
-  printf("e->code\n");
+
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
@@ -252,7 +252,6 @@ void multExpressionGenerateCode(Expression e) {
 }
 
 void addExpressionGenerateCode(Expression e) {
-
   // k is the string of the value of the current knodetemp.
   // k is incremented after use here for the next knodetemp.
   char k[15];
@@ -261,7 +260,12 @@ void addExpressionGenerateCode(Expression e) {
   // this char pointer is the length of the precode without the input.
   const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, %s);\n";
   char *s1 = getValidString(e->sub1.e->code);
-  char *s2 = getValidString(e->sub2.e->code); 
+  char *s2 = getValidString(e->sub2.e->code);
+
+  //  print for debugging
+  printf("%s\n", s1);
+  printf("%s\n", s2);
+
   // the length of the precode
   int length = strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(format) + 1;
 
@@ -279,7 +283,7 @@ void addExpressionGenerateCode(Expression e) {
 
   //val = __knodetemp#
   
-  const char *valformat = "__knodetemp%s;\n";
+  const char *valformat = "__knodetemp%s";
   int vallength = strlen(format) + 1 + strlen(k);
   e->code = (char *)malloc(vallength * sizeof(char));
   sprintf(e->code, valformat, k);
