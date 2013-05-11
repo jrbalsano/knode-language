@@ -25,16 +25,12 @@ Entry addToDict(Dict d, int et, char *key, void *value) {
   strncpy(entry->key, key, sizeof(entry->key));
   switch(et) {
     case echar:
-      printf("adding a char star!\n");
-      //char *tmp = &value;
       strncpy(entry->value.str, (char *)value, sizeof(entry->key));
       break;
     case eint:
-      printf("adding an int!\n");
       entry->value.num = *(int *)value;
       break;
     case edouble:
-      printf("adding a double!\n");
       entry->value.dub = *(double *)value;
       break;
   }
