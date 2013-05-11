@@ -288,38 +288,49 @@ void walkExpression(Expression e, Scope s) {
           walkExpression(e->sub1.e, e->s);
           postfixIdentifierTypeCheck(e);
           postfixIdentifierGenerateCode(e);
+          printf("OMG wtf7..\n");
           break;
         case postdecr:
           walkExpression(e->sub1.e, e->s);
           postfixDecrementTypeCheck(e);
           postfixDecrementGenerateCode(e);
+          printf("OMG wtf6..\n");
           break;
         case postincr:
           walkExpression(e->sub1.e, e->s);
           postfixIncrementTypeCheck(e);
           postfixIncrementGenerateCode(e);
+          printf("OMG wtf5..\n");
           break;
         case arg:
           walkExpression(e->sub1.e, e->s);
           walkGrammarList(e->sub2.l, e->s);
+      /*    int *x = NULL;
+          int y = *x + 2;
+          printf("%d", y);
+        */
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);          
+          printf("OMG wtf4..\n");
           break;
         case argEmpty:
           walkExpression(e->sub1.e, e->s);
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);
+          printf("OMG wtf3..\n");
           break;
         case bracket:
           walkExpression(e->sub1.e, e->s);
           walkExpression(e->sub2.e, e->s);
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);          
+          printf("OMG wtf2..\n");
           break;
         case 0:
           walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
+          printf("OMG wtf...\n");
           break;
       }
       break;
@@ -358,6 +369,7 @@ void walkExpression(Expression e, Scope s) {
       }
       break;
     case add:
+      printf("encountered add in walker");
       switch(e->deriv.add){
         case 0:
           walkExpression(e->sub1.e, e->s);
@@ -468,6 +480,8 @@ void walkExpression(Expression e, Scope s) {
           primaryExpressionTypeCheck(e);
           primaryExpressionGenerateCode(e);
         default: //unhandled case
+          primaryExpressionTypeCheck(e);
+          primaryExpressionGenerateCode(e);
           break;
       }
       break;
@@ -493,6 +507,8 @@ void walkExpression(Expression e, Scope s) {
     default:
       break;
   }
+  printf("Finishing Walking Expression with type %d\n", e->type);
+  printf("PRECODE: %s\n", e->precode);
 #ifdef MEMTRACE
   printf("Expression walked at %p\n", e);
 #endif

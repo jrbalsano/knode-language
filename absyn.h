@@ -141,6 +141,8 @@ struct translationUnit_ {
 };
 struct grammarList_ {
   char *code;
+  char *precode;
+  char *postcode;
   Scope s;
   TypeCheckType tt;
   enum {argument, statement,parameterList,expressionList} type;

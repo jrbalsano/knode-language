@@ -193,6 +193,8 @@ void freeCompoundStatement(CompoundStatement c) {
  */
 GrammarList newStatementList(Statement s) {
   GrammarList sList = (GrammarList)malloc(sizeof(struct grammarList_));
+  sList->precode = NULL;
+  sList->postcode = NULL;
   sList->s = NULL;
   sList->code = NULL;
   sList->tt = NULL;
@@ -218,6 +220,8 @@ GrammarList extendStatementList(GrammarList sList, Statement s) {
  */
 GrammarList newParameterList(Parameter p) {
   GrammarList pList = (GrammarList)malloc(sizeof(struct grammarList_));
+  pList->precode = NULL;
+  pList->postcode = NULL;
   pList->s = NULL;
   pList->code = NULL;
   pList->tt = NULL;
@@ -234,6 +238,8 @@ GrammarList newParameterList(Parameter p) {
  */
 GrammarList newArgumentExpressionList(Expression e) {
   GrammarList aeList = (GrammarList)malloc(sizeof(struct grammarList_));
+  aeList->precode = NULL;
+  aeList->postcode = NULL;
   aeList->s = NULL;
   aeList->code = NULL;
   aeList->tt = NULL;
@@ -249,6 +255,8 @@ GrammarList newArgumentExpressionList(Expression e) {
  */
 GrammarList newExpressionList(Expression e) {
   GrammarList eList = (GrammarList)malloc(sizeof(struct grammarList_));
+  eList->precode = NULL;
+  eList->postcode = NULL;
   eList->s = NULL;
   eList->code = NULL;
   eList->tt = NULL;
@@ -318,6 +326,10 @@ void freeGrammarList(GrammarList g) {
   freeTypeCheckType(g->tt);
   if(g->code)
     free(g->code);
+  if(g->precode)
+    free(g->precode);
+  if(g->postcode)
+    free(g->postcode);
   free(g);
 #ifdef MEMTRACE
   printf("Grammar list freed\n");
@@ -693,6 +705,8 @@ void freeParameter(Parameter p) {
  */
 Expression getFunctionExpression(Identifier id, GrammarList argExpList) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -707,6 +721,8 @@ Expression getFunctionExpression(Identifier id, GrammarList argExpList) {
  */
 Expression getPrimaryIdentifierExpression(Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -721,6 +737,8 @@ Expression getPrimaryIdentifierExpression(Identifier id){
  */
 Expression getPrimaryStringExpression(char *s) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -733,6 +751,8 @@ Expression getPrimaryStringExpression(char *s) {
 
 Expression getPrimaryIntegerExpression(int ivalue){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -744,6 +764,8 @@ Expression getPrimaryIntegerExpression(int ivalue){
 }
 Expression getPrimaryDoubleExpression(double dvalue){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -756,6 +778,8 @@ Expression getPrimaryDoubleExpression(double dvalue){
 
 Expression getPrimaryBoolExpression(int bvalue){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -770,6 +794,8 @@ Expression getPrimaryBoolExpression(int bvalue){
 /**Get parenthesized primary expression*/
 Expression getPrimaryParenExpression(Expression e) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -783,6 +809,8 @@ Expression getPrimaryParenExpression(Expression e) {
  */
 Expression getPostfixExpression(Expression e1){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -797,6 +825,8 @@ Expression getPostfixExpression(Expression e1){
  */
 Expression getPostfixEmptyArgument(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -812,6 +842,8 @@ Expression getPostfixEmptyArgument(Expression e){
  */
 Expression getPostfixBracketExpression(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -828,6 +860,8 @@ Expression getPostfixBracketExpression(Expression e1, Expression e2){
  */
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -845,6 +879,8 @@ Expression getPostfixArgumentExpression(Expression e1, GrammarList argList){
  */
 Expression getPostfixIncr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -860,6 +896,8 @@ Expression getPostfixIncr(Expression e){
  */
 Expression getPostfixDecr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -876,6 +914,8 @@ Expression getPostfixDecr(Expression e){
  */
 Expression getPostfixIdentifierExpression(Expression e, Identifier id){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -888,6 +928,8 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id){
 
 Expression getUnaryExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -899,6 +941,8 @@ Expression getUnaryExpression(Expression e){
 
 Expression getUnaryIncr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -910,6 +954,8 @@ Expression getUnaryIncr(Expression e){
 
 Expression getUnarySingleOp(char op, Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -921,6 +967,8 @@ Expression getUnarySingleOp(char op, Expression e){
 
 Expression getUnaryDecr(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -932,6 +980,8 @@ Expression getUnaryDecr(Expression e){
 
 Expression getCastExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->type = cast;
   ret->code = NULL;
@@ -943,6 +993,8 @@ Expression getCastExpression(Expression e){
 
 Expression getTypedCast(int token, Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -955,6 +1007,8 @@ Expression getTypedCast(int token, Expression e){
 
 Expression getMultExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -966,6 +1020,8 @@ Expression getMultExpression(Expression e){
 
 Expression getMultiplyExpression(Expression e1, char c, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -978,6 +1034,8 @@ Expression getMultiplyExpression(Expression e1, char c, Expression e2){
 
 Expression getAdditiveExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -989,6 +1047,8 @@ Expression getAdditiveExpression(Expression e){
 
 Expression getAddExpression(Expression e1, char c, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1001,6 +1061,8 @@ Expression getAddExpression(Expression e1, char c, Expression e2){
 
 Expression getRelatExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1012,6 +1074,8 @@ Expression getRelatExpression(Expression e){
 
 Expression getSingleCharRelat(Expression e1, char c, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1024,6 +1088,8 @@ Expression getSingleCharRelat(Expression e1, char c, Expression e2){
 
 Expression getLeRelat(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1036,6 +1102,8 @@ Expression getLeRelat(Expression e1, Expression e2){
 
 Expression getGeRelat(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1048,6 +1116,8 @@ Expression getGeRelat(Expression e1, Expression e2){
 
 Expression getEqExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1059,6 +1129,8 @@ Expression getEqExpression(Expression e){
 
 Expression getEqual(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1071,6 +1143,8 @@ Expression getEqual(Expression e1, Expression e2){
 
 Expression getNotEqual(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1083,6 +1157,8 @@ Expression getNotEqual(Expression e1, Expression e2){
 
 Expression getAndExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1094,6 +1170,8 @@ Expression getAndExpression(Expression e){
 
 Expression getAnd(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1105,6 +1183,8 @@ Expression getAnd(Expression e1, Expression e2){
 }
 Expression getOrExpression(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1116,6 +1196,8 @@ Expression getOrExpression(Expression e){
 
 Expression getOr(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1127,6 +1209,8 @@ Expression getOr(Expression e1, Expression e2){
 }
 Expression getCond(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1138,6 +1222,8 @@ Expression getCond(Expression e){
 
 Expression getAssign(Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1149,6 +1235,8 @@ Expression getAssign(Expression e){
 
 Expression getTokenizedAssignment(Expression e1, int op, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1161,6 +1249,8 @@ Expression getTokenizedAssignment(Expression e1, int op, Expression e2){
 
 Expression getAssignment(Expression e1, Expression e2){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1173,6 +1263,8 @@ Expression getAssignment(Expression e1, Expression e2){
 
 Expression getInit(int token, Identifier i, Expression e){
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1190,6 +1282,8 @@ Expression getInit(int token, Identifier i, Expression e){
  */
 Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression e2) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1204,6 +1298,8 @@ Expression getAssignEdgeExpression(Expression e1, int edgeconnector, Expression 
  */
 Expression getExpression(Expression e) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1219,6 +1315,8 @@ Expression getExpression(Expression e) {
  */
 Expression getExpressionAssignmentExpression(Expression e1, Expression e2) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->precode = NULL;
+  ret->postcode = NULL;
   ret->s = NULL;
   ret->code = NULL;
   ret->tt = NULL;
@@ -1386,6 +1484,10 @@ void freeExpression(Expression e) {
   freeTypeCheckType(e->tt);
   if(e->code)
     free(e->code);
+  if(e->precode)
+    free(e->precode);
+  if(e->postcode)
+    free(e->postcode);
   free(e);
 #ifdef MEMTRACE
   printf("Expression freed\n");

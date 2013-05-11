@@ -27,6 +27,7 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
        strncat(result, c1, length);
        f->code = getAllocatedString(result);
      }
+
 }
 
 void declaratorGenerateCode(Declarator d) {
@@ -57,40 +58,79 @@ void compoundStatementGenerateCode(CompoundStatement cs) {
 }
 
 void expressionListGenerateCode(GrammarList g) {
-  int buffer = 1024;
-  char *str = malloc(sizeof(char)*buffer);
+  int b1 = 1024;
+  int b2 = 1024;
+  int b3 = 1024;
+  char *code = malloc(sizeof(char)*b1);
+  char *precode = malloc(sizeof(char)*b2);
+  char *postcode = malloc(sizeof(char)*b3);
   GrammarNode current = g->head;
   int i = 0;
   while (current)
   {
-    char *c = ((Expression)current->data)->code;
+    char *c = getValidString(((Expression)current->data)->code);
+    char *pre = getValidString(((Expression)current->data)->precode);
+    char *post = getValidString(((Expression)current->data)->postcode);
     c = getValidString(c);
-    int newlength;
-    if(i)
-      newlength = strlen(str) + strlen(c) + 3;
-    else
-      newlength = strlen(c) + 1;
-    while (newlength>buffer) {
-      buffer *= 2;
-      char *old = str;
-      str = malloc(sizeof(char)*buffer);
-      strcpy(str, old);
+    pre = getValidString(pre);
+    post = getValidString(post);
+    int n1;
+    int n2;
+    int n3;
+    if(i) {
+      n1 = strlen(code) + strlen(c) + 3;
+      n2 = strlen(precode) + strlen(pre) + 3;
+      n2 = strlen(postcode) + strlen(post) + 3;
+    }
+    else {
+      n1 = strlen(c) + 1;
+      n2 = strlen(pre) + 1;
+      n3 = strlen(post) + 1;
+    }
+    while (n1>b1) {
+      b1 *= 2;
+      char *old = code;
+      code = malloc(sizeof(char)*b1);
+      strcpy(code, old);
+      free(old);
+    }
+    while (n2>b2) {
+      b2 *= 2;
+      char *old = precode;
+      precode = malloc(sizeof(char)*b2);
+      strcpy(precode, old);
+      free(old);
+    }
+    while (n3>b3) {
+      b3 *= 2;
+      char *old = postcode;
+      postcode = malloc(sizeof(char)*b3);
+      strcpy(postcode, old);
       free(old);
     }
 
-    if (i == 0)
-      strncpy(str, c, buffer);
+    if (i == 0) {
+      strncpy(code, c, b1);
+      strncpy(precode, pre, b2);
+      strncpy(postcode, post, b3);
+    }
     else {
-      strncat(str, ", ", buffer);
-      strncat(str, c, buffer);
+      strncat(code, ", ", b1);
+      strncat(code, c, b1);
+      strncat(precode, pre, b2);
+      strncat(postcode, post, b3);
     }
     
     current = current->next;
     i = i + 1;
   }
 
-  g->code = getAllocatedString(str);
-  free(str);
+  g->code = getAllocatedString(code);
+  g->precode = getAllocatedString(precode);
+  g->postcode = getAllocatedString(postcode);
+  free(code);
+  free(precode);
+  free(postcode);
 }
 
 void statementListGenerateCode(GrammarList g) {
@@ -187,10 +227,16 @@ void statementGenerateCode(Statement s) {
   s->code = getAllocatedString(str);
 }
 
-void expressionStatementGenerateCode(Statement s){
-  char str[strlen(getValidString(s->sub1.e->code))+2];
-  strcpy(str, getValidString(s->sub1.e->code));
+void expressionStatementGenerateCode(Statement s) {
+  char *pre = getValidString(s->sub1.e->precode);
+  char *code = getValidString(s->sub1.e->code);
+  char *post = getValidString(s->sub1.e->postcode);
+  int length = strlen(pre)+ strlen(code) + strlen(post) + 2;
+  char str[length];
+  strcpy(str, pre);
+  strcat(str, code);
   strcat(str, ";\n");
+  strcat(str, post);
   s->code = getAllocatedString(str);
 }
 
@@ -203,9 +249,11 @@ void parameterGenerateCode(Parameter p) {
 }
 
 void passupExpressionCode(Expression e) {
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
-
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
+
 
 void postfixIdentifierGenerateCode(Expression e) {
 
@@ -220,19 +268,17 @@ void postfixIncrementGenerateCode(Expression e) {
 }
 
 void postfixArgumentGenerateCode(Expression e) {
-
-  if (e->deriv.postfix == arg)
-  {
-    char *str = getValidString(e->sub1.e->code);
-    char *str2 = getValidString(e->sub2.l->code);
-    int length = strlen(str) + strlen(str2) + 3;
-    char result[length];
-    strncpy(result, str, length);
-    strncat(result, "(", length);
-    strncat(result, str2, length);
-    strncat(result, ")", length);
-    e->code = getAllocatedString(result);
-  }
+  char *str = getValidString(e->sub1.e->code);
+  char *str2 = getValidString(e->sub2.l->code);
+  int length = strlen(str) + strlen(str2) + 3;
+  char result[length];
+  strncpy(result, str, length);
+  strncat(result, "(", length);
+  strncat(result, str2, length);
+  strncat(result, ")", length);
+  e->precode = getAllocatedString(e->sub2.l->precode);
+  e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(e->sub2.l->postcode);
 }
 
 void postfixBracketGenerateCode(Expression e) {
@@ -240,7 +286,10 @@ void postfixBracketGenerateCode(Expression e) {
 }
 
 void unaryExpressionGenerateCode(Expression e) {
+  printf("Where'd it go? %s", e->sub1.e->precode);
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
 void castTypedExpressionGenerateCode(Expression e) {
@@ -252,6 +301,10 @@ void multExpressionGenerateCode(Expression e) {
 }
 
 void addExpressionGenerateCode(Expression e) {
+
+
+ // printf("Sub 1 type: %d\n", e->sub1.e->tt->base); 
+  //printf("Sub 2 type: %d\n", e->sub2.e->tt->base); 
   // k is the string of the value of the current knodetemp.
   // k is incremented after use here for the next knodetemp.
   char k[15];
@@ -342,6 +395,8 @@ void primaryExpressionGenerateCode(Expression e) {
       e->code = getAllocatedString(getValidString(e->sub1.s));
       break;
   }
+  e->precode = getAllocatedString("");
+  e->postcode = getAllocatedString("");
 }
 
 void functionExpressionGenerateCode(Expression e) {

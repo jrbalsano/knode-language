@@ -126,5 +126,7 @@ char *getAllocatedString(char *s);
  * Gets a null string if there is no string in s and returns that instead.
  */
 char *getValidString(char *s);
+void passupExpressionPrecode(Expression e);
+void passupExpressionPostcode(Expression e);
 #endif
 
