@@ -323,11 +323,41 @@ void relatExpressionGenerateCode(Expression e) {
           e->code = getAllocatedString(result);
           break;
         case ge:
-          break;
+            c1 = getValidString(e->sub1.e->code);
+            c2 = ">=";
+            c3 = getValidString(e->sub2.e->code);
+            c4 = ";";
+            length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
+            strncpy(result,c1,length);
+            strncat(result,c2,length);
+            strncat(result,c3,length);
+            strncat(result,c4,length);
+            e->code = getAllocatedString(result);
+            break;
         case less:
-          break;
+            c1 = getValidString(e->sub1.e->code);
+            c2 = "<";
+            c3 = getValidString(e->sub2.e->code);
+            c4 = ";";
+            length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
+            strncpy(result,c1,length);
+            strncat(result,c2,length);
+            strncat(result,c3,length);
+            strncat(result,c4,length);
+            e->code = getAllocatedString(result);
+            break;
         case greater:
-          break;
+            c1 = getValidString(e->sub1.e->code);
+            c2 = ">";
+            c3 = getValidString(e->sub2.e->code);
+            c4 = ";";
+            length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
+            strncpy(result,c1,length);
+            strncat(result,c2,length);
+            strncat(result,c3,length);
+            strncat(result,c4,length);
+            e->code = getAllocatedString(result);
+            break;
         case none:
             ;
     }
