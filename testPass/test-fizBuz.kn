@@ -1,8 +1,6 @@
 main():
   int i
   for(i= 1; i<=100;i++)
-    if(i%15==0)
-      print("FizzBuzz")
     if(i%3==0)
       print("Fizz")
     if(i%5==0)
@@ -14,7 +12,7 @@ main():
   int sumOfPrimes
   sumOfPrimes = 0
   int counter
-  counter = 0
+  counter = 2 #must start at 2 because otherwise it will pick up 1 as a prime which is FALSE
   while(counter<=100)
     int primeTester
     primeTester = 2
