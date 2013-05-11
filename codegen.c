@@ -160,6 +160,18 @@ void forStatementGenerateCode(Statement s) {
 
 void whileStatementGenerateCode(Statement s) {
 
+  char *c1 = "while(";
+  char *c2 = getValidString(s->sub1.e->code);
+  char *c3 = ")\n";
+  char *c4 = getValidString(s->sub2.cs->code);
+  int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4);
+  char result[length];
+  strncpy(result, c1, length);
+  strncat(result, c2, length);
+  strncat(result, c3, length);
+  strncat(result, c4, length);
+
+  s->code = getAllocatedString(result);
 }
 
 void ifStatementGenerateCode(Statement s) {
