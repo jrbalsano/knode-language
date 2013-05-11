@@ -3,9 +3,16 @@
 Node initNode() {
   Node n = (Node)malloc(sizeof(struct node));
   n->dictlist = initDict();
+  //n->edgelist = NULL;
+  n->edgecount = 0;
   return n;
 }
 
+void addEdge(Node n, Edge e) {
+  n->edgelist[n->edgecount] = e;
+  e->aindex = n->edgecount;
+  n->edgecount += 1;
+}
 
 void addIntToNode(Node n, char *key, int value) {
   int tmp = value;

@@ -7,8 +7,12 @@
 
 typedef struct node *Node;
 
+#include "edge.h"
+
 struct node {
   Dict dictlist;
+  int edgecount;
+  Edge edgelist[];
 };
 
 /* *
@@ -22,6 +26,11 @@ Node initNode();
  * of the node
  */
 void freeNode(Node n);
+
+/* *
+ * add an edge to the node's edgelist
+ */
+void addEdge(Node n, Edge e);
 
 /* *
  * Add an int to the dictionary of the node
