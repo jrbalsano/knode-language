@@ -227,9 +227,9 @@ additiveexpression : multiplicativeexpression { $$ = getAdditiveExpression($1); 
   | additiveexpression '-' multiplicativeexpression { $$ = getAddExpression($1, $2, $3); }
   ;
 multiplicativeexpression : castexpression { $$ = getMultExpression($1); }
-  | multiplicativeexpression '*' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
-  | multiplicativeexpression '/' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
-  | multiplicativeexpression '%' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
+  | multiplicativeexpression '*' castexpression { $$ = getMultiplyExpression($1, '*', $3); }
+  | multiplicativeexpression '/' castexpression { $$ = getMultiplyExpression($1, '/', $3); }
+  | multiplicativeexpression '%' castexpression { $$ = getMultiplyExpression($1, '%', $3); }
   ;
 castexpression : unaryexpression { $$ = getCastExpression($1); }
   | '(' typename ')' castexpression { $$ = getTypedCast($2, $4); }
