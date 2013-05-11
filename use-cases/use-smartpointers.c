@@ -1,5 +1,5 @@
-#include "../smartpointers.h"
 #include <stdio.h>
+#include "../smartpointers.h"
 
 SmartDict randomDictMethod() {
   //If a dict is initialized in a method

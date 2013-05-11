@@ -2,6 +2,9 @@
 #define __SMARTPOINTERS_H__
 
 #include <stdlib.h>
+#include "dict.h"
+#include "node.h"
+#include "edge.h"
 
 typedef struct string_ *String;
 typedef struct dictPointer_ *SmartDict;
@@ -16,17 +19,17 @@ struct string_ {
 struct dictPointer_ {
   int *count;
   Dict pointer;
-}
+};
 
 struct nodePointer_ {
   int *count;
   Node pointer;
-}
+};
 
 struct edgePointer_ {
   int *count;
   Edge pointer;
-}
+};
 
 /**
  * Allocates a new smartpointer for char*'s of a certain length,
