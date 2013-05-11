@@ -223,8 +223,8 @@ relationalexpression : additiveexpression { $$ = getRelatExpression($1); }
   | relationalexpression GE additiveexpression { $$ = getGeRelat($1, $3); }
   ;
 additiveexpression : multiplicativeexpression { $$ = getAdditiveExpression($1); }
-  | additiveexpression '+' multiplicativeexpression { $$ = getAddExpression($1, $2, $3); } 
-  | additiveexpression '-' multiplicativeexpression { $$ = getAddExpression($1, $2, $3); }
+  | additiveexpression '+' multiplicativeexpression { $$ = getAddExpression($1, '+', $3); } 
+  | additiveexpression '-' multiplicativeexpression { $$ = getAddExpression($1, '-', $3); }
   ;
 multiplicativeexpression : castexpression { $$ = getMultExpression($1); }
   | multiplicativeexpression '*' castexpression { $$ = getMultiplyExpression($1, '*', $3); }
