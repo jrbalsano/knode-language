@@ -58,6 +58,41 @@ int main(int argc, char **argv) {
   //add string to the node's dictionary in a less convenient way.
   addToDict(getNode(n)->dictlist, echar, "hello2", "world2");
 
+  //Initialize some nodes for edge testing
+  SmartNode a = newSmartNode();
+  SmartNode b = newSmartNode();
+
+  //Make the nodes a little bit more interesting
+  addIntToSmartNode(copySmartNode(a), "a's first int", 55);
+  addIntToSmartNode(copySmartNode(b), "b's first int", 88);
+
+  //Initialize an edge
+  SmartEdge e = newSmartEdge(copySmartNode(a), copySmartNode(b), atob);
+  setSmartEdgeName(copySmartEdge(e), "merpderp");
+  SmartEdge f = newSmartEdge(copySmartNode(a), copySmartNode(b), atob);
+  setSmartEdgeName(copySmartEdge(f), "herpderp");
+
+  //Follow the edge
+  printf("Edge e found this on node a: %d\n", getIntFromSmartNode(copySmartNode(getEdge(e)->a), "a's first int"));
+  printf("Edge e found this on node a: %d\n", getIntFromSmartNode(copySmartNode(getEdge(e)->b), "a's first int"));
+
+  switch(getEdge(e)->edge_dir) {
+    case atob:
+      printf("atob\n");
+      break;
+    case btoa:
+      printf("btoa\n");
+      break;
+    case both:
+      printf("both\n");
+      break;
+  } 
+
+  removeSmartEdge(copySmartEdge(e));
+  printf("After removing Edge e from a, Edge f's aindex is: %d\n", getEdge(f)->aindex);
+
+  freeSmartEdge(e);
+  freeSmartEdge(f);
   //When you're done you should free all the smart pointers you initialized except
   //for the one you are going to return.
   freeSmartNode(n);

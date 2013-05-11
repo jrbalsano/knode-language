@@ -13,7 +13,7 @@ typedef struct node *Node;
 struct node {
   Dict dictlist;
   int edgecount;
-  SmartEdge edgelist[];
+  SmartEdge edgelist[50];
 };
 
 /* *

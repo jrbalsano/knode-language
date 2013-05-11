@@ -62,8 +62,6 @@ SmartNode newSmartNode() {
   ret->count = (int *)malloc(sizeof(int));
   ret->pointer = initNode();
   *(ret->count) = 1;
-  ret->pointer;
-  ret;
   return ret;
 }
 
