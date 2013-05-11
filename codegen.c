@@ -182,19 +182,38 @@ void edgeStatementGenerateCode(Statement s) {
 }
 
 void statementGenerateCode(Statement s) {
-  char str[strlen(getValidString(s->sub1.s->code))+1];
-  strcpy(str, getValidString(s->sub1.s->code));
-  s->code = getAllocatedString(str);
+//   if (s->type == decl){
+
+//   }
+//  else {
+    //figure out what kind of statement this code from hello world is
+    char str[strlen(getValidString(s->sub1.s->code))+1];
+    strcpy(str, getValidString(s->sub1.s->code));
+    s->code = getAllocatedString(str);
+//  }
 }
 
 void expressionStatementGenerateCode(Statement s){
-  char str[strlen(getValidString(s->sub1.e->code))+2];
-  strcpy(str, getValidString(s->sub1.e->code));
-  strcat(str, ";\n");
-  s->code = getAllocatedString(str);
+
+    char str[strlen(getValidString(s->sub1.e->code))+2];
+    strcpy(str, getValidString(s->sub1.e->code));
+    strcat(str, ";\n");
+    s->code = getAllocatedString(str);
 }
 
 void declStatementGenerateCode(Statement s){
+     char *c2 = getValidString(s->sub2.i->code);
+     char *c3 = ";\n";
+     char *c4 = " ";
+     char *c1 = getValidString(getTypnamString(s->sub1.typnam));
+     int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
+     char result[length];
+     strncpy(result, c1, length);
+     strncat(result, c4, length);
+     strncat(result, c2, length);
+     strncat(result, c3, length);
+     
+     s->code = getAllocatedString(result);
 
 }
 
@@ -276,7 +295,40 @@ void edgeExpressionGenerateCode(Expression e) {
 }
 
 void assignmentExpressionGenerateCode(Expression e) {
-
+//  switch (e->type){
+//    case assignment:
+//      switch (e->deriv.assign){
+//        case eq_assign :
+          char *c1 = getValidString(e->sub1.e->code);
+          char *c2 = getValidString(e->sub2.e->code);
+          char *c3 = "=";
+          char *c4 = ";";
+          int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
+          char result[length];
+          strncpy(result, c1, length);
+          strncat(result, c3, length);
+          strncat(result, c2, length);
+          strncat(result, c4, length);
+          e->code = getAllocatedString(result);
+//          break;
+/*      case assign_none:
+       case assign_left:
+       case assign_right:
+       case assign_both:
+       case assign_all:
+       case init:
+       case multeq:
+       case diveq:
+       case pluseq:
+       case minuseq:
+       case modeq: */
+//       default:
+//          e->code = getAllocatedString("we didn't write this yet :/");
+//     }
+//     break;
+//   default:
+//     e->code = getAllocatedString("we didn't write this yet :/");
+//  }
 }
 
 void primaryExpressionGenerateCode(Expression e) {
@@ -323,3 +375,14 @@ char *getValidString(char *s){
   else
      return "";
 }
+
+//add in whatever cases you need for dis
+char *getTypnamString(int typ){
+  switch(typ){
+    case INT:
+      return "int";
+    default:
+      return "not an int";
+  }
+}
+   

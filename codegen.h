@@ -126,5 +126,11 @@ char *getAllocatedString(char *s);
  * Gets a null string if there is no string in s and returns that instead.
  */
 char *getValidString(char *s);
+
+/**
+ * Convenient way to get the typ from a typnam without having to re-write the switch every time.
+**/
+
+char *getTypnamString(int typ);
 #endif
 
