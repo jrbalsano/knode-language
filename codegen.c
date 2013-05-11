@@ -366,7 +366,7 @@ void addExpressionGenerateCode(Expression e) {
 }
 
 void relatExpressionGenerateCode(Expression e) {
-    printf("\nin relatExpressionGenerateCode with e->sub1.e->code %s and e->sub2.e->code %s\n", e->sub1.e->code, e->sub2.e->code);
+   // printf("\nin relatExpressionGenerateCode with e->sub1.e->code %s and e->sub2.e->code %s\n", e->sub1.e->code, e->sub2.e->code);
     char *c1 ;
     char *c2;
     char *c3;
@@ -562,7 +562,7 @@ char *getTypnamString(int typ){
     case CHAR:
       return "char";
     case BOOLEAN:
-      return "boolean"; //this will probably need to be fixed later since C doesn't do booleans
+      return "int"; //this happens because C doesn't do booleans
     case STRING:
       return "String"; //this will probably need to be fixed later since C doesn't do Strings
     case NODE:
