@@ -224,7 +224,7 @@ void assignmentExpressionTypeCheck(Expression e) {
 void primaryExpressionTypeCheck(Expression e) {
   switch(e->deriv.primary) {
     case primary_identifier:
-      e->tt = findSymbol(e->sub1.i->s, e->sub1.i->symbol);
+      e->tt = copyTypeCheckType(findSymbol(e->sub1.i->s, e->sub1.i->symbol));
       if(!e->tt) {
         fprintf(stderr, "Undeclared variable used `%s`.\n", e->sub1.i->symbol);
         exit(1);
