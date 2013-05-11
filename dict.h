@@ -4,6 +4,12 @@
 #include "./libs/uthash.h"
 #include <stdio.h>
 
+/* *
+ * This is our dict representation in C. Entries represent each individual
+ * key-value pair in a dictionary. A dictionary struct points to a series of
+ * entries.
+ */
+
 typedef struct entry *Entry;
 typedef struct dict *Dict;
 
@@ -23,12 +29,31 @@ struct dict {
     Entry entries;
 };
 
+/**
+ * Initialize the dictionary and set the value of entries to NULL (MUST HAPPEN
+ * FOR UTHASH TO WORK)
+ */
 Dict initDict();
+
+/* *
+ * Free all the entries!
+ */
+void freeEntries(Entry entries);
+
+/* *
+ * Frees the dictionary as well as all the entries it is associated with. 
+ */
+void freeDict(Dict d);
+
+/**
+ * Adds the key-value pair to the dictionary specified, with the value specified
+ */
 Entry addToDict(Dict d, int et, char *key, void *value);
 
-Entry access(Dict d, char *key);
-
-void freeEntries(Entry entries);
-void freeDict(Dict d);
+/* *
+ * Checks through the entries of the dictionary to see if the entry exists and
+ * returns the value for the key if it exists. Otherwise, it returns null.
+ */
+Entry getEntryForKey(Dict d, char *key);
 
 #endif

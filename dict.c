@@ -1,11 +1,17 @@
 #include <stdlib.h>
 #include "dict.h"
 
+Dict initDict() {
+  Dict d = (Dict)malloc(sizeof(struct dict));
+  d->entries = NULL;
+  return d;
+}
+
 /**
  * Checks through the entries of the dictionary to see if the entry exists and
  * returns the value for the key if it exists. Otherwise, it returns null.
  */
-Entry access(Dict d, char *key) {
+Entry getEntryForKey(Dict d, char *key) {
   //create a pointer to the entry that we want to get back
   Entry e = NULL;
   //try to find the value in our table
@@ -14,15 +20,6 @@ Entry access(Dict d, char *key) {
   return e;
 }
 
-Dict initDict() {
-  Dict d = (Dict)malloc(sizeof(struct dict));
-  d->entries = NULL;
-  return d;
-}
-
-/**
- * Adds the key-value pair to the dictionary specified, with the value specified
- */
 Entry addToDict(Dict d, int et, char *key, void *value) {
   Entry entry = (Entry)malloc(sizeof(struct entry));
   strncpy(entry->key, key, sizeof(entry->key));
