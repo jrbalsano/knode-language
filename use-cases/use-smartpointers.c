@@ -1,4 +1,4 @@
-#include "smartpointers.h"
+#include "../smartpointers.h"
 #include <stdio.h>
 
 SmartDict randomDictMethod() {
