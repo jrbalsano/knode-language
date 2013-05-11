@@ -429,12 +429,13 @@ void condExpressionGenerateCode(Expression e) {
   char *c3; 
   switch(e->deriv.cond){
     case cond_or:
-      c2 = "||";
+      c3 = " || ";
       break;
     case cond_and:
-      c3 = "&&";
+      c3 = " && ";
       break;
-    case 0:
+    default:
+      c3 = "";
       ;
   }
 
