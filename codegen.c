@@ -408,13 +408,30 @@ void assignmentExpressionGenerateCode(Expression e) {
           char *c2 = getValidString(e->sub2.e->code);
           char *c3 = "=";
           char *c4 = ";";
-          int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
-          char result[length];
-          strncpy(result, c1, length);
-          strncat(result, c3, length);
-          strncat(result, c2, length);
-          strncat(result, c4, length);
-          e->code = getAllocatedString(result);
+          /*extra semicolon struggles 
+          char c5 = ';';
+          char c6 = c2[strlen(c2)-2];
+          if (c5 == c6){
+            printf("%s has an extra semicolon", c2);
+            c2[strlen(c2)-1]='\0';
+            int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
+            char result[length];
+            strncpy(result, c1, length);
+            strncat(result, c3, length);
+            strncat(result, c2, length);
+            e->code = getAllocatedString(result);
+          }
+          else {
+            printf("%s does not have an extra semicolon", c2);
+          */int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
+            char result[length];
+            strncpy(result, c1, length);
+            strncat(result, c3, length);
+            strncat(result, c2, length);
+            strncat(result, c4, length);
+            printf("result: %s\n", result);
+            e->code = getAllocatedString(result);
+        // }
 //          break;
 /*      case assign_none:
        case assign_left:
