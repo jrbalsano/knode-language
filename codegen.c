@@ -163,7 +163,17 @@ void whileStatementGenerateCode(Statement s) {
 }
 
 void ifStatementGenerateCode(Statement s) {
-
+   char *c1 = "if(";
+   char *c2 = getValidString(s->sub1.e->code);
+   char *c3 = ")";
+   char *c4 = getValidString(s->sub2.cs->code);
+   int length = strlen(c1) + strlen(c2) +strlen(c3) + strlen(c4);
+   char result[length];
+   strncpy(result, c1, length);
+   strncat(result, c2, length);
+   strncat(result, c3, length);
+   strncat(result, c4, length);
+   s->code = getAllocatedString(result);
 }
 
 void ifelseStatementGenerateCode(Statement s) {
@@ -294,7 +304,31 @@ void castTypedExpressionGenerateCode(Expression e) {
 }
 
 void multExpressionGenerateCode(Expression e) {
-
+    char *c1 = getValidString(e->sub1.e->code);
+    /**char *c2 = malloc(sizeof(char)*2);**/
+    char *c2 = "%";
+    /**switch(e->deriv.mult) {
+        case 0:
+            c2 = "%";
+            break;
+        case times:
+            c2 = "*";
+            break;
+        case divide:
+            c2 = "/";
+            break;
+        case mod:
+            c2 = "%";
+            break;
+    }*/
+    char *c3 = getValidString(e->sub2.e->code);
+    int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
+    char result[length];
+    strncpy(result, c1, length);
+    strncat(result, c2, length);
+    strncat(result, c3, length);
+    e->code = getAllocatedString(result);
+    //free(c2);
 }
 
 void addExpressionGenerateCode(Expression e) {
@@ -365,7 +399,15 @@ void relatExpressionGenerateCode(Expression e) {
 }
 
 void eqExpressionGenerateCode(Expression e) {
-
+    char *c1 = getValidString(e->sub1.e->code);
+    char *c2 = "==";
+    char *c3 = getValidString(e->sub2.e->code);
+    int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
+    char result[length];
+    strncpy(result,c1,length);
+    strncat(result,c2,length);
+    strncat(result,c3,length);
+    e->code = getAllocatedString(result);
 }
 
 void condExpressionGenerateCode(Expression e) {
