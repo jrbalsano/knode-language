@@ -1,0 +1,36 @@
+main():
+  int i
+  for(i= 1; i<=100;i++)
+    if(i%15==0)
+      print("FizzBuzz")
+    if(i%3==0)
+      print("Fizz")
+    if(i%5==0)
+      print("Buzz")
+    else
+      print(i)
+    print("\n")
+#testing while loops
+  int sumOfPrimes
+  sumOfPrimes = 0
+  int counter
+  counter = 0
+  while(counter<=100)
+    int primeTester
+    primeTester = 2
+    boolean isPrime
+    isPrime=TRUE
+    while(primeTester<counter)
+      if(counter%primeTester==0)
+        isPrime=FALSE
+      primeTester++
+    if(isPrime)
+      sumOfPrimes = sumOfPrimes + counter
+    counter++
+  string sumOfPrimesString
+  sumOfPrimesString = (string) sumOfPrimes
+  string result
+  result = "The sum of primes from 1 to 100 is " + sumOfPrimes
+  print(result)
+ 
+    

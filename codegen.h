@@ -35,6 +35,10 @@ void parameterListGenerateCode(GrammarList g);
 /************************************************
  * Statements
  ************************************************/
+/* Expression */
+void expressionStatementGenerateCode(Statement s);
+/* Declarations */
+void declStatementGenerateCode(Statement s);
 /* Iteration */
 void forStatementGenerateCode(Statement s);
 void whileStatementGenerateCode(Statement s);
@@ -117,5 +121,10 @@ void identifierGenerateCode(Identifier i);
  * heap allocating the string for you.
  */
 char *getAllocatedString(char *s);
+
+/**
+ * Gets a null string if there is no string in s and returns that instead.
+ */
+char *getValidString(char *s);
 #endif
 

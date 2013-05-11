@@ -2,26 +2,130 @@
 
 void translationUnitGenerateCode(TranslationUnit t) {
 
+  t->code = getAllocatedString(getValidString(t->f->code));
+  //does not deal with case where t also has a translation unit
+  printf("final code:\n%s\n", t->code);
 }
-
 void functionDefinitionGenerateCode(FunctionDefinition f) {
 
+      Declarator dec = f->d;
+      char *c = getValidString(dec->code);
+      char *mainFunc = "main()\n";
+      char *c1 = getValidString(f->cs->code);
+      if(strcmp(c, mainFunc) == 0) {
+        char *cCode = "void main()";
+        int length = strlen(cCode) + strlen(c1) + 1;
+        char result[length];
+        strncpy(result, cCode, length);
+        strncat(result, c1, length);
+        f->code = getAllocatedString(result);
+     }
+     else {
+       int length = strlen(c) + strlen(c1) + 1;
+       char result[length];
+       strncpy(result, c, length);
+       strncat(result, c1, length);
+       f->code = getAllocatedString(result);
+     }
 }
 
 void declaratorGenerateCode(Declarator d) {
-
+  if(!d->p) {
+    char *c = getValidString(d->name->code);
+    char *c2 = "()\n";
+    int length = strlen(c) + strlen(c2) + 1;
+    char result[length];
+    strncpy(result, c, length);
+    strncat(result, c2, length);
+    d->code = getAllocatedString(result);
+  }
+  //TODO: deal with d->p case (The case where the function has a parameter list)
 }
 
 void compoundStatementGenerateCode(CompoundStatement cs) {
 
+  char *c1 = getValidString(cs->sList->code);
+  char *c2 = "{\n";
+  char *c3 = "}\n";
+  int length = strlen(c1)+strlen(c2)+strlen(c3)+1;
+  char result[length];
+  strncpy(result, c2, length);
+  strcat(result, c1);
+  strcat(result, c3);
+  cs->code = getAllocatedString(result);
+
 }
 
 void expressionListGenerateCode(GrammarList g) {
+  int buffer = 1024;
+  char *str = malloc(sizeof(char)*buffer);
+  GrammarNode current = g->head;
+  int i = 0;
+  while (current)
+  {
+    char *c = ((Expression)current->data)->code;
+    c = getValidString(c);
+    int newlength;
+    if(i)
+      newlength = strlen(str) + strlen(c) + 3;
+    else
+      newlength = strlen(c) + 1;
+    while (newlength>buffer) {
+      buffer *= 2;
+      char *old = str;
+      str = malloc(sizeof(char)*buffer);
+      strcpy(str, old);
+      free(old);
+    }
 
+    if (i == 0)
+      strncpy(str, c, buffer);
+    else {
+      strncat(str, ", ", buffer);
+      strncat(str, c, buffer);
+    }
+    
+    current = current->next;
+    i = i + 1;
+  }
+
+  g->code = getAllocatedString(str);
+  free(str);
 }
 
 void statementListGenerateCode(GrammarList g) {
+  int buffer = 1024;
+  char *str = malloc(sizeof(char)*buffer);
+  GrammarNode current = g->head;
+  int i = 0;
+  while (current)
+  {
+    char *c = ((Statement)current->data)->code;
+    c = getValidString(c);
+    int newlength;
+    if(i)
+      newlength = strlen(str) + strlen(c) + 1;
+    else
+      newlength = strlen(c) + 1;
+    while (newlength>buffer) {
+      buffer *= 2;
+      char *old = str;
+      str = malloc(sizeof(char)*buffer);
+      strcpy(str, old);
+      free(old);
+    }
 
+    if (i == 0)
+      strncpy(str, c, buffer);
+    else
+      strncat(str, c, buffer);
+    
+    current = current->next;
+    i = i + 1;
+  }
+
+  g->code = getAllocatedString(str);
+  free(str);
 }
 
 void parameterListGenerateCode(GrammarList g) {
@@ -29,6 +133,7 @@ void parameterListGenerateCode(GrammarList g) {
 }
 
 void forStatementGenerateCode(Statement s) {
+
 
 }
 
@@ -77,6 +182,19 @@ void edgeStatementGenerateCode(Statement s) {
 }
 
 void statementGenerateCode(Statement s) {
+  char str[strlen(getValidString(s->sub1.s->code))+1];
+  strcpy(str, getValidString(s->sub1.s->code));
+  s->code = getAllocatedString(str);
+}
+
+void expressionStatementGenerateCode(Statement s){
+  char str[strlen(getValidString(s->sub1.e->code))+2];
+  strcpy(str, getValidString(s->sub1.e->code));
+  strcat(str, ";\n");
+  s->code = getAllocatedString(str);
+}
+
+void declStatementGenerateCode(Statement s){
 
 }
 
@@ -85,6 +203,7 @@ void parameterGenerateCode(Parameter p) {
 }
 
 void passupExpressionCode(Expression e) {
+  e->code = getAllocatedString(getValidString(e->sub1.e->code));
 
 }
 
@@ -102,6 +221,18 @@ void postfixIncrementGenerateCode(Expression e) {
 
 void postfixArgumentGenerateCode(Expression e) {
 
+  if (e->deriv.postfix == arg)
+  {
+    char *str = getValidString(e->sub1.e->code);
+    char *str2 = getValidString(e->sub2.l->code);
+    int length = strlen(str) + strlen(str2) + 3;
+    char result[length];
+    strncpy(result, str, length);
+    strncat(result, "(", length);
+    strncat(result, str2, length);
+    strncat(result, ")", length);
+    e->code = getAllocatedString(result);
+  }
 }
 
 void postfixBracketGenerateCode(Expression e) {
@@ -109,7 +240,7 @@ void postfixBracketGenerateCode(Expression e) {
 }
 
 void unaryExpressionGenerateCode(Expression e) {
-
+  e->code = getAllocatedString(getValidString(e->sub1.e->code));
 }
 
 void castTypedExpressionGenerateCode(Expression e) {
@@ -149,7 +280,18 @@ void assignmentExpressionGenerateCode(Expression e) {
 }
 
 void primaryExpressionGenerateCode(Expression e) {
-
+  switch(e->deriv.primary)
+  {
+    case primary_identifier: 
+      e->code = getAllocatedString(getValidString(e->sub1.i->code));
+     break;
+    case primary_string:
+      e->code = getAllocatedString(getValidString(e->sub1.s));
+      break;
+    default: //not correct default behavior, just tryna debug
+      e->code = getAllocatedString(getValidString(e->sub1.s)); 
+      break;
+  }
 }
 
 void functionExpressionGenerateCode(Expression e) {
@@ -161,11 +303,23 @@ void twoExpressionGenerateCode(Expression e) {
 }
 
 void identifierGenerateCode(Identifier i) {
-
+  char *c = getValidString(i->symbol);
+  if(!strcmp(c, "print"))
+    c = "printf";
+  else
+    c = i->symbol;
+  i->code = getAllocatedString(c); 
 }
 
 char *getAllocatedString(char *s) {
   char *ret = (char *)malloc((strlen(s)+1)*sizeof(char));
   strcpy(ret, s);
   return ret;
+}
+
+char *getValidString(char *s){
+  if (s)
+     return s;
+  else
+     return "";
 }

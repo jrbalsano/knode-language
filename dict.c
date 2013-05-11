@@ -7,6 +7,10 @@ Dict initDict() {
   return d;
 }
 
+/**
+ * Checks through the entries of the dictionary to see if the entry exists and
+ * returns the value for the key if it exists. Otherwise, it returns null.
+ */
 Entry getEntryForKey(Dict d, char *key) {
   //create a pointer to the entry that we want to get back
   Entry e = NULL;

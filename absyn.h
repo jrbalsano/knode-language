@@ -45,8 +45,7 @@ struct expression_ {
     GrammarList l;
   } sub3;
   union {
-    enum{postfix_none = none, postincr, postdecr, bracket, identifier, arg} postfix;
-    enum{primary_none = none, primary_identifier} primary;
+    enum{postfix_none = none, postincr, postdecr, bracket, identifier, arg, argEmpty} postfix;
     enum{unary_none = none, preincr, predecr, positive = '+', negative = '-', negate = '!', clone = '*'} unary;
     enum{cast_none = none, typed} cast;
     enum{mult_none = none, times = '*', divide = '/', mod = '%'} mult;
@@ -55,6 +54,7 @@ struct expression_ {
     enum{eq_none = none, equal, notequal} eq;
     enum{gen_none = none, comma = ','} none;
     enum{cond_none = none, cond_or, cond_and} cond;
+    enum{primary_none = none, parentheses , primary_string, primary_identifier} primary;
     enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ,
       pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ, assign_left = LEFTEDGE,
       assign_right = RIGHTEDGE, assign_both = BOTHEDGE, assign_all = ALLEDGE } assign;
@@ -63,7 +63,7 @@ struct expression_ {
 
 struct identifier_ {
   char *code;
-  char *symbol;
+  char symbol[128];
   Scope s;
   TypeCheckType tt;
 };
@@ -78,11 +78,12 @@ struct statement_ {
   char *code;
   Scope s;
   TypeCheckType tt;
-  enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge, dictlist, dict} type;
+  enum {statement_none = none, expression, breakStatement, iteration, selection, node, edge, dictlist, dict, decl} type;
   union {
     Expression e;
     Statement s;
     Identifier i;
+    int typnam;
     struct {
       Expression e1;
       Expression e2;
@@ -139,6 +140,7 @@ struct grammarList_ {
   TypeCheckType tt;
   enum {argument, statement,parameterList,expressionList} type;
   GrammarNode head;
+  GrammarNode tail;
 };
 struct grammarNode_ {
   Scope s;
@@ -162,9 +164,9 @@ GrammarList extendStatementList(GrammarList sList, Statement s);
 GrammarList newParameterList(Parameter p);
 GrammarList newArgumentExpressionList(Expression e);
 GrammarList appendToPList(GrammarList pList,Parameter param);
-GrammarList addFront(GrammarList g, void *data);
+GrammarList addBack(GrammarList g, void *data);
 
-Parameter getTypedParameter(int typname, Identifier i);
+Parameter getTypedParameter(int typnam, Identifier i);
 
 CompoundStatement newCompoundStatement(GrammarList sList);
 
@@ -175,7 +177,7 @@ Statement newIfElseStatement(Expression e, CompoundStatement cs1,CompoundStateme
 Statement newWhileStatement(Expression e, CompoundStatement cs);
 Statement newForStatement(Expression e1, Expression e2,Expression e3,CompoundStatement cs);
 Statement newBreakStatement();
-Statement getDictListStatement(Expression e1, Expression e2);
+Statement getDictListStatement(Identifier i, Expression e);
 Statement getDictDecStatement(Identifier i);
 Statement getDictDefStatement(Identifier i, CompoundStatement cs);
 Statement newNodeCreateStatement(Identifier id);
@@ -183,11 +185,13 @@ Statement newNodeAssignmentStatement(Identifier id, Expression e);
 Statement newNodeDictAssignmentStatement(Identifier id, CompoundStatement cs);
 Statement getEdgeStatementFromNodes(Identifier i, Expression e1, int edgeconnector, Expression e2);
 Statement getEdgeDeclaration(Identifier i);
+Statement getDeclarationStatement(int token, Identifier i);
 
 Identifier getIdentifier(char *s);
 
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
 Expression getPrimaryStringExpression(char *s);
+Expression getPrimaryParenExpression(Expression e);
 Expression getPrimaryIdentifierExpression(Identifier id);
 Expression getPostfixExpression(Expression e1);
 Expression getPostfixBracketExpression(Expression e1, Expression e2);
@@ -195,6 +199,7 @@ Expression getPostfixIdentifierExpression(Expression e, Identifier id);
 Expression getPostfixIncr(Expression e);
 Expression getPostfixDecr(Expression e);
 Expression getPostfixArgumentExpression(Expression e1, GrammarList argList);
+Expression getPostfixEmptyArgument(Expression e);
 Expression getUnaryExpression(Expression e);
 Expression getUnaryIncr(Expression e);
 Expression getUnaryDecr(Expression e);

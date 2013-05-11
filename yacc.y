@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "absyn.h"
+#include "symtable.h"
+#include "walker.h"
 
 
 void yyerror(char *s);
@@ -61,6 +63,7 @@ TranslationUnit root = NULL;
 %token NE
 %left AND
 %left OR
+%token BOOL_LITERAL
 %token BOOLEAN
 %token PLUSEQ
 %token MINUSEQ
@@ -87,14 +90,14 @@ TranslationUnit root = NULL;
 %left '+' '-'
 %left '*' '/' '%'
 %type<sval> STRING_LITERAL
-%type<ival> INTEGER BOOLEAN typename INT DOUBLE CHAR STRING NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator edge alledge LEFTEDGE RIGHTEDGE ALLEDGE BOTHEDGE
+%type<ival> INTEGER BOOLEAN typename INT BOOL_LITERAL DOUBLE CHAR STRING NODE DICT EDGE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ assignmentoperator edge alledge LEFTEDGE RIGHTEDGE ALLEDGE BOTHEDGE
 %type<fval> DOUBLEVAL
 %type<cval> unaryoperator '-' '+' '!' '*' '%' '/' '>' '<'
 %type<symp> IDENTIFIER
 %type<expression> postfixexpression primaryexpression multiplicativeexpression additiveexpression unaryexpression assignmentexpression equalityexpression expression castexpression andexpression orexpression conditionalexpression relationalexpression
 %type<identifier> identifier
 %type<declarator> declarator
-%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist
+%type<statement> expressionstatement statement selectionstatement iterationstatement breakstatement nodestatement dictstatement edgestatement dictlist declstatement
 %type<functionDefinition> functiondefinition
 %type<compoundStatement> compoundstatement
 %type<grammarList> argumentexpressionlist parameterlist statementlist
@@ -130,7 +133,7 @@ functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($
 declarator  : identifier '(' parameterlist ')' ':' NEWLINE { $$ = getDeclarator($1, $3); }
   | identifier '(' ')' ':' NEWLINE { $$ = declaratorId($1); }
   ;
-parameterlist : parameterlist ',' parameterdeclaration {$$ = addFront($1,$3);}
+parameterlist : parameterlist ',' parameterdeclaration {$$ = addBack($1,$3);}
   | parameterdeclaration {$$ = newParameterList($1)}
   ;
 parameterdeclaration : typename identifier { $$ = getTypedParameter($1, $2); }
@@ -153,6 +156,9 @@ statement : expressionstatement { $$ = getStatement($1); }
   | dictstatement { $$ = getStatement($1); }
   | dictlist { $$ = getStatement($1); }
   | edgestatement { $$ = getStatement($1); }
+  | declstatement { $$ = getStatement($1); } 
+  ;
+declstatement : typename identifier NEWLINE { $$ = getDeclarationStatement($1, $2); }
   ;
 dictstatement : DICT identifier NEWLINE { $$ = getDictDecStatement($2); }
   | DICT identifier NEWLINE compoundstatement { $$ = getDictDefStatement($2, $4); }
@@ -171,7 +177,7 @@ iterationstatement : WHILE '(' expression ')' NEWLINE compoundstatement {$$ = ne
   ;
 expressionstatement : expression NEWLINE { $$ = getExpressionStatement($1); }
   ;
-dictlist : expression ':' expression NEWLINE { $$ = getDictListStatement($1, $3); }
+dictlist : identifier ':' expression NEWLINE { $$ = getDictListStatement($1, $3); }
   ;
 edgestatement: EDGE identifier '=' '[' unaryexpression edge unaryexpression ']' NEWLINE { $$ = getEdgeStatementFromNodes($2, $5, $6, $7); }
   | EDGE identifier NEWLINE { $$ = getEdgeDeclaration($2); }
@@ -192,11 +198,11 @@ assignmentexpression : conditionalexpression { $$ = getAssign($1); }
   | typename identifier '=' assignmentexpression { $$ = getInit($1, $2, $4); }
   | unaryexpression alledge unaryexpression { $$ = getAssignEdgeExpression($1, $2, $3); }
   ;
-assignmentoperator : PLUSEQ { $$ = $1; }
-  | MINUSEQ { $$ = $1; }
-  | MULTEQ { $$ = $1; }
-  | DIVEQ { $$ = $1; }
-  | MODEQ { $$ = $1; }
+assignmentoperator : PLUSEQ { $$ = PLUSEQ; }
+  | MINUSEQ { $$ = MINUSEQ; }
+  | MULTEQ { $$ = MULTEQ; }
+  | DIVEQ { $$ = DIVEQ; }
+  | MODEQ { $$ = MODEQ; }
   ;
 conditionalexpression : orexpression { $$ = getCond($1); }
   ;
@@ -231,10 +237,11 @@ castexpression : unaryexpression { $$ = getCastExpression($1); }
   | '(' DICT ')' castexpression { $$ = getTypedCast(DICT, $4); }
   | '(' EDGE ')' castexpression { $$ = getTypedCast(EDGE, $4); }
   ;
-typename : INT
-  | DOUBLE
-  | CHAR
-  | STRING
+typename : INT { $$ = INT; }
+  | DOUBLE { $$ = DOUBLE; }
+  | CHAR { $$ = CHAR; }
+  | BOOLEAN { $$ = BOOLEAN; }
+  | STRING { $$ = STRING; }
   ;
 unaryexpression : postfixexpression { $$ = getUnaryExpression($1); }
   | PLUSPLUS unaryexpression { $$ = getUnaryIncr($2); }
@@ -251,18 +258,18 @@ postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
   | postfixexpression '.' identifier { $$ = getPostfixIdentifierExpression($1, $3); }
   | postfixexpression PLUSPLUS { $$ = getPostfixIncr($1); }
   | postfixexpression MINUSMINUS { $$ = getPostfixDecr($1); }
-  | postfixexpression '(' ')' { $$ = $1; } //TODO: FIX THIS
+  | postfixexpression '(' ')' { $$ = getPostfixEmptyArgument($1); }
   | postfixexpression '(' argumentexpressionlist ')' { $$ = getPostfixArgumentExpression($1, $3); }
   ;
 primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }
   | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
-  | BOOLEAN { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
+  | BOOL_LITERAL { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
   | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getPrimaryStringExpression(x); }
   | identifier { $$ = getPrimaryIdentifierExpression($1); }
-  | '(' expression ')' { $$ = $2} //TODO: FIX THIS
+  | '(' expression ')' { $$ = getPrimaryParenExpression($2);} 
   ;
 argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($1); }
-  | argumentexpressionlist ',' assignmentexpression { $$ = addFront($1, $3); }
+  | argumentexpressionlist ',' assignmentexpression { $$ = addBack($1, $3); }
   ;
 %%
 void yyerror(char *s) {
@@ -272,9 +279,10 @@ void yyerror(char *s) {
 
 int main(void) {
   yyparse();
+  startWalk(root);
   freeTranslationUnit(root);
   if(errorHad)
     return 1;
   else
     return 0;
-}
+ }

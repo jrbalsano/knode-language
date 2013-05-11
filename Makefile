@@ -17,8 +17,9 @@ whitelex.yy.o: whitelex.yy.c
 whitelex.yy.c: whitelex.l
 	lex -o whitelex.yy.c whitelex.l
 
-$(COMPILER): lex.yy.o yacc.tab.o absyn.o symtable.o walker.o typecheck.o codegen.o dict.o
-	$(CC) lex.yy.o yacc.tab.o absyn.o symtable.o -o $(COMPILER)
+$(COMPILER): lex.yy.o yacc.tab.o absyn.o symtable.o walker.o typecheck.o codegen.o scope.o typechecktype.h
+	$(CC) lex.yy.o yacc.tab.o absyn.o symtable.o walker.o typecheck.o codegen.o scope.o -o $(COMPILER)
+
 
 yacc.tab.o: yacc.tab.c
 
