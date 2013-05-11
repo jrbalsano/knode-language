@@ -19,7 +19,7 @@
 integer   [1-9][0-9]*|0
 double    [0-9]+\.[0-9]+
 operator  [-+*/=%!<>]
-string \"([^\n\"]|\\\")*[^\\]\"
+string    \"([^\n\"]|\\\")*[^\\]\"
 bool_literal   "TRUE"|"FALSE"
 
 

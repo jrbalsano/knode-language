@@ -262,9 +262,9 @@ postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
   | postfixexpression '(' argumentexpressionlist ')' { $$ = getPostfixArgumentExpression($1, $3); }
   ;
 primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }
-  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
-  | BOOL_LITERAL { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
-  | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getPrimaryStringExpression(x); }
+  | INTEGER {$$ = getPrimaryIntegerExpression(yylval.ival); }
+  | BOOL_LITERAL { $$ = getPrimaryBoolExpression(yylval.ival); }
+  | DOUBLEVAL { $$ = getPrimaryDoubleExpression(yylval.fval); }
   | identifier { $$ = getPrimaryIdentifierExpression($1); }
   | '(' expression ')' { $$ = getPrimaryParenExpression($2);} 
   ;

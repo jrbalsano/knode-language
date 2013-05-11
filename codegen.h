@@ -137,5 +137,7 @@ char *getTypnamString(int typ);
  * Conveniently ensures that we never end up adding a ; something that already has one.
  */
 char *testForSemicolon(char *s);
+void passupExpressionPrecode(Expression e);
+void passupExpressionPostcode(Expression e);
 #endif
 
