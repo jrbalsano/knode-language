@@ -628,7 +628,7 @@ char *getTypnamString(int typ){
     case BOOLEAN:
       return "int"; //this happens because C doesn't do booleans
     case STRING:
-      return "String"; //this will probably need to be fixed later since C doesn't do Strings
+      return "char *"; //temporary way of dealing with strings in C
     case NODE:
       return "node";
     case EDGE:
