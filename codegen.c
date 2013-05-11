@@ -347,10 +347,35 @@ void postfixIncrementGenerateCode(Expression e) {
 void postfixArgumentGenerateCode(Expression e) {
   char *str = getValidString(e->sub1.e->code);
   char *str2 = getValidString(e->sub2.l->code);
-  int length = strlen(str) + strlen(str2) + 3;
+  char *str3;// = ""; 
+  char *str4 = "printf";
+  char *str5 = "";
+/*  if(strcmp(str, str4)==0)
+     printf("%s is equal to printf and str2 = %s", str, str2);*/
+  /**deal with printing things that might not be strings already*/
+  if (strcmp(str, str4)==0 && strcmp(str2, str5)!=0){
+    void *d = e->sub2.l->head->data; 
+    Expression e  = (Expression)d; //gets first expression
+    if (e != NULL){
+      switch(e->tt->base){
+        case int_:
+        case double_:
+        case boolean_:
+          str3 = "\"%d\" , ";
+          break;
+        case char_:
+          str3 = "\"%c\" , ";
+          break;
+        default:
+          str3 = "\"%s\" , "; //guess it's a string 
+      }
+   }
+  }
+  int length = strlen(str) + strlen(str2) + strlen(str3) + 3;
   char result[length];
   strncpy(result, str, length);
   strncat(result, "(", length);
+  strncat(result, str3, length);
   strncat(result, str2, length);
   strncat(result, ")", length);
   e->precode = getAllocatedString(e->sub2.l->precode);
