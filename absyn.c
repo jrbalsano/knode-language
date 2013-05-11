@@ -731,6 +731,42 @@ Expression getPrimaryStringExpression(char *s) {
   return ret;
 }
 
+Expression getPrimaryIntegerExpression(int ivalue){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
+  ret->type = primary;
+  ret->sub1.ival = ivalue;  
+  ret->deriv.primary = primary_int;
+  return ret;
+
+}
+Expression getPrimaryDoubleExpression(double dvalue){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
+  ret->type = primary;
+  ret->sub1.dval = dvalue;  
+  ret->deriv.primary = primary_double;
+  return ret;
+
+}
+
+Expression getPrimaryBoolExpression(int bvalue){
+  Expression ret = (Expression)malloc(sizeof(struct expression_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->tt = NULL;
+  ret->type = primary;
+  ret->sub1.boolval = bvalue;  
+  ret->deriv.primary = primary_bool;
+  return ret;
+
+}
+
+
 /**Get parenthesized primary expression*/
 Expression getPrimaryParenExpression(Expression e) {
   Expression ret = (Expression)malloc(sizeof(struct expression_));

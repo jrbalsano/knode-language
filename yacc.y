@@ -239,7 +239,7 @@ castexpression : unaryexpression { $$ = getCastExpression($1); }
   ;
 typename : INT { $$ = INT; }
   | DOUBLE { $$ = DOUBLE; }
-  | CHAR { t $$ = CHAR; }
+  | CHAR { $$ = CHAR; }
   | BOOLEAN { $$ = BOOLEAN; }
   | STRING { $$ = STRING; }
   ;
@@ -262,9 +262,9 @@ postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
   | postfixexpression '(' argumentexpressionlist ')' { $$ = getPostfixArgumentExpression($1, $3); }
   ;
 primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }
-  | INTEGER {$$ = getPrimaryIntegerExpression(x); }
-  | BOOL_LITERAL { $$ = getPrimaryBoolExpression(x); }
-  | DOUBLEVAL { $$ = getPrimaryDoubleExpression(x); }
+  | INTEGER {$$ = getPrimaryIntegerExpression(yylval.ival); }
+  | BOOL_LITERAL { $$ = getPrimaryBoolExpression(yylval.ival); }
+  | DOUBLEVAL { $$ = getPrimaryDoubleExpression(yylval.fval); }
   | identifier { $$ = getPrimaryIdentifierExpression($1); }
   | '(' expression ')' { $$ = getPrimaryParenExpression($2);} 
   ;
