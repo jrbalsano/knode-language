@@ -461,7 +461,7 @@ void assignmentExpressionGenerateCode(Expression e) {
           char *c1 = getValidString(e->sub1.e->code);
           char *c2 = getValidString(e->sub2.e->code);
           char *c3 = "=";
-          char *c4 = ";";
+        //  char *c4 = ";";
           /*extra semicolon struggles 
           char c5 = ';';
           char c6 = c2[strlen(c2)-2];
@@ -477,12 +477,12 @@ void assignmentExpressionGenerateCode(Expression e) {
           }
           else {
             printf("%s does not have an extra semicolon", c2);
-          */int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
+          */int length = strlen(c1) + strlen(c2) + strlen(c3) + 1; //strlen(c4) + 1;
             char result[length];
             strncpy(result, c1, length);
             strncat(result, c3, length);
             strncat(result, c2, length);
-            strncat(result, c4, length);
+          //  strncat(result, c4, length);
       //      printf("result: %s\n", result);
             e->code = getAllocatedString(result);
         // }
