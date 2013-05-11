@@ -42,6 +42,16 @@ void removeEdge(Node n, Edge e) {
   //get rid of edge in other's edgelist
   o->edgelist[oindex] = o->edgelist[o->edgecount - 1];
   o->edgecount -= 1;
+
+  //update the aindex and bindex of the edge plugging the hole
+  if (n == e->a) {
+    n->edgelist[nindex]->aindex = nindex;
+    o->edgelist[oindex]->bindex = oindex;
+  }
+  else if (n == e->b) {
+    n->edgelist[nindex]->bindex = nindex;
+    o->edgelist[oindex]->aindex = oindex;
+  }
   
   //finally, set the edge free
   freeEdge(e);
