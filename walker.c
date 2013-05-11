@@ -424,12 +424,14 @@ void walkExpression(Expression e, Scope s) {
           walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
+          printf("CONDITIONAL CASE ZERO \n");
           break;
         default:
           walkExpression(e->sub1.e, e->s);
           walkExpression(e->sub2.e, e->s);
           condExpressionTypeCheck(e);
           condExpressionGenerateCode(e);
+          printf("CONDITIONAL CASE DEFAULT \n");
           break;
       }
       break;

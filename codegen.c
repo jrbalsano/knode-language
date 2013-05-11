@@ -288,6 +288,7 @@ void statementGenerateCode(Statement s) {
 }
 
 void expressionStatementGenerateCode(Statement s) {
+  printf("EXPRESSION STATEMENT PRECODE: %s\n", s->sub1.e->precode);
   char *pre = getValidString(s->sub1.e->precode);
   char *code = testForSemicolon(getValidString(s->sub1.e->code));
   char *post = getValidString(s->sub1.e->postcode);
@@ -324,6 +325,7 @@ void passupExpressionCode(Expression e) {
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+  printf("PASSING UP PRECODE %s \n", e->precode);
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
@@ -341,7 +343,9 @@ void postfixIncrementGenerateCode(Expression e) {
   char result[length];
   strncpy(result,s,length);
   strncat(result,s2,length);
-  e->code = getAllocatedString(result);
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
+  e->code = getAllocatedString(getValidString(e->sub1.e->code));
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
 void postfixArgumentGenerateCode(Expression e) {
@@ -395,7 +399,6 @@ void multExpressionGenerateCode(Expression e) {
   strncpy(result, c1, length);
   strncat(result, c2, length);
   strncat(result, c3, length);
-  e->code = getAllocatedString(result);
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
@@ -497,7 +500,10 @@ void relatExpressionGenerateCode(Expression e) {
   strncat(result, c3, length);
   strncat(result, c4, length);
 
+  e->precode = getAllocatedString(e->sub1.e->precode);
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(e->sub1.e->postcode);
+
 }
 
 void eqExpressionGenerateCode(Expression e) {
@@ -509,7 +515,9 @@ void eqExpressionGenerateCode(Expression e) {
   strncpy(result,c1,length);
   strncat(result,c2,length);
   strncat(result,c3,length);
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
 void condExpressionGenerateCode(Expression e) {
@@ -534,7 +542,11 @@ void condExpressionGenerateCode(Expression e) {
   strncat(result, c3, length);
   strncat(result, c2, length);
  
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+
+
 }
 
 void assignmentInitExpressionGenerateCode(Expression e) {
@@ -556,7 +568,22 @@ void assignmentExpressionGenerateCode(Expression e) {
   strncat(result, c3, length);
   strncat(result, c2, length);
   strncat(result, c4, length);
+  char *pre1 = getValidString(e->sub1.e->precode);
+  char *pre2 = getValidString(e->sub2.e->precode);
+  int prelen = strlen(pre1) + strlen(pre2) + 1;
+  char pre[prelen];
+  strcpy(pre, pre1);
+  strcat(pre, pre2);
+  char *post1 = getValidString(e->sub1.e->postcode);
+  char *post2 = getValidString(e->sub2.e->postcode);
+  int postlen = strlen(post1) + strlen(post2) + 1;
+  char post[postlen];
+  strcpy(post, post1);
+  strcat(post, post2);
+  e->precode = getAllocatedString(pre);
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(post);
+  printf("ASSIGNMENT EXPRESSION PRECODE: %s\n", e->precode);
 }
 
 void primaryExpressionGenerateCode(Expression e) {
