@@ -464,7 +464,27 @@ void eqExpressionGenerateCode(Expression e) {
 }
 
 void condExpressionGenerateCode(Expression e) {
+  char *c1 = getValidString(e->sub1.e->code);
+  char *c2 = getValidString(e->sub2.e->code);
+  char *c3; 
+  switch(e->deriv.cond){
+    case cond_or:
+      c2 = "||";
+      break;
+    case cond_and:
+      c3 = "&&";
+      break;
+    case 0:
+      ;
+  }
 
+ int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
+ char result[length];
+ strncpy(result, c1, length);
+ strncat(result, c3, length);
+ strncat(result, c2, length);
+ 
+ e->code = getAllocatedString(result);
 }
 
 void assignmentInitExpressionGenerateCode(Expression e) {
