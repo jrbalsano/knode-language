@@ -28,13 +28,15 @@ void cleanUp(SmartNode n, SmartDict d) {
   //this method does nothing, so the default should just be
   //to free the smartpointer parameters before exiting.
   freeSmartNode(n);
-  freeSmartNode(d);
+  freeSmartDict(d);
 }
 
 int main(int argc, char *argv) {
   //When using dicts, strings, nodes, and edges, only deal with smartpointers.
   SmartDict d = randomDictMethod();
   SmartNode n = randomNodeMethod();
-  cleanUp(n, d);
+  cleanUp(copySmartNode(n), copySmartDict(d));
+  freeSmartNode(n);
+  freeSmartDict(d);
 }
 

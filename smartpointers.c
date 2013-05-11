@@ -85,7 +85,7 @@ void freeSmartNode(SmartNode p) {
   free(p);
 }
 
-SmartEdge newEdge() {
+SmartEdge newEdge(SmartNode n1, SmartNode n2, int edge_dir) {
   SmartEdge ret = (SmartEdge)malloc(sizeof(struct edgePointer_));
   ret->count = (int *)malloc(sizeof(int));
   ret->pointer = initEdge();
