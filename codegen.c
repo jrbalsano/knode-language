@@ -141,6 +141,10 @@ void forStatementGenerateCode(Statement s) {
   char *c6 = getValidString(s->sub1.forloop.e3->code);
   char *c7 = ")\n";
   char *c8 = getValidString(s->sub2.cs->code);
+  
+  /*problem: c8 likely has a semicolon at the end of it. we need to get rid of this*/
+  c6[strlen(c6)-1]='\0';
+  //printf("new c6: %s", c6);
 
   int length = strlen(c1) + strlen(c2) +strlen(c4) + strlen(c6) + strlen(c7) + strlen(c8) + 1;
   char result[length];
@@ -152,10 +156,9 @@ void forStatementGenerateCode(Statement s) {
   strncat(result, c6, length);
   strncat(result, c7, length);
   strncat(result, c8, length);
-
+ 
   s->code = getAllocatedString(result);
-  
-          
+           
 }
 
 void whileStatementGenerateCode(Statement s) {
