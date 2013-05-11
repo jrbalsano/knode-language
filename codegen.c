@@ -396,6 +396,9 @@ void multExpressionGenerateCode(Expression e) {
   strncat(result, c2, length);
   strncat(result, c3, length);
   e->code = getAllocatedString(result);
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
+  e->code = getAllocatedString(getValidString(e->sub1.e->code));
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
 void addExpressionGenerateCode(Expression e) {
