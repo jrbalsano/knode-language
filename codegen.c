@@ -165,6 +165,10 @@ void whileStatementGenerateCode(Statement s) {
 
   char *c1 = "while(";
   char *c2 = getValidString(s->sub1.e->code);
+  
+  //remove semicolon from end of c2
+  c2[strlen(c2)-1] = '\0';
+
   char *c3 = ")\n";
   char *c4 = getValidString(s->sub2.cs->code);
   int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4);
@@ -482,8 +486,22 @@ char *getTypnamString(int typ){
   switch(typ){
     case INT:
       return "int";
+    case DOUBLE:
+      return "double";
+    case CHAR:
+      return "char";
+    case BOOLEAN:
+      return "boolean"; //this will probably need to be fixed later since C doesn't do booleans
+    case STRING:
+      return "String"; //this will probably need to be fixed later since C doesn't do Strings
+    case NODE:
+      return "node";
+    case EDGE:
+      return "edge";
+    case DICT:
+      return "dict";
     default:
-      return "not an int";
+      return "not any normal type";
   }
 }
    
