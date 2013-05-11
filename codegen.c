@@ -204,7 +204,7 @@ void parameterGenerateCode(Parameter p) {
 
 void passupExpressionCode(Expression e) {
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
-
+  printf("e->code\n");
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
@@ -260,8 +260,8 @@ void addExpressionGenerateCode(Expression e) {
 
   // this char pointer is the length of the precode without the input.
   const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, %s);\n";
-  char *s1 = getValidString(e->sub1.e->value);
-  char *s2 = getValidString(e->sub2.e->value); 
+  char *s1 = getValidString(e->sub1.e->code);
+  char *s2 = getValidString(e->sub2.e->code); 
   // the length of the precode
   int length = strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(format) + 1;
 
@@ -281,15 +281,10 @@ void addExpressionGenerateCode(Expression e) {
   
   const char *valformat = "__knodetemp%s;\n";
   int vallength = strlen(format) + 1 + strlen(k);
-  e->value = (char *)malloc(vallength * sizeof(char));
-  sprintf(e->value, valformat, k);
+  e->code = (char *)malloc(vallength * sizeof(char));
+  sprintf(e->code, valformat, k);
 
   //postcode, none
-
-  printf("PRECODE: %s\n", e->precode);
-  printf("VALUE: %s\n", e->value);
-  printf("SUB1 CODE: %s\n", e->sub1.e->code);
-
 }
 
 void relatExpressionGenerateCode(Expression e) {
@@ -317,19 +312,30 @@ void assignmentExpressionGenerateCode(Expression e) {
 }
 
 void primaryExpressionGenerateCode(Expression e) {
+  char intval[15];
+  char dval[15];
   switch(e->deriv.primary)
   {
     case primary_identifier: 
       e->code = getAllocatedString(getValidString(e->sub1.i->code));
-      printf("PRIMARY IDENTIFIER: %s", e->code); 
      break;
     case primary_string:
       e->code = getAllocatedString(getValidString(e->sub1.s));
-      printf("PRIMARY STRING: %s", e->code); 
+      break;
+    case primary_int:
+      sprintf(intval, "%d", e->sub1.ival);
+      e->code = getAllocatedString(getValidString(intval));
+      break;
+    case primary_double:
+      sprintf(dval, "%f", e->sub1.dval);
+      e->code = getAllocatedString(getValidString(dval));
+      break;
+    case primary_bool:
+      sprintf(intval, "%d", e->sub1.boolval);
+      e->code = getAllocatedString(getValidString(intval));
       break;
     default: //not correct default behavior, just tryna debug
       e->code = getAllocatedString(getValidString(e->sub1.s));
-      printf("DEFAULT: %s", e->code); 
       break;
   }
 }
