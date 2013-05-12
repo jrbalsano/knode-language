@@ -2,10 +2,24 @@
 int knodetemp;
 char *translationUnitGenerateCode(TranslationUnit t) {
 
-  t->code = getAllocatedString(getValidString(t->f->code));
-  //does not deal with case where t also has a translation unit
-  printf("final code:\n%s\n", t->code);
-  return getValidString(t->f->code);
+  char *outercode = getValidString(t->f->code);
+  char *innercode;
+  if (t->t){
+      printf("this function has an inner function");
+      innercode = getValidString(t->t->code);
+      printf("inner code: %s" , innercode);
+  }
+  else
+     innercode = "";
+
+  int length = strlen(outercode) + strlen(innercode) + 1;
+  char *result = malloc(sizeof(char)*length);
+  strncpy(result, innercode, length);
+  strncat(result, outercode, length);
+  t->code = getAllocatedString(result);
+  
+  printf("final code:\n%s\n", result);
+  return result;
 }
 void functionDefinitionGenerateCode(FunctionDefinition f) {
 
@@ -22,7 +36,9 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
         f->code = getAllocatedString(result);
      }
      else {
-       int length = strlen(c) + strlen(c1) + 1;
+       char *cv = "void ";
+       int length = strlen(c) + strlen(c1) + strlen(cv) + 1;
+       
        char result[length];
        strncpy(result, c, length);
        strncat(result, c1, length);
