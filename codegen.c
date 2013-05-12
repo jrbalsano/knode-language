@@ -288,7 +288,6 @@ void statementGenerateCode(Statement s) {
 }
 
 void expressionStatementGenerateCode(Statement s) {
-  printf("EXPRESSION STATEMENT PRECODE: %s\n", s->sub1.e->precode);
   char *pre = getValidString(s->sub1.e->precode);
   char *code = testForSemicolon(getValidString(s->sub1.e->code));
   char *post = getValidString(s->sub1.e->postcode);
@@ -325,7 +324,9 @@ void passupExpressionCode(Expression e) {
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
-  printf("PASSING UP PRECODE %s \n", e->precode);
+  #ifdef PRETRACE
+   printf("PASSING UP PRECODE %s \n", e->precode);
+  #endif
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
@@ -395,7 +396,9 @@ void postfixBracketGenerateCode(Expression e) {
 }
 
 void unaryExpressionGenerateCode(Expression e) {
-  printf("Where'd it go? %s", e->sub1.e->precode);
+  #ifdef PRETRACE
+    printf("Where'd it go? %s", e->sub1.e->precode);
+  #endif
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
@@ -465,13 +468,13 @@ void addExpressionGenerateCode(Expression e) {
     sprintf(k, "%d", knodetemp++);
 
     // this char pointer is the length of the precode without the input.
-    const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, \"%s\");\n";
     char *s1 = getValidString(e->sub1.e->code);
     char *s2 = getValidString(e->sub2.e->code);
+    const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, %s);\n";
 
     //  print for debugging
-    printf("%s\n", s1);
-    printf("%s\n", s2);
+    //printf("%s\n", s1);
+    //printf("%s\n", s2);
 
     // the length of the precode
     int length = strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(format) + 1;
@@ -611,7 +614,6 @@ void assignmentExpressionGenerateCode(Expression e) {
   e->precode = getAllocatedString(pre);
   e->code = getAllocatedString(result);
   e->postcode = getAllocatedString(post);
-  printf("ASSIGNMENT EXPRESSION PRECODE: %s\n", e->precode);
 }
 
 void primaryExpressionGenerateCode(Expression e) {
