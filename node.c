@@ -41,6 +41,8 @@ void removeSmartEdge(SmartEdge se) {
   getEdge(getNode(sn)->edgelist[nindex])->aindex = nindex;
   getEdge(getNode(so)->edgelist[oindex])->bindex = oindex;
   
+  freeSmartNode(so);
+  freeSmartNode(sn);
   //finally, set the edge free
   freeSmartEdge(se);
 }

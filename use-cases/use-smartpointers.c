@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
 
   //Follow the edge
   printf("Edge e found this on node a: %d\n", getIntFromSmartNode(copySmartNode(getEdge(e)->a), "a's first int"));
-  printf("Edge e found this on node a: %d\n", getIntFromSmartNode(copySmartNode(getEdge(e)->b), "a's first int"));
+  printf("Edge e found this on node b: %d\n", getIntFromSmartNode(copySmartNode(getEdge(e)->b), "b's first int"));
 
   switch(getEdge(e)->edge_dir) {
     case atob:
@@ -92,6 +92,8 @@ int main(int argc, char **argv) {
   printf("After removing Edge e from a, Edge f's aindex is: %d\n", getEdge(f)->aindex);
 
   freeSmartEdge(e);
+  freeSmartNode(a);
+  freeSmartNode(b);
   freeSmartEdge(f);
   //When you're done you should free all the smart pointers you initialized except
   //for the one you are going to return.
