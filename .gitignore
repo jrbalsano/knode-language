@@ -10,6 +10,7 @@ yacc.tab.c
 yacc.output
 test_output.txt
 knode.c
+test-*.c
 
 # Libraries
 *.lib

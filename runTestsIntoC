@@ -47,9 +47,8 @@ echo >> $globallog
 echo "###### Testing $basename" >> $globallog
 rm -f "$1.out"
 #Run "$KNODE" "$1" > "$1.out"
-Run "./klp" "<" "$1" "| ./klc" "knode.c" 
-Run "gcc -w $knode.c node.c edge.c dict.c smartpointers.c"
-Run "$KNODE" "$1"
+Run "./klp < $1 | ./klc $basename.c" 
+Run "gcc -w $basename.c node.c edge.c dict.c smartpointers.c -o $basename.out"
 # Report the status and clean up the generated files
 echo "Done testing"
 if [ $isTestingPass -eq 0 ] ; then

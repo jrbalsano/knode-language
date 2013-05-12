@@ -33,4 +33,4 @@ yacc.tab.c: yacc.y
 
 .PHONY: clean
 clean:
-	rm -f $(COMPILER) $(PREPROCESSOR) whitelex.yy.c lex.yy.c a.out yacc.tab.* yacc.output *.o testall.log tests/*.out
+	rm -f $(COMPILER) $(PREPROCESSOR) whitelex.yy.c lex.yy.c a.out yacc.tab.* yacc.output *.o testall.log tests/*.out test*.c test*.out
