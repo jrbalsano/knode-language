@@ -122,7 +122,7 @@ TranslationUnit root = NULL;
 %%
 
 translationunit : functiondefinition { $$ = getTranslationUnit($1); root = $$; }
-  | translationunit functiondefinition
+  | translationunit functiondefinition { $$ = getMultFuncDefTranslationUnit($1, $2); root = $$; }
   ;
 functiondefinition : declarator compoundstatement { $$ = getFunctionDefinition($1, $2); }
   | typename declarator compoundstatement { $$ = getRetTypeFunctionDefinition($1, $2, $3); }
