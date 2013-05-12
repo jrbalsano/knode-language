@@ -5,9 +5,9 @@
 #include "codegen.h"
 #include "typecheck.h"
 
-void startWalk(TranslationUnit root);
+char *startWalk(TranslationUnit root);
 
-void walkTranslationUnit(TranslationUnit t, Scope s);
+char *walkTranslationUnit(TranslationUnit t, Scope s);
 
 /**
  * Recursively walk a function definition, checking types and
