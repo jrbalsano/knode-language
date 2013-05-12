@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "dict.h"
 
 Dict initDict() {

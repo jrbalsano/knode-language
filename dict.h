@@ -4,6 +4,7 @@
 #include "./libs/uthash.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 /* *
  * This is our dict representation in C. Entries represent each individual

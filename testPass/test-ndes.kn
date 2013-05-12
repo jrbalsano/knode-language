@@ -14,10 +14,10 @@ main():
   e2.name = "parent"
   e3.name = "love"
 
-#  string r1
-#  r1 = "Node a's role is : " + a.role
-#  string r2
-#  r2 =  "Edge 3's name is : " + e2.name
+  string r1
+  r1 = "Node a's role is " + a.role
+  string r2
+  r2 =  "Edge 3's name is " + e2.name
 
-#  print(r1)
-#  print(r2)
+  print(r1 + "\n")
+  print(r2 + "\n")
