@@ -217,19 +217,19 @@ equalityexpression : relationalexpression { $$ = getEqExpression($1); }
   | equalityexpression NE relationalexpression { $$ = getNotEqual($1, $3); }
   ;
 relationalexpression : additiveexpression { $$ = getRelatExpression($1); }
-  | relationalexpression '<' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
-  | relationalexpression '>' additiveexpression { $$ = getSingleCharRelat($1, $2, $3); }
+  | relationalexpression '<' additiveexpression { $$ = getSingleCharRelat($1, '<', $3); }
+  | relationalexpression '>' additiveexpression { $$ = getSingleCharRelat($1, '>', $3); }
   | relationalexpression LE additiveexpression { $$ = getLeRelat($1, $3); }
   | relationalexpression GE additiveexpression { $$ = getGeRelat($1, $3); }
   ;
 additiveexpression : multiplicativeexpression { $$ = getAdditiveExpression($1); }
-  | additiveexpression '+' multiplicativeexpression { $$ = getAddExpression($1, $2, $3); } 
-  | additiveexpression '-' multiplicativeexpression { $$ = getAddExpression($1, $2, $3); }
+  | additiveexpression '+' multiplicativeexpression { $$ = getAddExpression($1, '+', $3); } 
+  | additiveexpression '-' multiplicativeexpression { $$ = getAddExpression($1, '-', $3); }
   ;
 multiplicativeexpression : castexpression { $$ = getMultExpression($1); }
-  | multiplicativeexpression '*' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
-  | multiplicativeexpression '/' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
-  | multiplicativeexpression '%' castexpression { $$ = getMultiplyExpression($1, $2, $3); }
+  | multiplicativeexpression '*' castexpression { $$ = getMultiplyExpression($1, '*', $3); }
+  | multiplicativeexpression '/' castexpression { $$ = getMultiplyExpression($1, '/', $3); }
+  | multiplicativeexpression '%' castexpression { $$ = getMultiplyExpression($1, '%', $3); }
   ;
 castexpression : unaryexpression { $$ = getCastExpression($1); }
   | '(' typename ')' castexpression { $$ = getTypedCast($2, $4); }
@@ -262,9 +262,9 @@ postfixexpression : primaryexpression { $$ = getPostfixExpression($1); }
   | postfixexpression '(' argumentexpressionlist ')' { $$ = getPostfixArgumentExpression($1, $3); }
   ;
 primaryexpression : STRING_LITERAL { $$ = getPrimaryStringExpression(yylval.sval); }
-  | INTEGER { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
-  | BOOL_LITERAL { char x[1000]; sprintf(x, "%d", yylval.ival); $$ = getPrimaryStringExpression(x); }
-  | DOUBLEVAL { char x[1000]; sprintf(x, "%f", yylval.fval); $$ = getPrimaryStringExpression(x); }
+  | INTEGER {$$ = getPrimaryIntegerExpression(yylval.ival); }
+  | BOOL_LITERAL { $$ = getPrimaryBoolExpression(yylval.ival); }
+  | DOUBLEVAL { $$ = getPrimaryDoubleExpression(yylval.fval); }
   | identifier { $$ = getPrimaryIdentifierExpression($1); }
   | '(' expression ')' { $$ = getPrimaryParenExpression($2);} 
   ;

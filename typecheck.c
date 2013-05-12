@@ -158,7 +158,11 @@ void parameterTypeCheck(Parameter p) {
 }
 
 void passupExpressionType(Expression e) {
-
+#ifdef PRETRACE
+  printf("Pass the buck at %p\n", e->sub1.e->tt);
+  printf("Passing from %d to %d\n", e->sub1.e->type, e->type);
+#endif
+  e->tt = copyTypeCheckType(e->sub1.e->tt);
 }
 
 void postfixIdentifierTypeCheck(Expression e) {
@@ -182,7 +186,10 @@ void postfixBracketTypeCheck(Expression e) {
 }
 
 void unaryExpressionTypeCheck(Expression e) {
-
+#ifdef PRETRACE
+  printf("Pass the buck at %p\n", e->sub1.e->tt);
+#endif printf("Passing from %d to %d\n", e->sub1.e->type, e->type);
+  e->tt = copyTypeCheckType(e->sub1.e->tt);
 }
 
 void castTypedExpressionTypeCheck(Expression e) {
@@ -190,12 +197,48 @@ void castTypedExpressionTypeCheck(Expression e) {
 }
 
 void multExpressionTypeCheck(Expression e) {
+  int int1 = e->sub1.e->tt->base == int_;
+  int double1 = e->sub1.e->tt->base == double_;
+  int int2 = e->sub2.e->tt->base == int_;
+  int double2 = e->sub2.e->tt->base == double_;
+  if (int1 && int2){
+    e->tt = getTypeCheckType(int_);
+  }
 
+  else if ((double1 && double2) || (int1 && double2) || (double1 && int2)){
+    e->tt = getTypeCheckType(double_);
+  }
+  else{
+    fprintf(stderr, "TYPE CHECK ERROR: additive expression"); 
+    exit(1);
+  }
 }
 
 void addExpressionTypeCheck(Expression e) {
+  int int1 = e->sub1.e->tt->base == int_;
+  int double1 = e->sub1.e->tt->base == double_;
+  int int2 = e->sub2.e->tt->base == int_;
+  int double2 = e->sub2.e->tt->base == double_;
+  int string1 = e->sub1.e->tt->base == string_;
+  int string2 = e->sub2.e->tt->base == string_;
 
-}
+  if (int1 && int2){
+    e->tt = getTypeCheckType(int_);
+  }
+
+  else if ((double1 && double2) || (int1 && double2) || (double1 && int2)){
+    e->tt = getTypeCheckType(double_);
+  }
+ 
+  else if ((string1 && string2) || (int1 && string2) || (double1 && string2) || (string1 && int2) || (string1 && double2)){
+    e->tt = getTypeCheckType(string_);
+  }
+
+  else{
+    fprintf(stderr, "TYPE CHECK ERROR: additive expression"); 
+    exit(1);
+  }
+ }
 
 void relatExpressionTypeCheck(Expression e) {
 
@@ -230,7 +273,26 @@ void primaryExpressionTypeCheck(Expression e) {
         exit(1);
       }
       break;
+    case primary_string:
+      e->tt = getTypeCheckType(string_);
+        break;
+    case primary_int:
+      e->tt = getTypeCheckType(int_);
+      break;
+    case primary_bool:
+      e->tt = getTypeCheckType(boolean_);
+      break;
+    case primary_double:
+      e->tt = getTypeCheckType(double_);
+      break;
+    case parentheses:
+      e->tt = copyTypeCheckType(e->sub1.e->tt);
+      break;
     default:
+#ifdef PRETRACE
+      printf("Priamry expression type: %d\n", e->deriv.primary);
+      printf("Priamry expression tt address: %p\n", e->tt);
+#endif
       //do other things
       break;
   }

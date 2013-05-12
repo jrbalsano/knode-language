@@ -302,6 +302,10 @@ void walkExpression(Expression e, Scope s) {
         case arg:
           walkExpression(e->sub1.e, e->s);
           walkGrammarList(e->sub2.l, e->s);
+      /*    int *x = NULL;
+          int y = *x + 2;
+          printf("%d", y);
+        */
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);          
           break;
@@ -468,6 +472,8 @@ void walkExpression(Expression e, Scope s) {
           primaryExpressionTypeCheck(e);
           primaryExpressionGenerateCode(e);
         default: //unhandled case
+          primaryExpressionTypeCheck(e);
+          primaryExpressionGenerateCode(e);
           break;
       }
       break;
@@ -493,6 +499,11 @@ void walkExpression(Expression e, Scope s) {
     default:
       break;
   }
+#ifdef PRETRACE
+  printf("Finishing Walking Expression with type %d\n", e->type);
+  printf("PRECODE: %s\n", e->precode);
+  printf("tt: %p\n", e->tt);
+#endif
 #ifdef MEMTRACE
   printf("Expression walked at %p\n", e);
 #endif

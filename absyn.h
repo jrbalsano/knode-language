@@ -25,6 +25,8 @@ typedef struct parameter_ *Parameter;
 struct expression_ {
   TypeCheckType tt;
   char *code;
+  char *precode;
+  char *postcode;
   Scope s;
   enum {none = 0, function, unary, postfix, primary, string, cast, mult, add, relat, eq, cond, assignment} type;
   union {
@@ -32,6 +34,9 @@ struct expression_ {
     Identifier i;
     GrammarList l;
     char *s;
+    int ival;
+    double dval;
+    int boolval;
     int typnam;
   } sub1;
   union {
@@ -54,7 +59,7 @@ struct expression_ {
     enum{eq_none = none, equal, notequal} eq;
     enum{gen_none = none, comma = ','} none;
     enum{cond_none = none, cond_or, cond_and} cond;
-    enum{primary_none = none, parentheses , primary_string, primary_identifier} primary;
+    enum{primary_none = none, parentheses , primary_string, primary_identifier, primary_int, primary_bool, primary_double} primary;
     enum{assign_none = none, init, eq_assign, multeq = MULTEQ, diveq = DIVEQ,
       pluseq = PLUSEQ, minuseq = MINUSEQ, modeq = MODEQ, assign_left = LEFTEDGE,
       assign_right = RIGHTEDGE, assign_both = BOTHEDGE, assign_all = ALLEDGE } assign;
@@ -136,6 +141,8 @@ struct translationUnit_ {
 };
 struct grammarList_ {
   char *code;
+  char *precode;
+  char *postcode;
   Scope s;
   TypeCheckType tt;
   enum {argument, statement,parameterList,expressionList} type;
@@ -191,6 +198,9 @@ Identifier getIdentifier(char *s);
 
 Expression getFunctionExpression(Identifier id, GrammarList argExpList);
 Expression getPrimaryStringExpression(char *s);
+Expression getPrimaryIntegerExpression(int ivalue);
+Expression getPrimaryDoubleExpression(double dvalue);
+Expression getPrimaryBoolExpression(int ivalue);
 Expression getPrimaryParenExpression(Expression e);
 Expression getPrimaryIdentifierExpression(Identifier id);
 Expression getPostfixExpression(Expression e1);
