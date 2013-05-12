@@ -191,7 +191,8 @@ void passupExpressionType(Expression e) {
 }
 
 void postfixIdentifierTypeCheck(Expression e) {
-
+  if(e->sub1.e->tt->base == edge_)
+    e->tt = getTypeCheckType(string_);
 }
 
 void postfixDecrementTypeCheck(Expression e) {

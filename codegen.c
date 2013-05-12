@@ -510,14 +510,24 @@ void passupExpressionCode(Expression e) {
 void postfixIdentifierGenerateCode(Expression e) {
   char *c = getValidString(e->sub1.e->code);
   char *c2 = getValidString(e->sub2.i->code);
-  char *c3 = ".";
-  int length = strlen(c) + strlen(c2) + strlen(c3) + 1;
-  char result[length];
-  strncpy(result, c, length);
-  strncat(result, c3, length);
-  strncat(result, c2, length);
+  if(e->sub1.e->tt->base == edge_) {
+    char *edgeWrapper = "getEdge(%s)->edge_name";
+    char result[strlen(edgeWrapper) + strlen(c) + 1];
+    sprintf(result, edgeWrapper, c);
+    e->code = getAllocatedString(result);
+  }
+  else {
+    char *c3 = "->";
+    int length = strlen(c) + strlen(c2) + strlen(c3) + 1;
+    char result[length];
+    strncpy(result, c, length);
+    strncat(result, c3, length);
+    strncat(result, c2, length);
 
-  e->code = getAllocatedString(result);
+    e->code = getAllocatedString(result);
+  }
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
 void postfixDecrementGenerateCode(Expression e) {
