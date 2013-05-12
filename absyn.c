@@ -16,6 +16,14 @@ TranslationUnit getTranslationUnit(FunctionDefinition fd) {
   ret->f = fd;
   return ret;
 }
+TranslationUnit getMultFuncDefTranslationUnit(TranslationUnit t, FunctionDefinition fd) {
+  TranslationUnit ret = (TranslationUnit)malloc(sizeof(struct translationUnit_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->f = fd;
+  ret->t = t;
+  return ret;
+}
 
 /**
  * Recursively free the translation unit and its children.
@@ -69,7 +77,6 @@ FunctionDefinition getRetTypeFunctionDefinition(int type, Declarator d, Compound
   ret->type_name = type;
   return ret;
 }
-
 /**
  * Recursively free the function definition and its children.
  */

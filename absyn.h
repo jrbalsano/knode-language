@@ -138,6 +138,7 @@ struct translationUnit_ {
   Scope s;
   char *code;
   FunctionDefinition f;
+  TranslationUnit t;
 };
 struct grammarList_ {
   char *code;
