@@ -248,16 +248,84 @@ void ifelseStatementGenerateCode(Statement s) {
     s->code = getAllocatedString(result);
 }
 
+//This is the code for the dictlist statements for entries
 void dictlistGenerateCode(Statement s) {
-
+    //getting identfier of key
+   
+    char *valueIdentifier = getValidString(s->sub1.i->code);
+    //find out what the enum value should be
+    char *et;
+    //char *c1;
+    switch(s->sub2.e->tt->base){
+        case int_:
+           // c1 = "int %s;\n";
+            et= "eint";
+            break;
+        case double_:
+          //  c1 = "double %s;\n";
+            et= "edouble";
+            break;
+        case string_:
+            et= "echar";
+            break;
+        default:
+            ;
+    }
+    const char *format = "addToDict(%%1$s, %s, \"%s\", %s);\n";
+    char *value = getValidString(s->sub2.e->code);
+    int length = strlen(valueIdentifier) + strlen(value) + strlen(format) + 1;
+    char result[length];
+   // char *delcar[strlen(c1)];
+   // sprintf(delcar, c1, valueIdentifier);
+    sprintf(result, format, et, valueIdentifier, value);
+    //strncat(result,delcar,length);
+    s->code = getAllocatedString(result);
 }
 
+//This is the case when you initialize a dictionary with entries
 void dictDefinitionsGenerateCode(Statement s) {
-
+  //dict initialization
+  char *dictIdentifier = getValidString(s->sub1.i->code);
+  //add entries to dicitonary
+  char *str = getValidString(s->sub2.cs->code);
+  const char *delims = "\n";
+  char forStrTok[strlen(str)];
+  strcpy(forStrTok, str);
+  char *sResult = NULL;
+  sResult = strtok(forStrTok, delims );
+  int i=-2;
+  int length = 1;
+  while( sResult != NULL ) {
+    i++;
+    length += strlen(sResult);
+    sResult = strtok( NULL, delims );
+  }
+  length += i * strlen(dictIdentifier);
+  char result[length];
+  
+  sprintf(result, str, dictIdentifier);
+  char *final = result + 2;
+  result[strlen(result)-3] = 0;
+  const char *format = "Dict %s = initDict(); \n%s\n";
+  int length2 = strlen(format) + strlen(dictIdentifier) + strlen(final);
+  char endResult[length2];
+  sprintf(endResult, format, dictIdentifier, final);
+  s->code = getAllocatedString(endResult);
 }
 
 void dictGenerateCode(Statement s) {
-
+//This case is when you are declaring a dict without any entries y'all
+    char *dictKeyWord = "Dict ";
+    char *dictIdentifier = getValidString(s->sub1.i->code);
+    char *eqSign = "=";
+    char *functionName = "initDict();\n";
+    int length = strlen(dictKeyWord) + strlen(dictIdentifier) + strlen(eqSign) + strlen(functionName);
+    char result[length];
+    strncpy(result, dictKeyWord, length);
+    strncat(result, dictIdentifier, length);
+    strncat(result, eqSign, length);
+    strncat(result, functionName, length);
+    s->code = getAllocatedString(result);    
 }
 
 void nodeCreationGenerateCode(Statement s) {
@@ -392,7 +460,7 @@ void postfixIncrementGenerateCode(Expression e) {
   strncpy(result,s,length);
   strncat(result,s2,length);
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
-  e->code = getAllocatedString(getValidString(e->sub1.e->code));
+  e->code = getAllocatedString(result);
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
@@ -478,7 +546,7 @@ void multExpressionGenerateCode(Expression e) {
   strncat(result, c2, length);
   strncat(result, c3, length);
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
-  e->code = getAllocatedString(getValidString(e->sub1.e->code));
+  e->code = getAllocatedString(result);
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
@@ -489,13 +557,13 @@ void addExpressionGenerateCode(Expression e) {
     char *c3;
     switch(e->deriv.add){
       case plus:
-           c3 = "+";
-           break;
-     case minus:
-          c3 = "-";
-          break;
-     case 0:
-         ;
+        c3 = "+";
+        break;
+      case minus:
+        c3 = "-";
+        break;
+      case 0:
+        ;
     }
 
     int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
@@ -503,35 +571,96 @@ void addExpressionGenerateCode(Expression e) {
     strncpy(result, c1, length);
     strncat(result, c3, length);
     strncat(result, c2, length);
-   
+
     e->code = getAllocatedString(result);
-      
+
   }
 
   else if (e->tt->base == string_){
+    char *s1;
+    char *s2;
+    char *pre = malloc(1);
+    char n[27]; //size of __knodetemp\0 + 15
+    if(e->sub1.e->tt->base != string_) {
+      free(pre);
+      char *c1 = getValidString(e->sub1.e->code);
+      if(e->sub1.e->tt->base == double_) {
+        char *format = "char __knodetemp%s[15];\nsprintf(__knodetemp%s, \"%%f\", %s);\n";
+        char j[15];
+        sprintf(j, "%d", knodetemp++);
+        int length = strlen(format) + strlen(j) * 2 + strlen(c1) + 1;
+        pre = malloc(length * sizeof(char));
+        sprintf(pre, format, j, j, c1);
+        sprintf(n, "__knodetemp%s", j);
+        s1 = n;
+      }
+      else if(e->sub1.e->tt->base == int_) {
+        char *format = "char __knodetemp%s[15];\nsprintf(__knodetemp%s, \"%%d\", %s);\n";
+        char j[15];
+        sprintf(j, "%d", knodetemp++);
+        int length = strlen(format) + strlen(j) * 2 + strlen(c1) + 1;
+        pre = malloc(length * sizeof(char));
+        sprintf(pre, format, j, j, c1);
+        sprintf(n, "__knodetemp%s", j);
+        s1 = n;
+      }
+      s2 = getValidString(e->sub2.e->code);
+    }
+    else if(e->sub2.e->tt->base != string_) {
+      free(pre);
+      char *c2 = getValidString(e->sub2.e->code);
+      if(e->sub2.e->tt->base == double_) {
+        char *format = "char __knodetemp%s[15];\nsprintf(__knodetemp%s, \"%%f\", %s);\n";
+        char j[15];
+        sprintf(j, "%d", knodetemp++);
+        int length = strlen(format) + strlen(j) * 2 + strlen(c2) + 1;
+        pre = malloc(length * sizeof(char));
+        sprintf(pre, format, j, j, c2);
+        sprintf(n, "__knodetemp%s", j);
+        s2 = n;
+      }
+      else if(e->sub2.e->tt->base == int_) {
+        char *format = "char __knodetemp%s[15];\nsprintf(__knodetemp%s, \"%%d\", %s);\n";
+        char j[15];
+        sprintf(j, "%d", knodetemp++);
+        int length = strlen(format) + strlen(j) * 2 + strlen(c2) + 1;
+        pre = malloc(length * sizeof(char));
+        sprintf(pre, format, j, j, c2);
+        sprintf(n, "__knodetemp%s", j);
+        s2 = n;
+      }
+      s1 = getValidString(e->sub1.e->code);
+    }
+    else {
+      // this char pointer is the length of the precode without the input.
+      s1 = getValidString(e->sub1.e->code);
+      s2 = getValidString(e->sub2.e->code);
+    }
+    char prestat[strlen(getValidString(pre)) + 1];
+    strcpy(prestat, getValidString(pre));
+    free(pre);
     // k is the string of the value of the current knodetemp.
     // k is incremented after use here for the next knodetemp.
     char k[15];
     sprintf(k, "%d", knodetemp++);
+    char l[15];
+    sprintf(l, "%d", knodetemp++);
 
-    // this char pointer is the length of the precode without the input.
-    char *s1 = getValidString(e->sub1.e->code);
-    char *s2 = getValidString(e->sub2.e->code);
-    const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, %s);\n";
+    const char *format = "%sint __knodetemp%s = strlen(%s) + strlen(%s);\nchar __knodetemp%s[__knodetemp%s];\nstrcpy(__knodetemp%s, %s);\nstrcat(__knodetemp%s, %s);\n";
 
     //  print for debugging
     //printf("%s\n", s1);
     //printf("%s\n", s2);
 
     // the length of the precode
-    int length = strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(format) + 1;
+    int length = strlen(prestat) + strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(l) * 2 + strlen(format) + 1;
 
     // sets the size of the precode
     e->precode = (char *)malloc(length * sizeof(char));
 
     // sets this expression's precode.
-    sprintf(e->precode, format, s1, s2, k, k, s1, k, s2);
-     
+    sprintf(e->precode, format, prestat, l, s1, s2, k, l, k, s1, k, s2);
+
     //precode = 
     //int length = strlen(string1) + strlen(string2);
     //char __knodetemp#[length]
@@ -539,7 +668,7 @@ void addExpressionGenerateCode(Expression e) {
     //strcat(__knodetemp#, string2);
 
     //val = __knodetemp#
-    
+
     const char *valformat = "__knodetemp%s";
     int vallength = strlen(format) + 1 + strlen(k);
     e->code = (char *)malloc(vallength * sizeof(char));
@@ -548,6 +677,7 @@ void addExpressionGenerateCode(Expression e) {
     //postcode, none
   }
 }
+
 
 void relatExpressionGenerateCode(Expression e) {
   char *c1 = getValidString(e->sub1.e->code);
@@ -586,7 +716,11 @@ void relatExpressionGenerateCode(Expression e) {
 
 void eqExpressionGenerateCode(Expression e) {
   char *c1 = getValidString(e->sub1.e->code);
-  char *c2 = "==";
+  char *c2;
+  if(e->deriv.eq == equal)
+    c2 = "==";
+  else
+    c2 = "!=";
   char *c3 = getValidString(e->sub2.e->code);
   int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
   char result[length];
