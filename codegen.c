@@ -261,7 +261,16 @@ void dictGenerateCode(Statement s) {
 }
 
 void nodeCreationGenerateCode(Statement s) {
+  char *c = getValidString(s->sub1.i->code);
+  char *c1 = "Node ";
+  char *c2 = " = initNode();\n";
+  int length = strlen(c) + strlen(c1) + strlen(c2) + 1;
+  char result[length];
+  strncpy(result, c1, length);
+  strncat(result, c, length);
+  strncat(result, c2, length);
 
+  s->code = getAllocatedString(result); 
 }
 
 void nodeAssignmentGenerateCode(Statement s) {
@@ -274,10 +283,49 @@ void nodeDictionaryGenerateCode(Statement s) {
 
 void edgeCreationGenerateCode(Statement s) {
 
+
 }
 
 void edgeStatementGenerateCode(Statement s) {
+  char *c = getValidString(s->sub1.i->code);
+  char *ca = getValidString(s->sub2.e->code);
+  char *cb = getValidString(s->sub3.e->code);
+  char *c1 = "Edge ";
+  char *c2 = " = initEdge(";
+  char *c3 = ", ";
+  char *c4; 
+  char *c5 = ");\n";
 
+//  printf("Left: %d\nRight: %d\nBoth: %d\nValue: %d\n", left, right, both, s->deriv.edge);
+  switch(s->deriv.edge){
+    case right:
+      c4 = "atob";
+      break;
+    case left:
+      c4 = "btoa";
+      break;
+    case both:
+      c4 = "both";  
+      break;
+    case 0: 
+      c4 = "";
+  }
+  
+  int length = strlen(c1) + strlen(c) + strlen(c2) + strlen(ca) + strlen(c3) + strlen(cb) + strlen(c3) + strlen(c4) + strlen(c5) + 1;
+  char result[length];
+  strncpy(result, c1, length);
+  strncat(result, c, length);
+  strncat(result, c2, length);
+  strncat(result, ca, length);
+  strncat(result, c3, length);
+  strncat(result, cb, length);
+  strncat(result, c3, length);
+  strncat(result, c4, length);
+  strncat(result, c5, length);
+
+//printf("result: %s", result);
+  s->code = getAllocatedString(result); 
+ 
 }
 
 void statementGenerateCode(Statement s) {

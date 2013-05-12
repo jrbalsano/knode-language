@@ -182,12 +182,12 @@ dictlist : identifier ':' expression NEWLINE { $$ = getDictListStatement($1, $3)
 edgestatement: EDGE identifier '=' '[' unaryexpression edge unaryexpression ']' NEWLINE { $$ = getEdgeStatementFromNodes($2, $5, $6, $7); }
   | EDGE identifier NEWLINE { $$ = getEdgeDeclaration($2); }
   ;
-alledge: ALLEDGE
-  | edge
+alledge: ALLEDGE {$$ = ALLEDGE;}
+  | edge {$$ = $1;}
   ;
-edge: BOTHEDGE
-  | LEFTEDGE
-  | RIGHTEDGE
+edge: BOTHEDGE {$$ = BOTHEDGE;}
+  | LEFTEDGE {$$ = LEFTEDGE;}
+  | RIGHTEDGE {$$ = RIGHTEDGE;}
   ;
 expression : assignmentexpression { $$ = getExpression($1); }
   | expression ',' assignmentexpression { $$ = getExpressionAssignmentExpression($1, $3); }
