@@ -1,34 +1,15 @@
-node functionTwo(int a):
-  print("Hi")
-
-string functionThree(int a, int b, int c):
-  print("Hi")
-
-int functionFour(int a, string b, node c):
-  print("Hi")
-
-functionFive(int a, string b, node c):
-  print("Hi")
-
 main():
-  print("Hi")
+  print("hello, world!\n")
 
-functionOne():
-  print("Hi")
-  int a
-  int b
-  int c
-  int d
-  int e
-  int f
+functionTwo():
+  print("hello, world, from my second function!\n")
+
+functionThree():
   int i
   i = 1
-  int object
-  double array
-  a = functionTwo(b)
-  b = object.attribute
-  c = object.method()
-  d = object.method(a, "Hello", 3)
-  e = array[4]
-  f = array[i++]
-  int g = 3
+  int j
+  j = 2
+  i = i + j
+  string result 
+  result = "Hello, world, from function " + i
+  print(result)
