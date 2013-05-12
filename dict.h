@@ -3,6 +3,7 @@
 
 #include "./libs/uthash.h"
 #include <stdio.h>
+#include <stdarg.h>
 
 /* *
  * This is our dict representation in C. Entries represent each individual
@@ -48,7 +49,7 @@ void freeDict(Dict d);
 /**
  * Adds the key-value pair to the dictionary specified, with the value specified
  */
-Entry addToDict(Dict d, int et, char *key, void *value);
+Entry addToDict(Dict d, int et, char *key, ...);
 
 /* *
  * Checks through the entries of the dictionary to see if the entry exists and
