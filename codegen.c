@@ -385,8 +385,8 @@ void postfixIdentifierGenerateCode(Expression e) {
   int length = strlen(c) + strlen(c2) + strlen(c3) + 1;
   char result[length];
   strncpy(result, c, length);
-  strncpy(result, c3, length);
-  strncpy(result, c2, length);
+  strncat(result, c3, length);
+  strncat(result, c2, length);
 
   e->code = getAllocatedString(result);
 }

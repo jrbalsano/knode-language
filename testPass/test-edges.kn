@@ -6,9 +6,9 @@ main():
   edge e1 = [node_a -> node_b]
   edge e2 = [node_c -> node_b]
   edge e3 = [node_a <-> node_c]
-  e1.name = "mother of"
-  e2.name = "father of"
-  e3.name = "love"
+#  e1.name = "mother of"
+#  e2.name = "father of"
+#  e3.name = "love"
 #  edge e1 = [node_a <-> node_b]
 #  edge e2 = [node_b -> node_c]
 #  edge e3 = [node_c <- node_d]
