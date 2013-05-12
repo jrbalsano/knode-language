@@ -2,10 +2,29 @@
 int knodetemp;
 char *translationUnitGenerateCode(TranslationUnit t) {
 
-  t->code = getAllocatedString(getValidString(t->f->code));
-  //does not deal with case where t also has a translation unit
-  printf("final code:\n%s\n", t->code);
-  return getValidString(t->f->code);
+  char *outercode = getValidString(t->f->code);
+  char *innercode;
+  if (t->t){
+#ifdef PRETRACE
+      printf("this function has an inner function");
+#endif
+      innercode = getValidString(t->t->code);
+#ifdef PRETRACE
+      printf("inner code: %s" , innercode);
+#endif
+  }
+  else
+     innercode = "";
+
+  int length = strlen(outercode) + strlen(innercode) + 1;
+  char *result = malloc(sizeof(char)*length);
+  strncpy(result, innercode, length);
+  strncat(result, outercode, length);
+  t->code = getAllocatedString(result);
+#ifdef PRETRACE 
+  printf("final code:\n%s\n", result);
+#endif
+  return result;
 }
 void functionDefinitionGenerateCode(FunctionDefinition f) {
 
@@ -22,9 +41,11 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
         f->code = getAllocatedString(result);
      }
      else {
-       int length = strlen(c) + strlen(c1) + 1;
+       char *cv = "void ";
+       int length = strlen(c) + strlen(c1) + strlen(cv) + 1;
        char result[length];
-       strncpy(result, c, length);
+       strncpy(result, cv, length);
+       strncat(result, c, length);
        strncat(result, c1, length);
        f->code = getAllocatedString(result);
      }
@@ -342,10 +363,64 @@ void nodeCreationGenerateCode(Statement s) {
 }
 
 void nodeAssignmentGenerateCode(Statement s) {
-
+  char *c1 = "SmartNode ";
+  char *c2 = getValidString(s->sub1.i->code);
+  char *c3 = " = ";
+  char *c4 = "newSmartNode();\n";
+  char *c5 = " = ";
+  char *c6 = getValidString(s->sub2.e->code);
+  char *c7 = ";\n";
+  int length = strlen(c1) + strlen(c2) + strlen(c2) + strlen(c3) + strlen(c4) + strlen(c6) + strlen(c7);
+  char result[length];
+  strcpy(result, c1);
+  strcat(result, c2);
+  strcat(result, c3);
+  strcat(result, c4);
+  strcat(result, c2);
+  strcat(result, c5);
+  strcat(result, c6);
+  strcat(result, c7);
+  s->code = getAllocatedString(result);
 }
 
 void nodeDictionaryGenerateCode(Statement s) {
+  char *c1 = "SmartNode ";
+  char *id = getValidString(s->sub1.i->code);
+  char *c3 = " = ";
+  char *c4 = "newSmartNode();\n";
+  //now get the code for our compound statement
+  
+  char *str = getValidString(s->sub2.cs->code);
+  //format the code for our silly compound statement
+  const char *delims = "\n";
+  char forStrTok[strlen(str)];
+  strcpy(forStrTok, str);
+  char *sResult = NULL;
+  sResult = strtok(forStrTok, delims);
+  int i = -2;
+  int cslength = 1;
+  while (sResult != NULL) {
+    i++;
+    cslength += strlen(sResult);
+    sResult = strtok(NULL, delims);
+  }
+  char *wrapper = "getNode(%s)->dictlist";
+  char wrapperWithId[strlen(wrapper) + strlen(id) + 1];
+  sprintf(wrapperWithId, wrapper, id);
+  cslength += i * strlen(wrapperWithId);
+  char c5[cslength];
+  sprintf(c5, str, wrapperWithId);
+
+  //char *c5 = getValidString(s->sub2.cs->code);
+
+  int length = strlen(c1) + strlen(id) + strlen(c3) + strlen(c4) + strlen(c5);
+  char result[length];
+  strcpy(result, c1);
+  strcat(result, id);
+  strcat(result, c3);
+  strcat(result, c4);
+  strcat(result, c5);
+  s->code = getAllocatedString(result);
 
 }
 
@@ -438,14 +513,30 @@ void passupExpressionCode(Expression e) {
 void postfixIdentifierGenerateCode(Expression e) {
   char *c = getValidString(e->sub1.e->code);
   char *c2 = getValidString(e->sub2.i->code);
-  char *c3 = ".";
-  int length = strlen(c) + strlen(c2) + strlen(c3) + 1;
-  char result[length];
-  strncpy(result, c, length);
-  strncat(result, c3, length);
-  strncat(result, c2, length);
+  if(e->sub1.e->tt->base == edge_) {
+    char *edgeWrapper = "getEdge(%s)->edge_name";
+    char result[strlen(edgeWrapper) + strlen(c) + 1];
+    sprintf(result, edgeWrapper, c);
+    e->code = getAllocatedString(result);
+  }
+  else if(e->sub1.e->tt->base == node_) {
+    char *nodeWrapping = "getStrFromSmartNode(copySmartNode(%s), \"%s\")";
+    char result[strlen(nodeWrapping) + strlen(c) + strlen(c2) + 1];
+    sprintf(result, nodeWrapping, c, c2);
+    e->code = getAllocatedString(result);
+  }
+  else {
+    char *c3 = "->";
+    int length = strlen(c) + strlen(c2) + strlen(c3) + 1;
+    char result[length];
+    strncpy(result, c, length);
+    strncat(result, c3, length);
+    strncat(result, c2, length);
 
-  e->code = getAllocatedString(result);
+    e->code = getAllocatedString(result);
+  }
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
 void postfixDecrementGenerateCode(Expression e) {
@@ -466,7 +557,7 @@ void postfixIncrementGenerateCode(Expression e) {
 
 void postfixArgumentGenerateCode(Expression e) {
   char *str = getValidString(e->sub1.e->code);
-  char *str2 = getValidString(e->sub2.l->code);
+  char *str2 = getValidString(e->sub2.l ? e->sub2.l->code : NULL);
   char *str3;// = ""; 
   char *str4 = "printf";
   char *str5 = "";
@@ -501,9 +592,9 @@ void postfixArgumentGenerateCode(Expression e) {
   strncat(result, str3, length);
   strncat(result, str2, length);
   strncat(result, ")", length);
-  e->precode = getAllocatedString(e->sub2.l->precode);
+  e->precode = getAllocatedString(e->sub2.l ? e->sub2.l->precode : "");
   e->code = getAllocatedString(result);
-  e->postcode = getAllocatedString(e->sub2.l->postcode);
+  e->postcode = getAllocatedString(e->sub2.l ? e->sub2.l->postcode : "");
 }
 
 void postfixBracketGenerateCode(Expression e) {
@@ -582,9 +673,9 @@ void addExpressionGenerateCode(Expression e) {
     char *pre = malloc(1);
     char n[27]; //size of __knodetemp\0 + 15
     if(e->sub1.e->tt->base != string_) {
-      free(pre);
       char *c1 = getValidString(e->sub1.e->code);
       if(e->sub1.e->tt->base == double_) {
+        free(pre);
         char *format = "char __knodetemp%s[15];\nsprintf(__knodetemp%s, \"%%f\", %s);\n";
         char j[15];
         sprintf(j, "%d", knodetemp++);
@@ -595,6 +686,7 @@ void addExpressionGenerateCode(Expression e) {
         s1 = n;
       }
       else if(e->sub1.e->tt->base == int_) {
+        free(pre);
         char *format = "char __knodetemp%s[15];\nsprintf(__knodetemp%s, \"%%d\", %s);\n";
         char j[15];
         sprintf(j, "%d", knodetemp++);
@@ -607,9 +699,9 @@ void addExpressionGenerateCode(Expression e) {
       s2 = getValidString(e->sub2.e->code);
     }
     else if(e->sub2.e->tt->base != string_) {
-      free(pre);
       char *c2 = getValidString(e->sub2.e->code);
       if(e->sub2.e->tt->base == double_) {
+        free(pre);
         char *format = "char __knodetemp%s[15];\nsprintf(__knodetemp%s, \"%%f\", %s);\n";
         char j[15];
         sprintf(j, "%d", knodetemp++);
@@ -620,6 +712,7 @@ void addExpressionGenerateCode(Expression e) {
         s2 = n;
       }
       else if(e->sub2.e->tt->base == int_) {
+        free(pre);
         char *format = "char __knodetemp%s[15];\nsprintf(__knodetemp%s, \"%%d\", %s);\n";
         char j[15];
         sprintf(j, "%d", knodetemp++);
@@ -772,7 +865,7 @@ void edgeExpressionGenerateCode(Expression e) {
 void assignmentExpressionGenerateCode(Expression e) {
   char *c1 = getValidString(e->sub1.e->code);
   char *c2 = testForSemicolon(getValidString(e->sub2.e->code));
-  char *c3 = "=";
+  char *c3 = " = ";
   char *c4 = ";";
   int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
   char result[length];

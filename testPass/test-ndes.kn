@@ -1,0 +1,23 @@
+main():
+  node a
+    role: "Mother"
+  node b
+    role: "Father"
+  node c
+    role: "Child"
+
+  edge e1 = [a->c]
+  edge e2 = [b->c]
+  edge e3 = [a<->b]
+
+  e1.name = "parent"
+  e2.name = "parent"
+  e3.name = "love"
+
+  string r1
+  r1 = "Node a's role is " + a.role
+  string r2
+  r2 =  "Edge 3's name is " + e2.name
+
+  print(r1 + "\n")
+  print(r2 + "\n")

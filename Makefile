@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -g -Wall $(INCLUDES)
-LDFLAGS = -g
+CFLAGS = -g -w
+LDFLAGS = -g -w
 #CFLAGS = -g -Wall -DMEMTRACE $(INCLUDES)
 #LDFLAGS = -g -DMEMTRACE
 #CFLAGS = -g -Wall -DPRETRACE $(INCLUDES)

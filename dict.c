@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "dict.h"
 
 Dict initDict() {
@@ -20,18 +19,26 @@ Entry getEntryForKey(Dict d, char *key) {
   return e;
 }
 
-Entry addToDict(Dict d, int et, char *key, void *value) {
+Entry addToDict(Dict d, int et, char *key, ...) {
+  va_list ap;
+  va_start(ap, key);
   Entry entry = (Entry)malloc(sizeof(struct entry));
   strncpy(entry->key, key, sizeof(entry->key));
+  char *sval;
+  char ival;
+  char dval;
   switch(et) {
     case echar:
-      strncpy(entry->value.str, (char *)value, sizeof(entry->key));
+      sval = va_arg(ap, char *);
+      strncpy(entry->value.str, sval, sizeof(entry->key));
       break;
     case eint:
-      entry->value.num = *(int *)value;
+      ival = va_arg(ap, int);
+      entry->value.num = ival;
       break;
     case edouble:
-      entry->value.dub = *(double *)value;
+      dval = va_arg(ap, double);
+      entry->value.dub = dval;
       break;
   }
   HASH_ADD_STR(d->entries, key, entry);

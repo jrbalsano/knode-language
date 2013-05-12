@@ -14,6 +14,15 @@ TranslationUnit getTranslationUnit(FunctionDefinition fd) {
   ret->s = NULL;
   ret->code = NULL;
   ret->f = fd;
+  ret->t = NULL;
+  return ret;
+}
+TranslationUnit getMultFuncDefTranslationUnit(TranslationUnit t, FunctionDefinition fd) {
+  TranslationUnit ret = (TranslationUnit)malloc(sizeof(struct translationUnit_));
+  ret->s = NULL;
+  ret->code = NULL;
+  ret->f = fd;
+  ret->t = t;
   return ret;
 }
 
@@ -28,15 +37,25 @@ void freeTranslationUnit(TranslationUnit t) {
   if(t == NULL) {
     fprintf(stderr, "Null child TranslationUnit\n");
     return;
-  }  
-  freeFunctionDefinition(t->f);
+  }
+
+  if (t->t) {
+    freeTranslationUnit(t->t);
+  }
+  else {
+    free(t->s);
+  }
+
+  if (t->f) {
+    freeFunctionDefinition(t->f);
+  }
   if(t->code)
     free(t->code);
-  free(t->s);
   free(t);
 #ifdef MEMTRACE
   printf("Translation unit freed\n");
 #endif
+
 }
 
 /*********************
@@ -69,7 +88,6 @@ FunctionDefinition getRetTypeFunctionDefinition(int type, Declarator d, Compound
   ret->type_name = type;
   return ret;
 }
-
 /**
  * Recursively free the function definition and its children.
  */
@@ -832,6 +850,7 @@ Expression getPostfixEmptyArgument(Expression e){
   ret->tt = NULL;
   ret->type = postfix;
   ret->sub1.e = e;
+  ret->sub2.l = NULL;
   ret->deriv.postfix = argEmpty;
   return ret;
 }

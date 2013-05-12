@@ -16,7 +16,7 @@ struct edge {
   enum {atob, btoa, both} edge_dir;
   int aindex;
   int bindex;
-  char edge_name[42];
+  char *edge_name;
 };
 
 /* *
