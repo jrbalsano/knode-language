@@ -8,7 +8,7 @@
 /************************************************
  * Translation Units
  ************************************************/
-void translationUnitGenerateCode(TranslationUnit t);
+char *translationUnitGenerateCode(TranslationUnit t);
 
 /************************************************
  * Function Definitions

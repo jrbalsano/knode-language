@@ -1,3 +1,4 @@
 #!/bin/sh
 
-./klp < $1 | ./klc
+./klp < $1 | ./klc knode.c
+gcc knode.c

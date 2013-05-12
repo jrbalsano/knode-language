@@ -29,4 +29,4 @@ main():
 #  sumOfPrimesString = (string) sumOfPrimes
   string result
   result = "The sum of primes from 1 to 100 is " + sumOfPrimes
-  print(result)
+  print(result + "\n")
