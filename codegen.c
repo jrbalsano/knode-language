@@ -379,7 +379,16 @@ void passupExpressionCode(Expression e) {
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
+  char *c = getValidString(e->sub1.e->code);
+  char *c2 = getValidString(e->sub2.i->code);
+  char *c3 = ".";
+  int length = strlen(c) + strlen(c2) + strlen(c3) + 1;
+  char result[length];
+  strncpy(result, c, length);
+  strncpy(result, c3, length);
+  strncpy(result, c2, length);
 
+  e->code = getAllocatedString(result);
 }
 
 void postfixDecrementGenerateCode(Expression e) {

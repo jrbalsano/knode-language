@@ -1,17 +1,23 @@
 main():
-  node node_a
-  node node_b
-  node node_c
-  node node_d
-  edge e1 = [node_a <-> node_b]
-  edge e2 = [node_b -> node_c]
-  edge e3 = [node_c <- node_d]
-  edge e4
-  node node_e
-  node node_f
-  node node_g
-  node_e<=>node_f
-  node_g<=>node_f[2]
-  node node_h
-  print("I work, yay :)")
+  node node_a #mon
+  node node_b #child
+  node node_c #dad
+# node node_d
+  edge e1 = [node_a -> node_b]
+  edge e2 = [node_c -> node_b]
+  edge e3 = [node_a <-> node_c]
+  e1.name = "mother of"
+  e2.name = "father of"
+  e3.name = "love"
+#  edge e1 = [node_a <-> node_b]
+#  edge e2 = [node_b -> node_c]
+#  edge e3 = [node_c <- node_d]
+#  edge e4
+#  node node_e
+#  node node_f
+#  node node_g
+#  node_e<=>node_f
+#  node_g<=>node_f[2]
+#  node node_h
+#  print("I work, yay :)")
   
