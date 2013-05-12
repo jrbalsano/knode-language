@@ -35,29 +35,25 @@ void freeTranslationUnit(TranslationUnit t) {
 #endif
 
   if(t == NULL) {
-      fprintf(stderr, "Null child TranslationUnit\n");
-      return;
+    fprintf(stderr, "Null child TranslationUnit\n");
+    return;
   }
 
-  if (t->t != NULL){
-    freeFunctionDefinition(t->f);
+  if (t->t) {
     freeTranslationUnit(t->t);
-    if(t->code)
-      free(t->code);
+  }
+  else {
     free(t->s);
-    free(t);
   }
 
-  else{
+  if (t->f) {
     freeFunctionDefinition(t->f);
-    if(t->code)
-      free(t->code);
-    free(t->s);
-    free(t);
-
   }
+  if(t->code)
+    free(t->code);
+  free(t);
 #ifdef MEMTRACE
-    printf("Translation unit freed\n");
+  printf("Translation unit freed\n");
 #endif
 
 }

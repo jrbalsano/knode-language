@@ -26,10 +26,6 @@ void walkTranslationUnit(TranslationUnit t, Scope s) {
     walkTranslationUnit(t->t, s);
   }
   walkFunctionDefinition(t->f, s);
-  if (t->t != NULL){
-    printf("Checking the other translation unit\n");
-    walkTranslationUnit(t->t, s);
-  }
   translationUnitTypeCheck(t);
   translationUnitGenerateCode(t);
 #ifdef MEMTRACE
