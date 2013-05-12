@@ -14,6 +14,7 @@ TranslationUnit getTranslationUnit(FunctionDefinition fd) {
   ret->s = NULL;
   ret->code = NULL;
   ret->f = fd;
+  ret->t = NULL;
   return ret;
 }
 TranslationUnit getMultFuncDefTranslationUnit(TranslationUnit t, FunctionDefinition fd) {
@@ -34,17 +35,31 @@ void freeTranslationUnit(TranslationUnit t) {
 #endif
 
   if(t == NULL) {
-    fprintf(stderr, "Null child TranslationUnit\n");
-    return;
-  }  
-  freeFunctionDefinition(t->f);
-  if(t->code)
-    free(t->code);
-  free(t->s);
-  free(t);
+      fprintf(stderr, "Null child TranslationUnit\n");
+      return;
+  }
+
+  if (t->t != NULL){
+    freeFunctionDefinition(t->f);
+    freeTranslationUnit(t->t);
+    if(t->code)
+      free(t->code);
+    free(t->s);
+    free(t);
+  }
+
+  else{
+    freeFunctionDefinition(t->f);
+    if(t->code)
+      free(t->code);
+    free(t->s);
+    free(t);
+
+  }
 #ifdef MEMTRACE
-  printf("Translation unit freed\n");
+    printf("Translation unit freed\n");
 #endif
+
 }
 
 /*********************
