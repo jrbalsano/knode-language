@@ -274,7 +274,25 @@ void nodeCreationGenerateCode(Statement s) {
 }
 
 void nodeAssignmentGenerateCode(Statement s) {
-
+// not werkin' quite right b/c it depends on expression code
+// node tmp = oldNode
+  char *c1 = "Node ";
+  char *c2 = getValidString(s->sub1.i->code);
+  char *c3 = " = ";
+  char *c4 = "initNode();\n";
+  char *c5 = getValidString(s->sub1.i->code);
+  char *c6 = " = ";
+  char *c7 = getValidString(s->sub1.e->code);
+  int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + strlen(c5) + strlen(c6) + strlen(c7);
+  char result[length];
+  strncpy(result, c1, length);
+  strncpy(result, c2, length);
+  strncpy(result, c3, length);
+  strncpy(result, c4, length);
+  strncpy(result, c5, length);
+  strncpy(result, c6, length);
+  strncpy(result, c7, length);
+  s->code = getAllocatedString(result);
 }
 
 void nodeDictionaryGenerateCode(Statement s) {
