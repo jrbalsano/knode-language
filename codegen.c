@@ -248,16 +248,84 @@ void ifelseStatementGenerateCode(Statement s) {
     s->code = getAllocatedString(result);
 }
 
+//This is the code for the dictlist statements for entries
 void dictlistGenerateCode(Statement s) {
-
+    //getting identfier of key
+   
+    char *valueIdentifier = getValidString(s->sub1.i->code);
+    //find out what the enum value should be
+    char *et;
+    //char *c1;
+    switch(s->sub2.e->tt->base){
+        case int_:
+           // c1 = "int %s;\n";
+            et= "eint";
+            break;
+        case double_:
+          //  c1 = "double %s;\n";
+            et= "edouble";
+            break;
+        case string_:
+            et= "echar";
+            break;
+        default:
+            ;
+    }
+    const char *format = "addToDict(%%1$s, %s, \"%s\", %s);\n";
+    char *value = getValidString(s->sub2.e->code);
+    int length = strlen(valueIdentifier) + strlen(value) + strlen(format) + 1;
+    char result[length];
+   // char *delcar[strlen(c1)];
+   // sprintf(delcar, c1, valueIdentifier);
+    sprintf(result, format, et, valueIdentifier, value);
+    //strncat(result,delcar,length);
+    s->code = getAllocatedString(result);
 }
 
+//This is the case when you initialize a dictionary with entries
 void dictDefinitionsGenerateCode(Statement s) {
-
+  //dict initialization
+  char *dictIdentifier = getValidString(s->sub1.i->code);
+  //add entries to dicitonary
+  char *str = getValidString(s->sub2.cs->code);
+  const char *delims = "\n";
+  char forStrTok[strlen(str)];
+  strcpy(forStrTok, str);
+  char *sResult = NULL;
+  sResult = strtok(forStrTok, delims );
+  int i=-2;
+  int length = 1;
+  while( sResult != NULL ) {
+    i++;
+    length += strlen(sResult);
+    sResult = strtok( NULL, delims );
+  }
+  length += i * strlen(dictIdentifier);
+  char result[length];
+  
+  sprintf(result, str, dictIdentifier);
+  char *final = result + 2;
+  result[strlen(result)-3] = 0;
+  const char *format = "Dict %s = initDict(); \n%s\n";
+  int length2 = strlen(format) + strlen(dictIdentifier) + strlen(final);
+  char endResult[length2];
+  sprintf(endResult, format, dictIdentifier, final);
+  s->code = getAllocatedString(endResult);
 }
 
 void dictGenerateCode(Statement s) {
-
+//This case is when you are declaring a dict without any entries y'all
+    char *dictKeyWord = "Dict ";
+    char *dictIdentifier = getValidString(s->sub1.i->code);
+    char *eqSign = "=";
+    char *functionName = "initDict();\n";
+    int length = strlen(dictKeyWord) + strlen(dictIdentifier) + strlen(eqSign) + strlen(functionName);
+    char result[length];
+    strncpy(result, dictKeyWord, length);
+    strncat(result, dictIdentifier, length);
+    strncat(result, eqSign, length);
+    strncat(result, functionName, length);
+    s->code = getAllocatedString(result);    
 }
 
 void nodeCreationGenerateCode(Statement s) {
