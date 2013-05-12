@@ -1,12 +1,16 @@
 main():
   dict firstDict
   string hello
+  hello = "child"
   dict secondDict
     hellothar3 : hello
     hellothar1 : "hello"
   int yourDict
+  yourDict=6
   int hisDict
+  hisDict = 7
   int herDict
+  herDict = 9
   dict myDict
     betterThan : yourDict
     fasterThan : hisDict

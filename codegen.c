@@ -252,11 +252,32 @@ void dictlistGenerateCode(Statement s) {
     //getting identfier of key
    
     char *valueIdentifier = getValidString(s->sub1.i->code);
-    const char *format = "addToDict(%%1$s, 1, \"%s\", %s);\n";
+    //find out what the enum value should be
+    char *et;
+    //char *c1;
+    switch(s->sub2.e->tt->base){
+        case int_:
+           // c1 = "int %s;\n";
+            et= "eint";
+            break;
+        case double_:
+          //  c1 = "double %s;\n";
+            et= "edouble";
+            break;
+        case string_:
+            et= "echar";
+            break;
+        default:
+            ;
+    }
+    const char *format = "addToDict(%%1$s, %s, \"%s\", %s);\n";
     char *value = getValidString(s->sub2.e->code);
-    int length = strlen(valueIdentifier) + strlen(value) + strlen(format) + 1; 
+    int length = strlen(valueIdentifier) + strlen(value) + strlen(format) + 1;
     char result[length];
-    sprintf(result, format, valueIdentifier, value);
+   // char *delcar[strlen(c1)];
+   // sprintf(delcar, c1, valueIdentifier);
+    sprintf(result, format, et, valueIdentifier, value);
+    //strncat(result,delcar,length);
     s->code = getAllocatedString(result);
 }
 
@@ -276,24 +297,24 @@ void dictDefinitionsGenerateCode(Statement s) {
   while( sResult != NULL ) {
     i++;
     length += strlen(sResult);
-    printf("%s\n",sResult);
     sResult = strtok( NULL, delims );
   }
   length += i * strlen(dictIdentifier);
-  printf("I: %d\n",i);
   char result[length];
+  
   sprintf(result, str, dictIdentifier);
   char *final = result + 2;
-  result[strlen(result)-2] = 0;
-
-  printf("OMG THE CODE:\n%s\n================\n", final);
-  // strncat(result, dictionaryEntries, length);
-  s->code = getAllocatedString(result);
+  result[strlen(result)-3] = 0;
+  const char *format = "Dict %s = initDict(); \n%s\n";
+  int length2 = strlen(format) + strlen(dictIdentifier) + strlen(final);
+  char endResult[length2];
+  sprintf(endResult, format, dictIdentifier, final);
+  s->code = getAllocatedString(endResult);
 }
 
 void dictGenerateCode(Statement s) {
 //This case is when you are declaring a dict without any entries y'all
-    char *dictKeyWord = "DICT ";
+    char *dictKeyWord = "Dict ";
     char *dictIdentifier = getValidString(s->sub1.i->code);
     char *eqSign = "=";
     char *functionName = "initDict();\n";
