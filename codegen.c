@@ -329,7 +329,16 @@ void dictGenerateCode(Statement s) {
 }
 
 void nodeCreationGenerateCode(Statement s) {
+  char *c = getValidString(s->sub1.i->code);
+  char *c1 = "SmartNode ";
+  char *c2 = " = newSmartNode();\n";
+  int length = strlen(c) + strlen(c1) + strlen(c2) + 1;
+  char result[length];
+  strncpy(result, c1, length);
+  strncat(result, c, length);
+  strncat(result, c2, length);
 
+  s->code = getAllocatedString(result); 
 }
 
 void nodeAssignmentGenerateCode(Statement s) {
@@ -342,10 +351,38 @@ void nodeDictionaryGenerateCode(Statement s) {
 
 void edgeCreationGenerateCode(Statement s) {
 
+
 }
 
 void edgeStatementGenerateCode(Statement s) {
+  char *c = getValidString(s->sub1.i->code);
+  char *ca = getValidString(s->sub2.e->code);
+  char *cb = getValidString(s->sub3.e->code);
+  char *c4; 
 
+//  printf("Left: %d\nRight: %d\nBoth: %d\nValue: %d\n", left, right, both, s->deriv.edge);
+  switch(s->deriv.edge){
+    case right:
+      c4 = "atob";
+      break;
+    case left:
+      c4 = "btoa";
+      break;
+    case both:
+      c4 = "both";  
+      break;
+    default: 
+      c4 = "";
+  }
+  
+  const char *format = "SmartEdge %s = newSmartEdge(copySmartNode(%s), copySmartNode(%s), %s);\n";
+  int length = strlen(c) + strlen(ca) + strlen(cb) + strlen(c4) + strlen(format);
+  char result[length];
+  sprintf(result, format, c, ca, cb, c4);
+
+//printf("result: %s", result);
+  s->code = getAllocatedString(result); 
+ 
 }
 
 void statementGenerateCode(Statement s) {
@@ -399,7 +436,16 @@ void passupExpressionCode(Expression e) {
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
+  char *c = getValidString(e->sub1.e->code);
+  char *c2 = getValidString(e->sub2.i->code);
+  char *c3 = ".";
+  int length = strlen(c) + strlen(c2) + strlen(c3) + 1;
+  char result[length];
+  strncpy(result, c, length);
+  strncat(result, c3, length);
+  strncat(result, c2, length);
 
+  e->code = getAllocatedString(result);
 }
 
 void postfixDecrementGenerateCode(Expression e) {
