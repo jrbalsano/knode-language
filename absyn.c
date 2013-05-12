@@ -1437,7 +1437,6 @@ void freeExpression(Expression e) {
       }
       break;
     case assignment:
-      printf("WALKING ASSIGN");
       switch(e->deriv.assign){
         case init:
           freeIdentifier(e->sub2.i);

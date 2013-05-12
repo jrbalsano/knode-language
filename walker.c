@@ -1,21 +1,26 @@
 #include "walker.h"
 
-void startWalk(TranslationUnit root) {
+char *startWalk(TranslationUnit root) {
   Scope s = newScope(NULL);
   TypeCheckType printType = getTypeCheckType(void_);
   printType->fn_sub = getTypeCheckType(string_);
   addSymbolToScope(s, "print", printType);
-  walkTranslationUnit(root, s); 
+  char *tu = walkTranslationUnit(root, s);
+  char *includes = "#include<stdio.h>\n#include<string.h>\n#include \"node.h\"\n#include \"dict.h\"\n#include \"edge.h\"\n";
+  char *ret = (char *)malloc(sizeof(char)*(strlen(tu)+strlen(includes)+1));
+  strcpy(ret, includes);
+  strcat(ret, tu);
+  return ret; 
 }
 
-void walkTranslationUnit(TranslationUnit t, Scope s) {
+char *walkTranslationUnit(TranslationUnit t, Scope s) {
 #ifdef MEMTRACE
   printf("Walking translation unit at %p\n", t);
 #endif
 
   if(t == NULL) {
     fprintf(stderr, "Null child TranslationUnit\n");
-    return;
+    return "";
   }
   if(!s) {
     s = newScope(NULL);
@@ -23,10 +28,11 @@ void walkTranslationUnit(TranslationUnit t, Scope s) {
   t->s = s;
   walkFunctionDefinition(t->f, s);
   translationUnitTypeCheck(t);
-  translationUnitGenerateCode(t);
+  char *ret = translationUnitGenerateCode(t);
 #ifdef MEMTRACE
   printf("Translation unit walked at %p\n", t);
 #endif
+  return ret;
 }
 
 void walkFunctionDefinition(FunctionDefinition f, Scope s) {
