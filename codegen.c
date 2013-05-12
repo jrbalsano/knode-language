@@ -325,6 +325,9 @@ void passupExpressionCode(Expression e) {
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+  #ifdef PRETRACE
+   printf("PASSING UP PRECODE %s \n", e->precode);
+  #endif
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
@@ -342,7 +345,9 @@ void postfixIncrementGenerateCode(Expression e) {
   char result[length];
   strncpy(result,s,length);
   strncat(result,s2,length);
-  e->code = getAllocatedString(result);
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
+  e->code = getAllocatedString(getValidString(e->sub1.e->code));
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
 void postfixArgumentGenerateCode(Expression e) {
@@ -392,7 +397,9 @@ void postfixBracketGenerateCode(Expression e) {
 }
 
 void unaryExpressionGenerateCode(Expression e) {
-  printf("Where'd it go? %s", e->sub1.e->precode);
+  #ifdef PRETRACE
+    printf("Where'd it go? %s", e->sub1.e->precode);
+  #endif
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
@@ -424,7 +431,6 @@ void multExpressionGenerateCode(Expression e) {
   strncpy(result, c1, length);
   strncat(result, c2, length);
   strncat(result, c3, length);
-  e->code = getAllocatedString(result);
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
@@ -463,13 +469,13 @@ void addExpressionGenerateCode(Expression e) {
     sprintf(k, "%d", knodetemp++);
 
     // this char pointer is the length of the precode without the input.
-    const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, \"%s\");\n";
     char *s1 = getValidString(e->sub1.e->code);
     char *s2 = getValidString(e->sub2.e->code);
+    const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, %s);\n";
 
     //  print for debugging
-    printf("%s\n", s1);
-    printf("%s\n", s2);
+    //printf("%s\n", s1);
+    //printf("%s\n", s2);
 
     // the length of the precode
     int length = strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(format) + 1;
@@ -526,7 +532,10 @@ void relatExpressionGenerateCode(Expression e) {
   strncat(result, c3, length);
   strncat(result, c4, length);
 
+  e->precode = getAllocatedString(e->sub1.e->precode);
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(e->sub1.e->postcode);
+
 }
 
 void eqExpressionGenerateCode(Expression e) {
@@ -538,7 +547,9 @@ void eqExpressionGenerateCode(Expression e) {
   strncpy(result,c1,length);
   strncat(result,c2,length);
   strncat(result,c3,length);
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
 void condExpressionGenerateCode(Expression e) {
@@ -563,7 +574,11 @@ void condExpressionGenerateCode(Expression e) {
   strncat(result, c3, length);
   strncat(result, c2, length);
  
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+
+
 }
 
 void assignmentInitExpressionGenerateCode(Expression e) {
@@ -585,7 +600,21 @@ void assignmentExpressionGenerateCode(Expression e) {
   strncat(result, c3, length);
   strncat(result, c2, length);
   strncat(result, c4, length);
+  char *pre1 = getValidString(e->sub1.e->precode);
+  char *pre2 = getValidString(e->sub2.e->precode);
+  int prelen = strlen(pre1) + strlen(pre2) + 1;
+  char pre[prelen];
+  strcpy(pre, pre1);
+  strcat(pre, pre2);
+  char *post1 = getValidString(e->sub1.e->postcode);
+  char *post2 = getValidString(e->sub2.e->postcode);
+  int postlen = strlen(post1) + strlen(post2) + 1;
+  char post[postlen];
+  strcpy(post, post1);
+  strcat(post, post2);
+  e->precode = getAllocatedString(pre);
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(post);
 }
 
 void primaryExpressionGenerateCode(Expression e) {

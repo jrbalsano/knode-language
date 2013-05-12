@@ -7,84 +7,80 @@ Node initNode() {
   return n;
 }
 
-void addEdge(Node a, Node b, Edge e) {
+void addSmartEdge(SmartNode sa, SmartNode sb, SmartEdge se) {
   //add edge to a's edgelist
-  a->edgelist[a->edgecount] = e;
-  e->aindex = a->edgecount;
-  a->edgecount += 1;
+  getNode(sa)->edgelist[getNode(sa)->edgecount] = copySmartEdge(se);
+  getEdge(se)->aindex = getNode(sa)->edgecount;
+  getNode(sa)->edgecount += 1;
   
   //add edge to b's edgelist
-  b->edgelist[b->edgecount] = e;
-  e->bindex = b->edgecount;
-  b->edgecount += 1;
+  getNode(sb)->edgelist[getNode(sb)->edgecount] = copySmartEdge(se);
+  getEdge(se)->bindex = getNode(sb)->edgecount;
+  getNode(sb)->edgecount += 1;
+
+  freeSmartNode(sa);
+  freeSmartNode(sb);
+  freeSmartEdge(se);
 }
 
-void removeEdge(Node n, Edge e) {
-  Node o;
-  int nindex;
-  int oindex;
-  //determine which node we are at relative to the edge: a or b
-  if (n == e->a) {
-    o = e->b;
-    nindex = e->aindex;
-    oindex = e->bindex;
-  }
-  else if (n == e->b) {
-    o = e->a;
-    nindex = e->bindex;
-    oindex = e->aindex;
-  }
-
+void removeSmartEdge(SmartEdge se) {
+  SmartNode so = getEdge(se)->a;
+  SmartNode sn = getEdge(se)->b;
+  int nindex = getEdge(se)->bindex;
+  int oindex = getEdge(se)->aindex;
   //get rid of edge in n's edgelist
-  n->edgelist[nindex] = n->edgelist[n->edgecount - 1];
-  n->edgecount -= 1;
+  freeSmartEdge(getNode(sn)->edgelist[nindex]);
+  getNode(sn)->edgelist[nindex] = getNode(sn)->edgelist[getNode(sn)->edgecount - 1];
+  getNode(sn)->edgecount -= 1;
   
   //get rid of edge in other's edgelist
-  o->edgelist[oindex] = o->edgelist[o->edgecount - 1];
-  o->edgecount -= 1;
-
+  freeSmartEdge(getNode(so)->edgelist[oindex]);
+  getNode(so)->edgelist[oindex] = getNode(so)->edgelist[getNode(so)->edgecount - 1];
+  getNode(so)->edgecount -= 1;
   //update the aindex and bindex of the edge plugging the hole
-  if (n == e->a) {
-    n->edgelist[nindex]->aindex = nindex;
-    o->edgelist[oindex]->bindex = oindex;
-  }
-  else if (n == e->b) {
-    n->edgelist[nindex]->bindex = nindex;
-    o->edgelist[oindex]->aindex = oindex;
-  }
+  getEdge(getNode(sn)->edgelist[nindex])->aindex = nindex;
+  getEdge(getNode(so)->edgelist[oindex])->bindex = oindex;
   
+  freeSmartNode(so);
+  freeSmartNode(sn);
   //finally, set the edge free
-  freeEdge(e);
+  freeSmartEdge(se);
 }
 
-void addIntToNode(Node n, char *key, int value) {
+void addIntToSmartNode(SmartNode sn, char *key, int value) {
   int tmp = value;
   int *tmpp = &tmp;
-  addToDict(n->dictlist, eint, key, tmpp);
+  addToDict(getNode(sn)->dictlist, eint, key, tmpp);
+  freeSmartNode(sn);
 }
 
-void addDubToNode(Node n, char *key, double value) {
+void addDubToSmartNode(SmartNode sn, char *key, double value) {
   double tmp = value;
   double *tmpp = &tmp;
-  addToDict(n->dictlist, edouble, key, tmpp);
+  addToDict(getNode(sn)->dictlist, edouble, key, tmpp);
+  freeSmartNode(sn);
 }
 
-void addStrToNode(Node n, char *key, char *value) {
-  addToDict(n->dictlist, echar, key, value);
+void addStrToSmartNode(SmartNode sn, char *key, char *value) {
+  addToDict(getNode(sn)->dictlist, echar, key, value);
+  freeSmartNode(sn);
 }
 
-int getIntFromNode(Node n, char *key) {
-  Entry e = getEntryForKey(n->dictlist, key);
+int getIntFromSmartNode(SmartNode sn, char *key) {
+  Entry e = getEntryForKey(getNode(sn)->dictlist, key);
+  freeSmartNode(sn);
   return e->value.num;
 }
 
-double getDubFromNode(Node n, char *key) {
-  Entry e = getEntryForKey(n->dictlist, key);
+double getDubFromSmartNode(SmartNode sn, char *key) {
+  Entry e = getEntryForKey(getNode(sn)->dictlist, key);
+  freeSmartNode(sn);
   return e->value.dub;
 }
 
-char *getStrFromNode(Node n, char *key) {
-  Entry e = getEntryForKey(n->dictlist, key);
+char *getStrFromSmartNode(SmartNode sn, char *key) {
+  Entry e = getEntryForKey(getNode(sn)->dictlist, key);
+  freeSmartNode(sn);
   return e->value.str;
 }
 
@@ -96,7 +92,7 @@ void freeNode(Node n) {
   //free n's edges...
   int i;
   for (i = 0; i < n->edgecount; i++) {
-    removeEdge(n, n->edgelist[i]);
+    removeSmartEdge(n->edgelist[i]);
   }
 
   //finally, free n itself

@@ -294,19 +294,16 @@ void walkExpression(Expression e, Scope s) {
           walkExpression(e->sub1.e, e->s);
           postfixIdentifierTypeCheck(e);
           postfixIdentifierGenerateCode(e);
-          printf("OMG wtf7..\n");
           break;
         case postdecr:
           walkExpression(e->sub1.e, e->s);
           postfixDecrementTypeCheck(e);
           postfixDecrementGenerateCode(e);
-          printf("OMG wtf6..\n");
           break;
         case postincr:
           walkExpression(e->sub1.e, e->s);
           postfixIncrementTypeCheck(e);
           postfixIncrementGenerateCode(e);
-          printf("OMG wtf5..\n");
           break;
         case arg:
           walkExpression(e->sub1.e, e->s);
@@ -317,26 +314,22 @@ void walkExpression(Expression e, Scope s) {
         */
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);          
-          printf("OMG wtf4..\n");
           break;
         case argEmpty:
           walkExpression(e->sub1.e, e->s);
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);
-          printf("OMG wtf3..\n");
           break;
         case bracket:
           walkExpression(e->sub1.e, e->s);
           walkExpression(e->sub2.e, e->s);
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);          
-          printf("OMG wtf2..\n");
           break;
         case 0:
           walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
-          printf("OMG wtf...\n");
           break;
       }
       break;
@@ -365,19 +358,16 @@ void walkExpression(Expression e, Scope s) {
           walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
-          printf("We went here\n");
           break;
         default:
           walkExpression(e->sub1.e, e->s);
           walkExpression(e->sub2.e, e->s);
           multExpressionTypeCheck(e);
           multExpressionGenerateCode(e);
-          printf("We went there\n");
           break;
       }
       break;
     case add:
-      printf("encountered add in walker\n");
       switch(e->deriv.add){
         case 0:
           walkExpression(e->sub1.e, e->s);
@@ -385,9 +375,7 @@ void walkExpression(Expression e, Scope s) {
           passupExpressionCode(e);
           break;
         default:
-          printf("==========================================================\n");
           walkExpression(e->sub1.e, e->s);
-          printf("==========================================================\n");
           walkExpression(e->sub2.e, e->s);
           addExpressionTypeCheck(e);
           addExpressionGenerateCode(e);
@@ -517,9 +505,11 @@ void walkExpression(Expression e, Scope s) {
     default:
       break;
   }
+#ifdef PRETRACE
   printf("Finishing Walking Expression with type %d\n", e->type);
   printf("PRECODE: %s\n", e->precode);
   printf("tt: %p\n", e->tt);
+#endif
 #ifdef MEMTRACE
   printf("Expression walked at %p\n", e);
 #endif
