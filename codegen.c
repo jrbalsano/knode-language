@@ -260,10 +260,10 @@ void dictGenerateCode(Statement s) {
 }
 
 void nodeCreationGenerateCode(Statement s) {
-  char *c1 = "Node ";
+  char *c1 = "SmartNode ";
   char *c2 = getValidString(s->sub1.i->code);
   char *c3 = " = ";
-  char *c4 = "initNode();\n";
+  char *c4 = "newSmartNode();\n";
   int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4);
   char result[length];
   strcpy(result, c1);
@@ -274,10 +274,10 @@ void nodeCreationGenerateCode(Statement s) {
 }
 
 void nodeAssignmentGenerateCode(Statement s) {
-  char *c1 = "Node ";
+  char *c1 = "SmartNode ";
   char *c2 = getValidString(s->sub1.i->code);
   char *c3 = " = ";
-  char *c4 = "initNode();\n";
+  char *c4 = "newSmartNode();\n";
   char *c5 = " = ";
   char *c6 = getValidString(s->sub2.e->code);
   char *c7 = ";\n";
@@ -299,6 +299,17 @@ void nodeDictionaryGenerateCode(Statement s) {
   char *c2 = getValidString(s->sub1.i->code);
   char *c3 = " = ";
   char *c4 = "initNode();\n";
+  char *c5 = getValidString(s->sub2.cs->code);
+  int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + strlen(c5);
+  char result[length];
+  strcpy(result, c1);
+  strcat(result, c2);
+  strcat(result, c3);
+  strcat(result, c4);
+  strcat(result, c5);
+  s->code = getAllocatedString(result);
+  //s->sub2.cs
+  //detect the type of each thing in the statement...
 
 }
 
