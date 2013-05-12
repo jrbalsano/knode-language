@@ -7,8 +7,13 @@
 
 typedef struct node *Node;
 
+#include "edge.h"
+#include "smartpointers.h"
+
 struct node {
   Dict dictlist;
+  int edgecount;
+  SmartEdge edgelist[50];
 };
 
 /* *
@@ -18,42 +23,52 @@ struct node {
 Node initNode();
 
 /* *
- * Free the node, the dictionary of the node, and the entries in the dictionary
- * of the node
+ * Free the node, the dictionary of the node, the entries in the dictionary of
+ * the node, and the edges in the edgelist of the node
  */
 void freeNode(Node n);
 
 /* *
+ * add an edge to the node's edgelist
+ */
+void addSmartEdge(SmartNode sa, SmartNode sb, SmartEdge se);
+
+/* *
+ * remove an edge from the edgelists of both nodes, then free the edge
+ */
+void removeSmartEdge(SmartEdge se);
+
+/* *
  * Add an int to the dictionary of the node
  */
-void addIntToNode(Node n, char *key, int value);
+void addIntToSmartNode(SmartNode sn, char *key, int value);
 
 /* *
  * Add a double to the dictionary of the node
  */
-void addDubToNode(Node n, char *key, double value);
+void addDubToSmartNode(SmartNode sn, char *key, double value);
 
 /* *
  * Add a string to the dictionary of the node
  */
-void addStrToNode(Node n, char *key, char *value);
+void addStrToSmartNode(SmartNode sn, char *key, char *value);
 
 /* *
  * return an integer from the node's dictionary. use when we _know_ we expect
  * an integer
  */
-int getIntFromNode(Node n, char *key);
+int getIntFromSmartNode(SmartNode sn, char *key);
 
 /* *
  * return a double from the node's dictionary. use when we _know_ we expect a
  * double
  */
-double getDubFromNode(Node n, char *key);
+double getDubFromSmartNode(SmartNode sn, char *key);
 
 /* *
  * return a string from the node's dictionary. use when we _know_ we expect a
  * string
  */
-char *getStrFromNode(Node n, char *key);
+char *getStrFromSmartNode(SmartNode sn, char *key);
 
 #endif

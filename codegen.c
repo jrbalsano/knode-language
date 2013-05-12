@@ -331,7 +331,7 @@ void expressionStatementGenerateCode(Statement s) {
 void declStatementGenerateCode(Statement s){
   char *c2 = testForSemicolon(getValidString(s->sub2.i->code));
   char *c3 = ";\n";
-  char *c4 = " ";
+  char *c4 = "";
   char *c1 = getValidString(getTypnamString(s->sub1.typnam));
   int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
   char result[length];
@@ -352,6 +352,9 @@ void passupExpressionCode(Expression e) {
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+  #ifdef PRETRACE
+   printf("PASSING UP PRECODE %s \n", e->precode);
+  #endif
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
@@ -369,16 +372,46 @@ void postfixIncrementGenerateCode(Expression e) {
   char result[length];
   strncpy(result,s,length);
   strncat(result,s2,length);
-  e->code = getAllocatedString(result);
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
+  e->code = getAllocatedString(getValidString(e->sub1.e->code));
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
 void postfixArgumentGenerateCode(Expression e) {
   char *str = getValidString(e->sub1.e->code);
   char *str2 = getValidString(e->sub2.l->code);
-  int length = strlen(str) + strlen(str2) + 3;
+  char *str3;// = ""; 
+  char *str4 = "printf";
+  char *str5 = "";
+/*  if(strcmp(str, str4)==0)
+     printf("%s is equal to printf and str2 = %s", str, str2);*/
+  /**deal with printing things that might not be strings already*/
+  if (strcmp(str, str4)==0 && strcmp(str2, str5)!=0){
+    void *d = e->sub2.l->head->data; 
+    Expression e  = (Expression)d; //gets first expression
+    if (e != NULL){
+      switch(e->tt->base){
+        case int_:
+        case double_:
+        case boolean_:
+          str3 = "\"%d\" , ";
+          break;
+        case char_:
+          str3 = "\"%c\" , ";
+          break;
+        default:
+          str3 = "\"%s\" , "; //guess it's a string 
+      }
+   }
+  }
+  else{
+    str3 = "";
+  }
+  int length = strlen(str) + strlen(str2) + strlen(str3) + 3;
   char result[length];
   strncpy(result, str, length);
   strncat(result, "(", length);
+  strncat(result, str3, length);
   strncat(result, str2, length);
   strncat(result, ")", length);
   e->precode = getAllocatedString(e->sub2.l->precode);
@@ -391,7 +424,9 @@ void postfixBracketGenerateCode(Expression e) {
 }
 
 void unaryExpressionGenerateCode(Expression e) {
-  printf("Where'd it go? %s", e->sub1.e->precode);
+  #ifdef PRETRACE
+    printf("Where'd it go? %s", e->sub1.e->precode);
+  #endif
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
@@ -423,7 +458,6 @@ void multExpressionGenerateCode(Expression e) {
   strncpy(result, c1, length);
   strncat(result, c2, length);
   strncat(result, c3, length);
-  e->code = getAllocatedString(result);
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
@@ -462,13 +496,13 @@ void addExpressionGenerateCode(Expression e) {
     sprintf(k, "%d", knodetemp++);
 
     // this char pointer is the length of the precode without the input.
-    const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, \"%s\");\n";
     char *s1 = getValidString(e->sub1.e->code);
     char *s2 = getValidString(e->sub2.e->code);
+    const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, %s);\n";
 
     //  print for debugging
-    printf("%s\n", s1);
-    printf("%s\n", s2);
+    //printf("%s\n", s1);
+    //printf("%s\n", s2);
 
     // the length of the precode
     int length = strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(format) + 1;
@@ -525,7 +559,10 @@ void relatExpressionGenerateCode(Expression e) {
   strncat(result, c3, length);
   strncat(result, c4, length);
 
+  e->precode = getAllocatedString(e->sub1.e->precode);
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(e->sub1.e->postcode);
+
 }
 
 void eqExpressionGenerateCode(Expression e) {
@@ -537,7 +574,9 @@ void eqExpressionGenerateCode(Expression e) {
   strncpy(result,c1,length);
   strncat(result,c2,length);
   strncat(result,c3,length);
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
 void condExpressionGenerateCode(Expression e) {
@@ -562,7 +601,11 @@ void condExpressionGenerateCode(Expression e) {
   strncat(result, c3, length);
   strncat(result, c2, length);
  
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+
+
 }
 
 void assignmentInitExpressionGenerateCode(Expression e) {
@@ -584,7 +627,21 @@ void assignmentExpressionGenerateCode(Expression e) {
   strncat(result, c3, length);
   strncat(result, c2, length);
   strncat(result, c4, length);
+  char *pre1 = getValidString(e->sub1.e->precode);
+  char *pre2 = getValidString(e->sub2.e->precode);
+  int prelen = strlen(pre1) + strlen(pre2) + 1;
+  char pre[prelen];
+  strcpy(pre, pre1);
+  strcat(pre, pre2);
+  char *post1 = getValidString(e->sub1.e->postcode);
+  char *post2 = getValidString(e->sub2.e->postcode);
+  int postlen = strlen(post1) + strlen(post2) + 1;
+  char post[postlen];
+  strcpy(post, post1);
+  strcat(post, post2);
+  e->precode = getAllocatedString(pre);
   e->code = getAllocatedString(result);
+  e->postcode = getAllocatedString(post);
 }
 
 void primaryExpressionGenerateCode(Expression e) {
@@ -651,23 +708,23 @@ char *getValidString(char *s){
 char *getTypnamString(int typ){
   switch(typ){
     case INT:
-      return "int";
+      return "int ";
     case DOUBLE:
-      return "double";
+      return "double ";
     case CHAR:
-      return "char";
+      return "char ";
     case BOOLEAN:
-      return "int"; //this happens because C doesn't do booleans
+      return "int "; //this happens because C doesn't do booleans
     case STRING:
-      return "String"; //this will probably need to be fixed later since C doesn't do Strings
+      return "char *"; //temporary way of dealing with strings in C
     case NODE:
-      return "node";
+      return "node ";
     case EDGE:
-      return "edge";
+      return "edge ";
     case DICT:
-      return "dict";
+      return "dict ";
     default:
-      return "not any normal type";
+      return "not any normal type ";
   }
 }
 
