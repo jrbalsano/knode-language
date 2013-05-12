@@ -252,55 +252,44 @@ void dictlistGenerateCode(Statement s) {
     //getting identfier of key
    
     char *valueIdentifier = getValidString(s->sub1.i->code);
-    char *et = "1";
+    const char *format = "addToDict(%%1$s, 1, \"%s\", %s);\n";
     char *value = getValidString(s->sub2.e->code);
-    char *quote = "\"";
-    char *functionName = "addToDict(%s,";
-    char *comma =  ",";
-    char *backBracket = ");\n";
-    int length = strlen(valueIdentifier) + strlen(et) + strlen(value) + strlen(quote) + strlen(functionName)+ strlen(comma) + 20;
+    int length = strlen(valueIdentifier) + strlen(value) + strlen(format) + 1; 
     char result[length];
-    strncpy(result, functionName, length);
-    strncat(result, et, length);
-    strncat(result, comma, length);
-    strncat(result, quote, length);
-    strncat(result, valueIdentifier, length);
-    strncat(result, quote, length);
-    strncat(result, comma, length);
-    strncat(result, quote, length);
-    strncat(result, value, length);
-    strncat(result, quote, length);
-    strncat(result, backBracket, length);
+    sprintf(result, format, valueIdentifier, value);
     s->code = getAllocatedString(result);
 }
 
 //This is the case when you initialize a dictionary with entries
 void dictDefinitionsGenerateCode(Statement s) {
-    //dict initialization
-    char *dictKeyWord = "DICT ";
-    char *dictIdentifier = getValidString(s->sub1.i->code);
-    char *eqSign = "=";
-    char *functionName = "initDict();\n";
-    //add entries to dicitonary
-    char *str = getValidString(s->sub2.cs->code);
-    char *delims = "\n";
-    char *sResult = NULL;
-    sResult = strtok( str, delims );
-    int i=0;
-    while( sResult != NULL ) {
-        i++;
-        printf("%s",sResult);
-    }
-    printf("%d\n",i);
-    int length = strlen(dictKeyWord) + strlen(dictIdentifier) + strlen(eqSign) + strlen(functionName) + 1;
-    char result[length];
-    strncpy(result, dictKeyWord, length);
-    strncat(result, dictIdentifier, length);
-    strncat(result, eqSign, length);
-    strncat(result, functionName, length);
-   // strncat(result, dictionaryEntries, length);
-    s->code = getAllocatedString(result);
-    }
+  //dict initialization
+  char *dictIdentifier = getValidString(s->sub1.i->code);
+  //add entries to dicitonary
+  char *str = getValidString(s->sub2.cs->code);
+  const char *delims = "\n";
+  char forStrTok[strlen(str)];
+  strcpy(forStrTok, str);
+  char *sResult = NULL;
+  sResult = strtok(forStrTok, delims );
+  int i=-2;
+  int length = 1;
+  while( sResult != NULL ) {
+    i++;
+    length += strlen(sResult);
+    printf("%s\n",sResult);
+    sResult = strtok( NULL, delims );
+  }
+  length += i * strlen(dictIdentifier);
+  printf("I: %d\n",i);
+  char result[length];
+  sprintf(result, str, dictIdentifier);
+  char *final = result + 2;
+  result[strlen(result)-2] = 0;
+
+  printf("OMG THE CODE:\n%s\n================\n", final);
+  // strncat(result, dictionaryEntries, length);
+  s->code = getAllocatedString(result);
+}
 
 void dictGenerateCode(Statement s) {
 //This case is when you are declaring a dict without any entries y'all
