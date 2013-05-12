@@ -467,24 +467,26 @@ void addExpressionGenerateCode(Expression e) {
     // k is incremented after use here for the next knodetemp.
     char k[15];
     sprintf(k, "%d", knodetemp++);
+    char l[15];
+    sprintf(l, "%d", knodetemp++);
 
     // this char pointer is the length of the precode without the input.
     char *s1 = getValidString(e->sub1.e->code);
     char *s2 = getValidString(e->sub2.e->code);
-    const char *format = "int length = strlen(%s) + strlen(%s);\nchar __knodetemp%s[length];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, %s);\n";
+    const char *format = "int __knodetemp%s = strlen(%s) + strlen(%s);\nchar __knodetemp%s[__knodetemp%s];\nstrcpy(__knodetemp%s, %s);\n strcat(__knodetemp%s, %s);\n";
 
     //  print for debugging
     //printf("%s\n", s1);
     //printf("%s\n", s2);
 
     // the length of the precode
-    int length = strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(format) + 1;
+    int length = strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(l) * 2 + strlen(format) + 1;
 
     // sets the size of the precode
     e->precode = (char *)malloc(length * sizeof(char));
 
     // sets this expression's precode.
-    sprintf(e->precode, format, s1, s2, k, k, s1, k, s2);
+    sprintf(e->precode, format, l, s1, s2, k, l, k, s1, k, s2);
      
     //precode = 
     //int length = strlen(string1) + strlen(string2);
