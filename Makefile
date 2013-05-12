@@ -23,9 +23,6 @@ whitelex.yy.c: whitelex.l
 $(COMPILER): $(DEPENDS)
 	$(CC) $(DEPENDS) -o $(COMPILER)
 
-test: $(DEPENDS)
-	$(CC) -g -Wall -DMEMTRACE -DPRETRACE $(DEPENDS) -o $(COMPILER)
-
 yacc.tab.o: yacc.tab.c
 
 lex.yy.c: lex.l yacc.tab.c
