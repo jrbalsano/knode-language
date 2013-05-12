@@ -1,10 +1,11 @@
 #include "codegen.h"
 int knodetemp;
-void translationUnitGenerateCode(TranslationUnit t) {
+char *translationUnitGenerateCode(TranslationUnit t) {
 
   t->code = getAllocatedString(getValidString(t->f->code));
   //does not deal with case where t also has a translation unit
   printf("final code:\n%s\n", t->code);
+  return getValidString(t->f->code);
 }
 void functionDefinitionGenerateCode(FunctionDefinition f) {
 

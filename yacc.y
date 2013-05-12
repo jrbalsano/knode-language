@@ -277,10 +277,22 @@ void yyerror(char *s) {
   errorHad = 1;
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
+  if(argc != 2) {
+    fprintf(stderr, "Useage: %s <outputfile>", argv[0]);
+    return 1;
+  }
   yyparse();
-  startWalk(root);
+  char *code = startWalk(root);
+//  printf("\n\nin yacc, code = %s", code);
   freeTranslationUnit(root);
+  char *outputfile = argv[1];
+  FILE *file;
+//  printf("just checking: %s\n", code);
+  file = fopen(outputfile, "w");
+  fwrite(code, strlen(code), 1, file);
+  fclose(file);
+  free(code);
   if(errorHad)
     return 1;
   else
