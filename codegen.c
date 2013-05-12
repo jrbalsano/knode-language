@@ -379,10 +379,10 @@ void nodeAssignmentGenerateCode(Statement s) {
 }
 
 void nodeDictionaryGenerateCode(Statement s) {
-  char *c1 = "Node ";
+  char *c1 = "SmartNode ";
   char *id = getValidString(s->sub1.i->code);
   char *c3 = " = ";
-  char *c4 = "initNode();\n";
+  char *c4 = "newSmartNode();\n";
   //now get the code for our compound statement
   
   char *str = getValidString(s->sub2.cs->code);
@@ -400,9 +400,12 @@ void nodeDictionaryGenerateCode(Statement s) {
     printf("%s\n", sResult);
     sResult = strtok(NULL, delims);
   }
-  cslength += i * strlen(id);
+  char *wrapper = "getNode(%s)->dictlist";
+  char wrapperWithId[strlen(wrapper) + strlen(id) + 1];
+  sprintf(wrapperWithId, wrapper, id);
+  cslength += i * strlen(wrapperWithId);
   char c5[cslength];
-  sprintf(c5, str, id);
+  sprintf(c5, str, wrapperWithId);
   printf("HERE'S DA CODE:\n%s\n", c5);
 
   //char *c5 = getValidString(s->sub2.cs->code);
