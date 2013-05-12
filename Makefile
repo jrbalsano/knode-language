@@ -5,6 +5,7 @@ LDFLAGS = -g -w
 #LDFLAGS = -g -DMEMTRACE
 #CFLAGS = -g -Wall -DPRETRACE $(INCLUDES)
 #LDFLAGS = -g -DPRETRACE
+DEPENDS = lex.yy.o yacc.tab.o absyn.o symtable.o walker.o typecheck.o codegen.o scope.o typechecktype.h
 COMPILER = klc
 PREPROCESSOR = klp
 
@@ -19,9 +20,11 @@ whitelex.yy.o: whitelex.yy.c
 whitelex.yy.c: whitelex.l
 	lex -o whitelex.yy.c whitelex.l
 
-$(COMPILER): lex.yy.o yacc.tab.o absyn.o symtable.o walker.o typecheck.o codegen.o scope.o typechecktype.h
-	$(CC) lex.yy.o yacc.tab.o absyn.o symtable.o walker.o typecheck.o codegen.o scope.o -o $(COMPILER)
+$(COMPILER): $(DEPENDS)
+	$(CC) $(DEPENDS) -o $(COMPILER)
 
+test: $(DEPENDS)
+	$(CC) -g -Wall -DMEMTRACE -DPRETRACE $(DEPENDS) -o $(COMPILER)
 
 yacc.tab.o: yacc.tab.c
 
