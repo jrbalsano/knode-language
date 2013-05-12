@@ -284,11 +284,9 @@ int main(int argc, char *argv[]) {
   }
   yyparse();
   char *code = startWalk(root);
-//  printf("\n\nin yacc, code = %s", code);
   freeTranslationUnit(root);
   char *outputfile = argv[1];
   FILE *file;
-//  printf("just checking: %s\n", code);
   file = fopen(outputfile, "w");
   fwrite(code, strlen(code), 1, file);
   fclose(file);

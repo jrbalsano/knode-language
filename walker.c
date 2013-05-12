@@ -10,7 +10,6 @@ char *startWalk(TranslationUnit root) {
   char *ret = (char *)malloc(sizeof(char)*(strlen(tu)+strlen(includes)+1));
   strcpy(ret, includes);
   strcat(ret, tu);
-//printf("in startwalk, ret = %s\n", ret);
   return ret; 
 }
 
@@ -30,7 +29,6 @@ char *walkTranslationUnit(TranslationUnit t, Scope s) {
   walkFunctionDefinition(t->f, s);
   translationUnitTypeCheck(t);
   char *ret = translationUnitGenerateCode(t);
-//  printf("in walkTranslationUnit, *ret = %s\n", ret);
 #ifdef MEMTRACE
   printf("Translation unit walked at %p\n", t);
 #endif
