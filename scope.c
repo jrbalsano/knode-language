@@ -12,6 +12,7 @@ Scope newScope(Scope parent) {
 
 TypeCheckType findSymbol(Scope s, char *id) {
   TypeCheckType ret = NULL;
+  printf("Looking up symbol %s\n", id);
   while(s && !ret) {
     ret = findType(&(s->symbolTable), id);
     s = s->parent;
@@ -20,9 +21,12 @@ TypeCheckType findSymbol(Scope s, char *id) {
 }
 
 TypeCheckType addSymbolToScope(Scope s, char *id, TypeCheckType tt) {
+  printf("Attempting to add symbol %s to scope %p\n", id, s);
   Symtab table = addSymbol(&(s->symbolTable), id, tt);
-  if(table)
+  if(table) {
+    printf("Successful!\n");
     return table->type;
+  }
   else
     return NULL;
 }

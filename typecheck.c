@@ -9,7 +9,7 @@ void functionDefinitionTypeCheck(FunctionDefinition f) {
   TypeCheckType hold;
   tt = copyTypeCheckType(f->d->tt);
   hold = tt;
-  tt = addSymbolToScope(f->s, f->d->name->symbol, tt);
+  tt = addSymbolToScope(f->s->parent, f->d->name->symbol, tt);
   if(!tt) {
     fprintf(stderr, "Error: Declaration of already declared variable `%s`\n", f->d->name->symbol);
     free(hold);

@@ -21,7 +21,15 @@ void walkTranslationUnit(TranslationUnit t, Scope s) {
     s = newScope(NULL);
   }
   t->s = s;
+  if (t->t != NULL){
+    printf("Checking the other translation unit\n");
+    walkTranslationUnit(t->t, s);
+  }
   walkFunctionDefinition(t->f, s);
+  if (t->t != NULL){
+    printf("Checking the other translation unit\n");
+    walkTranslationUnit(t->t, s);
+  }
   translationUnitTypeCheck(t);
   translationUnitGenerateCode(t);
 #ifdef MEMTRACE
@@ -335,11 +343,20 @@ void walkExpression(Expression e, Scope s) {
     case cast:
       switch(e->deriv.cast){
         case typed:
+          printf("Typed cast expression.\n");
           walkExpression(e->sub2.e, e->s);
           castTypedExpressionTypeCheck(e);
           castTypedExpressionGenerateCode(e);
           break;
         case 0:
+          printf("Case 0 cast expression. \n");
+          if (e->sub1.e){
+            printf("E sub1 e exists\n");
+          }
+          if (e->s){
+
+            printf("E s exists \n");
+          }
           walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);

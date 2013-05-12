@@ -854,6 +854,7 @@ Expression getPostfixEmptyArgument(Expression e){
   ret->tt = NULL;
   ret->type = postfix;
   ret->sub1.e = e;
+  ret->sub2.l = NULL;
   ret->deriv.postfix = argEmpty;
   return ret;
 }
