@@ -138,6 +138,7 @@ struct translationUnit_ {
   Scope s;
   char *code;
   FunctionDefinition f;
+  TranslationUnit t;
 };
 struct grammarList_ {
   char *code;
@@ -159,6 +160,7 @@ struct grammarNode_ {
 void *popFront(GrammarList g);
 
 TranslationUnit getTranslationUnit(FunctionDefinition fd);
+TranslationUnit getMultFuncDefTranslationUnit(TranslationUnit t, FunctionDefinition fd);
 
 FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs);
 FunctionDefinition getRetTypeFunctionDefinition(int type, Declarator d, CompoundStatement cs);

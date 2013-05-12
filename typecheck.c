@@ -9,9 +9,10 @@ void functionDefinitionTypeCheck(FunctionDefinition f) {
   TypeCheckType hold;
   tt = copyTypeCheckType(f->d->tt);
   hold = tt;
-  tt = addSymbolToScope(f->s, f->d->name->symbol, tt);
+  tt = addSymbolToScope(f->s->parent, f->d->name->symbol, tt);
   if(!tt) {
     fprintf(stderr, "Error: Declaration of already declared variable `%s`\n", f->d->name->symbol);
+    printf("FunctionDefinition");
     free(hold);
     exit(1);
   }
@@ -74,6 +75,7 @@ void nodeCreationTypeCheck(Statement s) {
   tt = addSymbolToScope(s->s, s->sub1.i->symbol, tt);
   if(!tt) {
     fprintf(stderr, "Error: Declaration of already declared variable `%s`\n", s->sub2.i->symbol);
+    printf("NodeCreation");
     free(hold);
     exit(1);
   }
@@ -91,6 +93,7 @@ void nodeDictionaryTypeCheck(Statement s) {
   tt = addSymbolToScope(s->s, s->sub1.i->symbol, tt);
   if(!tt) {
     fprintf(stderr, "Error: Declaration of already declared variable `%s`\n", s->sub2.i->symbol);
+    printf("NodeDictionary");
     free(hold);
     exit(1);
   }
@@ -169,6 +172,7 @@ void declStatementTypeCheck(Statement s) {
   tt = addSymbolToScope(s->s, s->sub2.i->symbol, tt);
   if(!tt) {
     fprintf(stderr, "Error: Declaration of already declared variable `%s`\n", s->sub2.i->symbol);
+    printf("declStatement");
     free(hold);
     exit(1);
   }

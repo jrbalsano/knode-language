@@ -409,7 +409,7 @@ void postfixIncrementGenerateCode(Expression e) {
 
 void postfixArgumentGenerateCode(Expression e) {
   char *str = getValidString(e->sub1.e->code);
-  char *str2 = getValidString(e->sub2.l->code);
+  char *str2 = getValidString(e->sub2.l ? e->sub2.l->code : NULL);
   char *str3;// = ""; 
   char *str4 = "printf";
   char *str5 = "";
@@ -444,9 +444,9 @@ void postfixArgumentGenerateCode(Expression e) {
   strncat(result, str3, length);
   strncat(result, str2, length);
   strncat(result, ")", length);
-  e->precode = getAllocatedString(e->sub2.l->precode);
+  e->precode = getAllocatedString(e->sub2.l ? e->sub2.l->precode : "");
   e->code = getAllocatedString(result);
-  e->postcode = getAllocatedString(e->sub2.l->postcode);
+  e->postcode = getAllocatedString(e->sub2.l ? e->sub2.l->postcode : "");
 }
 
 void postfixBracketGenerateCode(Expression e) {
