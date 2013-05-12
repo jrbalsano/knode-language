@@ -38,9 +38,9 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
      else {
        char *cv = "void ";
        int length = strlen(c) + strlen(c1) + strlen(cv) + 1;
-       
        char result[length];
-       strncpy(result, c, length);
+       strncpy(result, cv, length);
+       strncat(result, c, length);
        strncat(result, c1, length);
        f->code = getAllocatedString(result);
      }
