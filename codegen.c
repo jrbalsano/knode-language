@@ -346,7 +346,7 @@ void postfixIncrementGenerateCode(Expression e) {
   strncpy(result,s,length);
   strncat(result,s2,length);
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
-  e->code = getAllocatedString(getValidString(e->sub1.e->code));
+  e->code = getAllocatedString(result);
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
@@ -432,7 +432,7 @@ void multExpressionGenerateCode(Expression e) {
   strncat(result, c2, length);
   strncat(result, c3, length);
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
-  e->code = getAllocatedString(getValidString(e->sub1.e->code));
+  e->code = getAllocatedString(result);
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 }
 
@@ -602,7 +602,11 @@ void relatExpressionGenerateCode(Expression e) {
 
 void eqExpressionGenerateCode(Expression e) {
   char *c1 = getValidString(e->sub1.e->code);
-  char *c2 = "==";
+  char *c2;
+  if(e->deriv.eq == equal)
+    c2 = "==";
+  else
+    c2 = "!=";
   char *c3 = getValidString(e->sub2.e->code);
   int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
   char result[length];
