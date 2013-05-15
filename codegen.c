@@ -739,20 +739,20 @@ void addExpressionGenerateCode(Expression e) {
     char l[15];
     sprintf(l, "%d", knodetemp++);
 
-    const char *format = "%sint __knodetemp%s = strlen(%s) + strlen(%s);\nchar __knodetemp%s[__knodetemp%s];\nstrcpy(__knodetemp%s, %s);\nstrcat(__knodetemp%s, %s);\n";
+    const char *format = "%s%s%sint __knodetemp%s = strlen(%s) + strlen(%s);\nchar __knodetemp%s[__knodetemp%s];\nstrcpy(__knodetemp%s, %s);\nstrcat(__knodetemp%s, %s);\n";
 
     //  print for debugging
     //printf("%s\n", s1);
     //printf("%s\n", s2);
 
     // the length of the precode
-    int length = strlen(prestat) + strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(l) * 2 + strlen(format) + 1;
+    int length = strlen(getValidString(e->sub1.e->precode)) + strlen(getValidString(e->sub2.e->precode)) + strlen(prestat) + strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(l) * 2 + strlen(format) + 1;
 
     // sets the size of the precode
     e->precode = (char *)malloc(length * sizeof(char));
 
     // sets this expression's precode.
-    sprintf(e->precode, format, prestat, l, s1, s2, k, l, k, s1, k, s2);
+    sprintf(e->precode, format, getValidString(e->sub1.e->precode), getValidString(e->sub2.e->precode), prestat, l, s1, s2, k, l, k, s1, k, s2);
 
     //precode = 
     //int length = strlen(string1) + strlen(string2);
@@ -767,6 +767,12 @@ void addExpressionGenerateCode(Expression e) {
     e->code = (char *)malloc(vallength * sizeof(char));
     sprintf(e->code, valformat, k);
 
+    char *post1 = getValidString(e->sub1.e->postcode);
+    char *post2 = getValidString(e->sub2.e->postcode);
+    int postlength = strlen(post1) + strlen(post2) + 1;
+    char newpost[postlength];
+    sprintf(newpost, "%s%s", post1, post2);
+    e->postcode = getAllocatedString(newpost);
     //postcode, none
   }
 }
