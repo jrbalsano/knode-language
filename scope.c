@@ -4,6 +4,7 @@ Scope newScope(Scope parent) {
   Scope ret = (Scope)malloc(sizeof(struct scope_));
   ret->parent = parent;
   ret->symbolTable = NULL;
+  ret->postcode = NULL;
 #ifdef MEMTRACE
   printf("New Scope at %p with parent at %p\n", ret, ret->parent);
 #endif  

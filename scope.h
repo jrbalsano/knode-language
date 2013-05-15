@@ -10,6 +10,7 @@ typedef struct scope_ *Scope;
 struct scope_ {
   Scope parent;
   Symtab symbolTable;
+  char *postcode; //for block closing code
 };
 
 /**

@@ -65,15 +65,14 @@ void declaratorGenerateCode(Declarator d) {
 }
 
 void compoundStatementGenerateCode(CompoundStatement cs) {
-
   char *c1 = getValidString(cs->sList->code);
   char *c2 = "{\n";
   char *c3 = "}\n";
-  int length = strlen(c1)+strlen(c2)+strlen(c3)+1;
+  char *c4 = getValidString(cs->s->postcode);
+  printf("%s", cs->s->postcode);
+  int length = strlen(c1)+strlen(c2)+strlen(c3)+strlen(c4)+1;
   char result[length];
-  strncpy(result, c2, length);
-  strcat(result, c1);
-  strcat(result, c3);
+  sprintf(result, "%s%s%s%s", c2, c1, c4, c3);
   cs->code = getAllocatedString(result);
 
 }
@@ -358,6 +357,15 @@ void nodeCreationGenerateCode(Statement s) {
   strncpy(result, c1, length);
   strncat(result, c, length);
   strncat(result, c2, length);
+  
+  char *format = "freeSmartNode(%s);\n%s";
+  char *existing = getValidString(s->s->postcode);
+  length = strlen(format) + strlen(c) + strlen(existing) + 1;
+  char post[length];
+  sprintf(post, format, c, existing);
+  printf("Pre post code:\n%s\n", existing);
+  s->s->postcode = getAllocatedString(post);
+  printf("Post post code:\n%s\n", existing);
 
   s->code = getAllocatedString(result); 
 }
@@ -381,6 +389,15 @@ void nodeAssignmentGenerateCode(Statement s) {
   strcat(result, c6);
   strcat(result, c7);
   s->code = getAllocatedString(result);
+
+  char *format = "freeSmartNode(%s);\n%s";
+  char *existing = getValidString(s->s->postcode);
+  length = strlen(format) + strlen(c2) + strlen(existing) + 1;
+  char post[length];
+  sprintf(post, format, c2, existing);
+  printf("Pre post code:\n%s\n", existing);
+  s->s->postcode = getAllocatedString(post);
+  printf("Post post code:\n%s\n", existing);
 }
 
 void nodeDictionaryGenerateCode(Statement s) {
@@ -422,6 +439,14 @@ void nodeDictionaryGenerateCode(Statement s) {
   strcat(result, c5);
   s->code = getAllocatedString(result);
 
+  char *format = "freeSmartNode(%s);\n%s";
+  char *existing = getValidString(s->s->postcode);
+  length = strlen(format) + strlen(id) + strlen(existing) + 1;
+  char post[length];
+  sprintf(post, format, id, existing);
+  printf("Pre post code:\n%s\n", existing);
+  s->s->postcode = getAllocatedString(post);
+  printf("Post post code:\n%s\n", existing);
 }
 
 void edgeCreationGenerateCode(Statement s) {
@@ -458,6 +483,14 @@ void edgeStatementGenerateCode(Statement s) {
 //printf("result: %s", result);
   s->code = getAllocatedString(result); 
  
+  format = "freeSmartEdge(%s);\n%s";
+  char *existing = getValidString(s->s->postcode);
+  length = strlen(format) + strlen(c) + strlen(existing) + 1;
+  char post[length];
+  sprintf(post, format, c, existing);
+  printf("Pre post code:\n%s\n", existing);
+  s->s->postcode = getAllocatedString(post);
+  printf("Post post code:\n%s\n", existing);
 }
 
 void statementGenerateCode(Statement s) {
