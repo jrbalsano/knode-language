@@ -27,7 +27,6 @@ char *translationUnitGenerateCode(TranslationUnit t) {
   return result;
 }
 void functionDefinitionGenerateCode(FunctionDefinition f) {
-
       Declarator dec = f->d;
       char *c = getValidString(dec->code);
       char *mainFunc = "main()\n";
@@ -84,7 +83,9 @@ void expressionListGenerateCode(GrammarList g) {
   char *precode = malloc(sizeof(char)*b2);
   char *postcode = malloc(sizeof(char)*b3);
   GrammarNode current = g->head;
+  code[0] = precode[0] = postcode[0] = 0;
   int i = 0;
+  //loop through all expression list nodes
   while (current)
   {
     char *c = getValidString(((Expression)current->data)->code);
@@ -96,16 +97,9 @@ void expressionListGenerateCode(GrammarList g) {
     int n1;
     int n2;
     int n3;
-    if(i) {
-      n1 = strlen(code) + strlen(c) + 3;
-      n2 = strlen(precode) + strlen(pre) + 3;
-      n2 = strlen(postcode) + strlen(post) + 3;
-    }
-    else {
-      n1 = strlen(c) + 1;
-      n2 = strlen(pre) + 1;
-      n3 = strlen(post) + 1;
-    }
+    n1 = strlen(code) + strlen(c) + 3;
+    n2 = strlen(precode) + strlen(pre) + 3;
+    n2 = strlen(postcode) + strlen(post) + 3;
     while (n1>b1) {
       b1 *= 2;
       char *old = code;
