@@ -84,5 +84,6 @@ bool_literal   "TRUE"|"FALSE"
                                     yylval.sval = yytext;
                                     return IDENTIFIER;
                                 }
+.                               ;
 %%
 
