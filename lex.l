@@ -13,7 +13,7 @@
 */
 
 /* don't call yywrap when finished */
-%option noyywrap
+%option noyywrap yylineno
 
 
 integer   [1-9][0-9]*|0
