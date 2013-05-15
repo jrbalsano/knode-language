@@ -18,6 +18,7 @@ int errorHad = 0;
 TranslationUnit root = NULL;
 extern int yylineno;
 extern char *yytext;
+extern int yylex();
 
 %}
     /* Tokens & Associations

@@ -7,7 +7,7 @@
 #include "whitelex.h"
 %}
 
-%option noyywrap
+%option noyywrap nounput
 
 comment #.*\n
 
