@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "./libs/uthash.h"
+#include "uthash.h"
 
 typedef struct edge *Edge;
 

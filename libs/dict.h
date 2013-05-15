@@ -1,7 +1,7 @@
 #ifndef __DICT_H__
 #define __DICT_H__
 
-#include "./libs/uthash.h"
+#include "uthash.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>

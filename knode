@@ -1,4 +1,5 @@
 #!/bin/sh
 
 ./klp < $1 | ./klc knode.c
-gcc -w knode.c node.c edge.c dict.c smartpointers.c
+gcc -Wall -lknode -I./libs -L./libs knode.c
+
