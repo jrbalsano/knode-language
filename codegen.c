@@ -27,7 +27,6 @@ char *translationUnitGenerateCode(TranslationUnit t) {
   return result;
 }
 void functionDefinitionGenerateCode(FunctionDefinition f) {
-
       Declarator dec = f->d;
       char *c = getValidString(dec->code);
       char *mainFunc = "main()\n";
@@ -65,15 +64,13 @@ void declaratorGenerateCode(Declarator d) {
 }
 
 void compoundStatementGenerateCode(CompoundStatement cs) {
-
   char *c1 = getValidString(cs->sList->code);
   char *c2 = "{\n";
   char *c3 = "}\n";
-  int length = strlen(c1)+strlen(c2)+strlen(c3)+1;
+  char *c4 = getValidString(cs->s->postcode);
+  int length = strlen(c1)+strlen(c2)+strlen(c3)+strlen(c4)+1;
   char result[length];
-  strncpy(result, c2, length);
-  strcat(result, c1);
-  strcat(result, c3);
+  sprintf(result, "%s%s%s%s", c2, c1, c4, c3);
   cs->code = getAllocatedString(result);
 
 }
@@ -86,7 +83,9 @@ void expressionListGenerateCode(GrammarList g) {
   char *precode = malloc(sizeof(char)*b2);
   char *postcode = malloc(sizeof(char)*b3);
   GrammarNode current = g->head;
+  code[0] = precode[0] = postcode[0] = 0;
   int i = 0;
+  //loop through all expression list nodes
   while (current)
   {
     char *c = getValidString(((Expression)current->data)->code);
@@ -98,16 +97,9 @@ void expressionListGenerateCode(GrammarList g) {
     int n1;
     int n2;
     int n3;
-    if(i) {
-      n1 = strlen(code) + strlen(c) + 3;
-      n2 = strlen(precode) + strlen(pre) + 3;
-      n2 = strlen(postcode) + strlen(post) + 3;
-    }
-    else {
-      n1 = strlen(c) + 1;
-      n2 = strlen(pre) + 1;
-      n3 = strlen(post) + 1;
-    }
+    n1 = strlen(code) + strlen(c) + 3;
+    n2 = strlen(precode) + strlen(pre) + 3;
+    n2 = strlen(postcode) + strlen(post) + 3;
     while (n1>b1) {
       b1 *= 2;
       char *old = code;
@@ -358,6 +350,13 @@ void nodeCreationGenerateCode(Statement s) {
   strncpy(result, c1, length);
   strncat(result, c, length);
   strncat(result, c2, length);
+  
+  char *format = "freeSmartNode(%s);\n%s";
+  char *existing = getValidString(s->s->postcode);
+  length = strlen(format) + strlen(c) + strlen(existing) + 1;
+  char post[length];
+  sprintf(post, format, c, existing);
+  s->s->postcode = getAllocatedString(post);
 
   s->code = getAllocatedString(result); 
 }
@@ -381,6 +380,13 @@ void nodeAssignmentGenerateCode(Statement s) {
   strcat(result, c6);
   strcat(result, c7);
   s->code = getAllocatedString(result);
+
+  char *format = "freeSmartNode(%s);\n%s";
+  char *existing = getValidString(s->s->postcode);
+  length = strlen(format) + strlen(c2) + strlen(existing) + 1;
+  char post[length];
+  sprintf(post, format, c2, existing);
+  s->s->postcode = getAllocatedString(post);
 }
 
 void nodeDictionaryGenerateCode(Statement s) {
@@ -422,6 +428,12 @@ void nodeDictionaryGenerateCode(Statement s) {
   strcat(result, c5);
   s->code = getAllocatedString(result);
 
+  char *format = "freeSmartNode(%s);\n%s";
+  char *existing = getValidString(s->s->postcode);
+  length = strlen(format) + strlen(id) + strlen(existing) + 1;
+  char post[length];
+  sprintf(post, format, id, existing);
+  s->s->postcode = getAllocatedString(post);
 }
 
 void edgeCreationGenerateCode(Statement s) {
@@ -458,6 +470,12 @@ void edgeStatementGenerateCode(Statement s) {
 //printf("result: %s", result);
   s->code = getAllocatedString(result); 
  
+  format = "freeSmartEdge(%s);\n%s";
+  char *existing = getValidString(s->s->postcode);
+  length = strlen(format) + strlen(c) + strlen(existing) + 1;
+  char post[length];
+  sprintf(post, format, c, existing);
+  s->s->postcode = getAllocatedString(post);
 }
 
 void statementGenerateCode(Statement s) {
@@ -739,20 +757,20 @@ void addExpressionGenerateCode(Expression e) {
     char l[15];
     sprintf(l, "%d", knodetemp++);
 
-    const char *format = "%sint __knodetemp%s = strlen(%s) + strlen(%s);\nchar __knodetemp%s[__knodetemp%s];\nstrcpy(__knodetemp%s, %s);\nstrcat(__knodetemp%s, %s);\n";
+    const char *format = "%s%s%sint __knodetemp%s = strlen(%s) + strlen(%s);\nchar __knodetemp%s[__knodetemp%s];\nstrcpy(__knodetemp%s, %s);\nstrcat(__knodetemp%s, %s);\n";
 
     //  print for debugging
     //printf("%s\n", s1);
     //printf("%s\n", s2);
 
     // the length of the precode
-    int length = strlen(prestat) + strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(l) * 2 + strlen(format) + 1;
+    int length = strlen(getValidString(e->sub1.e->precode)) + strlen(getValidString(e->sub2.e->precode)) + strlen(prestat) + strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(l) * 2 + strlen(format) + 1;
 
     // sets the size of the precode
     e->precode = (char *)malloc(length * sizeof(char));
 
     // sets this expression's precode.
-    sprintf(e->precode, format, prestat, l, s1, s2, k, l, k, s1, k, s2);
+    sprintf(e->precode, format, getValidString(e->sub1.e->precode), getValidString(e->sub2.e->precode), prestat, l, s1, s2, k, l, k, s1, k, s2);
 
     //precode = 
     //int length = strlen(string1) + strlen(string2);
@@ -767,6 +785,12 @@ void addExpressionGenerateCode(Expression e) {
     e->code = (char *)malloc(vallength * sizeof(char));
     sprintf(e->code, valformat, k);
 
+    char *post1 = getValidString(e->sub1.e->postcode);
+    char *post2 = getValidString(e->sub2.e->postcode);
+    int postlength = strlen(post1) + strlen(post2) + 1;
+    char newpost[postlength];
+    sprintf(newpost, "%s%s", post1, post2);
+    e->postcode = getAllocatedString(newpost);
     //postcode, none
   }
 }

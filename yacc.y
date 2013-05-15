@@ -16,9 +16,11 @@
 void yyerror(char *s);
 int errorHad = 0;
 TranslationUnit root = NULL;
+extern int yylineno;
+extern char *yytext;
+extern int yylex();
 
 %}
-
     /* Tokens & Associations
      * =====================
      * This section specifies tokens, and associativity of operators
@@ -105,7 +107,6 @@ TranslationUnit root = NULL;
 %type<parameter> parameterdeclaration
 %nonassoc IFX
 %nonassoc ELSE
-
 
     /* Grammar 
      * =======
@@ -273,7 +274,7 @@ argumentexpressionlist : assignmentexpression { $$ = newArgumentExpressionList($
   ;
 %%
 void yyerror(char *s) {
-  fprintf(stderr, "%s\n", s);
+  fprintf(stderr, "%s near line %d at %s\n", s, yylineno, yytext);
   errorHad = 1;
 }
 

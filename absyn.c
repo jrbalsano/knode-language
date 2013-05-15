@@ -43,6 +43,8 @@ void freeTranslationUnit(TranslationUnit t) {
     freeTranslationUnit(t->t);
   }
   else {
+    if(t->s->postcode)
+      free(t->s->postcode);
     free(t->s);
   }
 
@@ -104,6 +106,8 @@ void freeFunctionDefinition(FunctionDefinition f) {
   freeTypeCheckType(f->tt);
   if(f->code)
     free(f->code);
+  if(f->s->postcode)
+    free(f->s->postcode);
   free(f->s);
   free(f);
 #ifdef MEMTRACE

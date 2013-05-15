@@ -13,7 +13,7 @@
 */
 
 /* don't call yywrap when finished */
-%option noyywrap
+%option noyywrap yylineno nounput
 
 
 integer   [1-9][0-9]*|0
@@ -84,5 +84,6 @@ bool_literal   "TRUE"|"FALSE"
                                     yylval.sval = yytext;
                                     return IDENTIFIER;
                                 }
+.                               ;
 %%
 
