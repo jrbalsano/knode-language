@@ -69,7 +69,6 @@ void compoundStatementGenerateCode(CompoundStatement cs) {
   char *c2 = "{\n";
   char *c3 = "}\n";
   char *c4 = getValidString(cs->s->postcode);
-  printf("%s", cs->s->postcode);
   int length = strlen(c1)+strlen(c2)+strlen(c3)+strlen(c4)+1;
   char result[length];
   sprintf(result, "%s%s%s%s", c2, c1, c4, c3);
@@ -363,9 +362,7 @@ void nodeCreationGenerateCode(Statement s) {
   length = strlen(format) + strlen(c) + strlen(existing) + 1;
   char post[length];
   sprintf(post, format, c, existing);
-  printf("Pre post code:\n%s\n", existing);
   s->s->postcode = getAllocatedString(post);
-  printf("Post post code:\n%s\n", existing);
 
   s->code = getAllocatedString(result); 
 }
@@ -395,9 +392,7 @@ void nodeAssignmentGenerateCode(Statement s) {
   length = strlen(format) + strlen(c2) + strlen(existing) + 1;
   char post[length];
   sprintf(post, format, c2, existing);
-  printf("Pre post code:\n%s\n", existing);
   s->s->postcode = getAllocatedString(post);
-  printf("Post post code:\n%s\n", existing);
 }
 
 void nodeDictionaryGenerateCode(Statement s) {
@@ -444,9 +439,7 @@ void nodeDictionaryGenerateCode(Statement s) {
   length = strlen(format) + strlen(id) + strlen(existing) + 1;
   char post[length];
   sprintf(post, format, id, existing);
-  printf("Pre post code:\n%s\n", existing);
   s->s->postcode = getAllocatedString(post);
-  printf("Post post code:\n%s\n", existing);
 }
 
 void edgeCreationGenerateCode(Statement s) {
@@ -488,9 +481,7 @@ void edgeStatementGenerateCode(Statement s) {
   length = strlen(format) + strlen(c) + strlen(existing) + 1;
   char post[length];
   sprintf(post, format, c, existing);
-  printf("Pre post code:\n%s\n", existing);
   s->s->postcode = getAllocatedString(post);
-  printf("Post post code:\n%s\n", existing);
 }
 
 void statementGenerateCode(Statement s) {
