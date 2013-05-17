@@ -70,8 +70,8 @@ else
 fi
 }
 #Get all of the test scripts and store their names in $files
-passFiles="testPass/test-*.kn"
-failFiles="testFail/test-*.kn"
+passFiles="tests/*-pass.kn"
+failFiles="tests/*-fail.kn"
 
 #for each file in files, run them and print them to .out files
 echo -e "\033[36mNOW TESTING PASS FILES\033[0m"
