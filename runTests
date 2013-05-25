@@ -1,11 +1,13 @@
 #!/bin/sh
 
-UPLINE=$(tput cuu1)
-ERASELINE=$(tput el)
-ERRORS=""
+UPLINE=$(tput cuu1) # Declare the character that moves up one line
+ERASELINE=$(tput el) # Declare the character the erases the line
+ERRORS="" 
 TESTEDFILES=0
 ERRORCOUNT=0
 TESTINGSTRING=""
+
+#Runs the initial collection of all failing and passing tests and prints out a summary
 PrepCounts() {
   passFiles=(tests/*-pass.kn);
   passFileCount=${#passFiles[@]};
@@ -14,6 +16,8 @@ PrepCounts() {
   totalFiles=$((passFileCount+failFileCount));
   echo "Commencing testing for $passFileCount passing tests and $failFileCount failing tests for $totalFiles total tests.\n";
 }
+
+#Prints the current status of tests.
 PrintStatus() {
   echo "$ERASELINE$UPLINE$ERASELINE$UPLINE$ERASELINE\c"
   if [ $TESTEDFILES -eq $totalFiles ]
@@ -29,6 +33,8 @@ PrintStatus() {
   fi
   echo $TESTINGSTRING
 }
+
+#Runs the knode compiler on $CURRENTFILE, sending output to the test's name.log and the file to name.out
 TestFile() {
   testname=$(echo $CURRENTFILE | sed -nE 's!tests/(.*)-(pass|fail).kn!\1!p');
   `$(./knode $CURRENTFILE tests/$testname.out >tests/$testname.log 2>&1 )`;
@@ -42,6 +48,8 @@ TestFile() {
     TESTINGSTRING+="\b\033[31mF\033[0m";
   fi
 }
+
+
 PrepCounts
 for file in "${passFiles[@]}"
 do
@@ -62,13 +70,3 @@ do
   PrintStatus
 done
 echo "$ERRORS"
-#for ((i = 0; i <= 50; i++))
-#do
-#for ((j = 0; j <= i; j++))
-#do
-#echo "=\c"
-#done
-#echo "\r\c"
-#sleep 1
-#done
-#echo ""
