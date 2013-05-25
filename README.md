@@ -22,7 +22,7 @@ with an appended -pass or -fail to designate whether the test should cause the
 compiler to crash or not. Output is written to the file's name.log in the tests
 folder and the executable is created as the file's name.out in the tests folder
 
-Running the test suite
+Running the Test Suite
 ----------------------
 After compiling the compiler, run:
 

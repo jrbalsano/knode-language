@@ -85,7 +85,7 @@ yacc-debug: yacc.y absyn.h symtable.h walker.h
 clean:
 	rm -f $(COMPILER) $(PREPROCESSOR) a.out
 	rm -f prep/whitelex.yy.c comp/lex.yy.c comp/yacc.tab.* comp/yacc.output comp/*.o libs/*.o libs/*.a
-	rm -rf testall.log tests/*.out test*.c test*.out klc.dSYM klp.dSYM a.out.dSYM
+	rm -rf testall.log tests/*.out tests/*.c tests/*.out tests/*.log klc.dSYM klp.dSYM a.out.dSYM
 
 .PHONY: all
 all: clean $(PREPROCESSOR) $(COMPILER)
