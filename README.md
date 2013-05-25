@@ -29,7 +29,9 @@ After compiling the compiler, run:
     ./runTests
 
 For every file in the tests folder, the tester will collect its output and give
-live feedback as well as a concluding summary that outputs all errors.
+live feedback as well as a concluding summary that outputs all errors. A green .
+denotes a successful tests, a red F denotes a failure to pass the compile test, 
+and a yellow C denotes a successful compile but a failing program.
 
 To add a file to the test suite, create a knode program named 
 `<your_file_name>-<pass_or_fail>.kn`, and place it in the `tests` folder. 
