@@ -76,6 +76,7 @@ FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs) {
   ret->type_name = none;
   ret->d = d;
   ret->cs = cs;
+  cs->type = function;
   return ret;
 }
 
@@ -179,6 +180,7 @@ void freeDeclarator(Declarator d) {
 CompoundStatement newCompoundStatement(GrammarList sList) {
   CompoundStatement ret = (CompoundStatement)malloc(sizeof(struct compoundStatement_));
   ret->s = NULL;
+  ret->type = none;
   ret->code = NULL;
   ret->tt = NULL;
   ret->sList = sList;

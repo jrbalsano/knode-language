@@ -38,9 +38,24 @@ PrintStatus() {
 TestFile() {
   testname=$(echo $CURRENTFILE | sed -nE 's!tests/(.*)-(pass|fail).kn!\1!p');
   `$(./knode $CURRENTFILE tests/$testname.out >tests/$testname.log 2>&1 )`;
+  # Check to see if it compiled (or didn't compile) correctly
   if [ $? -eq $1 ]
-  then
-    TESTINGSTRING+="\b\033[32m.\033[0m";
+  then # If it did what it was supposed to
+    if [ $1 -eq 0 ]
+    then
+      TESTINGSTRING+="\b\033[33mC\033[0m"; # Mark it as compiling correctly
+      `./tests/$testname.out >>tests/$testname.log 2>&1`;
+      if [ $? -eq 0 ]
+      then
+        TESTINGSTRING+="\b\033[32m.\033[0m";
+      else
+        tmperrors=$(<tests/$testname.log);
+        ERRORS="$ERRORS\n\033[34mIn file $testname.out:\033[0m\n$tmperrors\n";
+        ERRORCOUNT=$((ERRORCOUNT+1));
+      fi
+    else
+      TESTINGSTRING+="\b\033[32m.\033[0m"; # Mark it as compiling correctly without trying to run.
+    fi
   else
     tmperrors=$(<tests/$testname.log);
     ERRORS="$ERRORS\n\033[34mIn file $CURRENTFILE:\033[0m\n$tmperrors\n";
