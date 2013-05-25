@@ -1,5 +1,6 @@
 #!/bin/sh
 
-./klp < $1 | ./klc knode.c
-gcc -Wall -lknode -I./libs -L./libs knode.c
+OUTNAME=$(echo $2 | sed -nE 's/(.*)\..*/\1/p')
+./klp < $1 | ./klc $OUTNAME.c
+gcc -Wall -lknode -I./libs -L./libs -o $2 $OUTNAME.c
 

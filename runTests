@@ -30,11 +30,13 @@ PrintStatus() {
   echo $TESTINGSTRING
 }
 TestFile() {
-  tmperrors="$(./knode $CURRENTFILE 2>&1 >/dev/null)";
+  testname=$(echo $CURRENTFILE | sed -nE 's!tests/(.*)-(pass|fail).kn!\1!p');
+  `$(./knode $CURRENTFILE tests/$testname.out >tests/$testname.log 2>&1 )`;
   if [ $? -eq $1 ]
   then
     TESTINGSTRING+="\b\033[32m.\033[0m";
   else
+    tmperrors=$(<tests/$testname.log);
     ERRORS="$ERRORS\n\033[34mIn file $CURRENTFILE:\033[0m\n$tmperrors\n";
     ERRORCOUNT=$((ERRORCOUNT+1));
     TESTINGSTRING+="\b\033[31mF\033[0m";
