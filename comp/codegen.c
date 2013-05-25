@@ -32,7 +32,7 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
       char *mainFunc = "main()\n";
       char *c1 = getValidString(f->cs->code);
       if(strcmp(c, mainFunc) == 0) {
-        char *cCode = "void main()";
+        char *cCode = "int main()";
         int length = strlen(cCode) + strlen(c1) + 1;
         char result[length];
         strncpy(result, cCode, length);
@@ -68,9 +68,10 @@ void compoundStatementGenerateCode(CompoundStatement cs) {
   char *c2 = "{\n";
   char *c3 = "}\n";
   char *c4 = getValidString(cs->s->postcode);
+  char *c5 = cs->type == function ? "return 0;\n" : "";
   int length = strlen(c1)+strlen(c2)+strlen(c3)+strlen(c4)+1;
   char result[length];
-  sprintf(result, "%s%s%s%s", c2, c1, c4, c3);
+  sprintf(result, "%s%s%s%s%s", c2, c1, c4, c5, c3);
   cs->code = getAllocatedString(result);
 
 }

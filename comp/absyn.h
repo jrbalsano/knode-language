@@ -130,6 +130,7 @@ struct functionDefinition_ {
 };
 struct compoundStatement_ {
   char *code;
+  enum {cs_none, cs_function=function} type;
   Scope s;
   TypeCheckType tt;
   GrammarList sList; //A list of statements

@@ -1,7 +1,7 @@
 #ifndef __SYMTABLE_H__
 #define __SYMTABLE_H__
 
-#include "./libs/uthash.h"
+#include "../libs/uthash.h"
 #include "typechecktype.h"
 
 typedef struct symtab *Symtab;

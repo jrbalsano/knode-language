@@ -11,6 +11,7 @@ yacc.output
 test_output.txt
 knode.c
 test-*.c
+*.dSYM
 
 # Libraries
 *.lib
@@ -33,6 +34,8 @@ klp
 test_output.txt
 testall.log
 tests/*.out
+tests/*.log
+tests/*.c
 
 # text editor files
 *.swp
