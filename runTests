@@ -17,9 +17,14 @@ PrepCounts() {
   echo "Commencing testing for $passFileCount passing tests and $failFileCount failing tests for $totalFiles total tests.\n";
 }
 
+#Clears the status off of the last two lines and sets the cursor to the beginning of the top of those lines.
+ClearStatus() {
+  echo "$ERASELINE$UPLINE$ERASELINE$UPLINE$ERASELINE\c"
+}
+
 #Prints the current status of tests.
 PrintStatus() {
-  echo "$ERASELINE$UPLINE$ERASELINE$UPLINE$ERASELINE\c"
+  ClearStatus
   if [ $TESTEDFILES -eq $totalFiles ]
   then
     if [ $ERRORCOUNT -gt 0 ]
@@ -36,6 +41,7 @@ PrintStatus() {
 
 #Runs the knode compiler on $CURRENTFILE, sending output to the test's name.log and the file to name.out
 TestFile() {
+  ERRORS=""
   testname=$(echo $CURRENTFILE | sed -nE 's!tests/(.*)-(pass|fail).kn!\1!p');
   `$(./knode $CURRENTFILE tests/$testname.out >tests/$testname.log 2>&1 )`;
   # Check to see if it compiled (or didn't compile) correctly
@@ -50,7 +56,7 @@ TestFile() {
         TESTINGSTRING+="\b\033[32m.\033[0m";
       else
         tmperrors=$(<tests/$testname.log);
-        ERRORS="$ERRORS\n\033[34mIn file $testname.out:\033[0m\n$tmperrors\n";
+        ERRORS="\033[34mIn file $testname.out:\033[0m\n$tmperrors\n\n";
         ERRORCOUNT=$((ERRORCOUNT+1));
       fi
     else
@@ -58,10 +64,14 @@ TestFile() {
     fi
   else
     tmperrors=$(<tests/$testname.log);
-    ERRORS="$ERRORS\n\033[34mIn file $CURRENTFILE:\033[0m\n$tmperrors\n";
+    ERRORS="\033[34mIn file $CURRENTFILE:\033[0m\n$tmperrors\n\n";
     ERRORCOUNT=$((ERRORCOUNT+1));
     TESTINGSTRING+="\b\033[31mF\033[0m";
   fi
+  ClearStatus;
+  echo "$ERRORS\c"
+  echo "\n"
+  PrintStatus;
 }
 
 
