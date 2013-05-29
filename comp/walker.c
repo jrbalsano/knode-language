@@ -345,24 +345,11 @@ void walkExpression(Expression e, Scope s) {
     case cast:
       switch(e->deriv.cast){
         case typed:
-#ifdef PRETRACE
-          printf("Typed cast expression.\n");
-#endif
           walkExpression(e->sub2.e, e->s);
           castTypedExpressionTypeCheck(e);
           castTypedExpressionGenerateCode(e);
           break;
         case 0:
-#ifdef PRETRACE
-          printf("Case 0 cast expression. \n");
-          if (e->sub1.e){
-            printf("E sub1 e exists\n");
-          }
-          if (e->s){
-
-            printf("E s exists \n");
-          }
-#endif
           walkExpression(e->sub1.e, e->s);
           passupExpressionType(e);
           passupExpressionCode(e);
@@ -493,7 +480,8 @@ void walkExpression(Expression e, Scope s) {
         case parentheses:
           walkExpression(e->sub1.e, e->s);
           primaryExpressionTypeCheck(e);
-          primaryExpressionGenerateCode(e);
+          primaryExpressionParenthesesGenerateCode(e);
+          break;
         default: //unhandled case
           primaryExpressionTypeCheck(e);
           primaryExpressionGenerateCode(e);
@@ -522,11 +510,6 @@ void walkExpression(Expression e, Scope s) {
     default:
       break;
   }
-#ifdef PRETRACE
-  printf("Finishing Walking Expression with type %d\n", e->type);
-  printf("PRECODE: %s\n", e->precode);
-  printf("tt: %p\n", e->tt);
-#endif
 #ifdef MEMTRACE
   printf("Expression walked at %p\n", e);
 #endif

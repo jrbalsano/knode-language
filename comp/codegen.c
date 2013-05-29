@@ -5,13 +5,7 @@ char *translationUnitGenerateCode(TranslationUnit t) {
   char *outercode = getValidString(t->f->code);
   char *innercode;
   if (t->t){
-#ifdef PRETRACE
-      printf("this function has an inner function");
-#endif
       innercode = getValidString(t->t->code);
-#ifdef PRETRACE
-      printf("inner code: %s" , innercode);
-#endif
   }
   else
      innercode = "";
@@ -21,8 +15,8 @@ char *translationUnitGenerateCode(TranslationUnit t) {
   strncpy(result, innercode, length);
   strncat(result, outercode, length);
   t->code = getAllocatedString(result);
-#ifdef PRETRACE 
-  printf("final code:\n%s\n", result);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", t->code);
 #endif
   return result;
 }
@@ -48,6 +42,9 @@ void functionDefinitionGenerateCode(FunctionDefinition f) {
        strncat(result, c1, length);
        f->code = getAllocatedString(result);
      }
+#ifdef CODETRACE
+  printf("Code: %s\n\n", f->code);
+#endif
 }
 
 void declaratorGenerateCode(Declarator d) {
@@ -60,6 +57,9 @@ void declaratorGenerateCode(Declarator d) {
     strncat(result, c2, length);
     d->code = getAllocatedString(result);
   }
+#ifdef CODETRACE
+  printf("Code: %s\n", d->code);
+#endif
   //TODO: deal with d->p case (The case where the function has a parameter list)
 }
 
@@ -73,7 +73,9 @@ void compoundStatementGenerateCode(CompoundStatement cs) {
   char result[length];
   sprintf(result, "%s%s%s%s%s", c2, c1, c4, c5, c3);
   cs->code = getAllocatedString(result);
-
+#ifdef CODETRACE
+  printf("Code: %s\n\n", cs->code);
+#endif
 }
 
 void expressionListGenerateCode(GrammarList g) {
@@ -145,6 +147,9 @@ void expressionListGenerateCode(GrammarList g) {
   free(code);
   free(precode);
   free(postcode);
+#ifdef CODETRACE
+  printf("Code: %s", g->code);
+#endif
 }
 
 void statementListGenerateCode(GrammarList g) {
@@ -180,6 +185,9 @@ void statementListGenerateCode(GrammarList g) {
 
   g->code = getAllocatedString(str);
   free(str);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", g->code);
+#endif
 }
 
 void parameterListGenerateCode(GrammarList g) {
@@ -208,6 +216,9 @@ void forStatementGenerateCode(Statement s) {
  
   s->code = getAllocatedString(result);
            
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void whileStatementGenerateCode(Statement s) {
@@ -228,6 +239,9 @@ void whileStatementGenerateCode(Statement s) {
   strncat(result, c4, length);
 
   s->code = getAllocatedString(result);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void ifStatementGenerateCode(Statement s) {
@@ -242,6 +256,9 @@ void ifStatementGenerateCode(Statement s) {
    strncat(result, c3, length);
    strncat(result, c4, length);
    s->code = getAllocatedString(result);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void ifelseStatementGenerateCode(Statement s) {
@@ -260,6 +277,9 @@ void ifelseStatementGenerateCode(Statement s) {
     strncat(result, c5, length);
     strncat(result, c6, length);
     s->code = getAllocatedString(result);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 //This is the code for the dictlist statements for entries
@@ -294,6 +314,9 @@ void dictlistGenerateCode(Statement s) {
     sprintf(result, format, et, valueIdentifier, value);
     //strncat(result,delcar,length);
     s->code = getAllocatedString(result);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 //This is the case when you initialize a dictionary with entries
@@ -325,6 +348,9 @@ void dictDefinitionsGenerateCode(Statement s) {
   char endResult[length2];
   sprintf(endResult, format, dictIdentifier, final);
   s->code = getAllocatedString(endResult);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void dictGenerateCode(Statement s) {
@@ -340,6 +366,9 @@ void dictGenerateCode(Statement s) {
     strncat(result, eqSign, length);
     strncat(result, functionName, length);
     s->code = getAllocatedString(result);    
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void nodeCreationGenerateCode(Statement s) {
@@ -360,6 +389,9 @@ void nodeCreationGenerateCode(Statement s) {
   s->s->postcode = getAllocatedString(post);
 
   s->code = getAllocatedString(result); 
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void nodeAssignmentGenerateCode(Statement s) {
@@ -388,6 +420,9 @@ void nodeAssignmentGenerateCode(Statement s) {
   char post[length];
   sprintf(post, format, c2, existing);
   s->s->postcode = getAllocatedString(post);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void nodeDictionaryGenerateCode(Statement s) {
@@ -435,6 +470,9 @@ void nodeDictionaryGenerateCode(Statement s) {
   char post[length];
   sprintf(post, format, id, existing);
   s->s->postcode = getAllocatedString(post);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void edgeCreationGenerateCode(Statement s) {
@@ -448,7 +486,6 @@ void edgeStatementGenerateCode(Statement s) {
   char *cb = getValidString(s->sub3.e->code);
   char *c4; 
 
-//  printf("Left: %d\nRight: %d\nBoth: %d\nValue: %d\n", left, right, both, s->deriv.edge);
   switch(s->deriv.edge){
     case right:
       c4 = "atob";
@@ -468,7 +505,6 @@ void edgeStatementGenerateCode(Statement s) {
   char result[length];
   sprintf(result, format, c, ca, cb, c4);
 
-//printf("result: %s", result);
   s->code = getAllocatedString(result); 
  
   format = "freeSmartEdge(%s);\n%s";
@@ -477,6 +513,9 @@ void edgeStatementGenerateCode(Statement s) {
   char post[length];
   sprintf(post, format, c, existing);
   s->s->postcode = getAllocatedString(post);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void statementGenerateCode(Statement s) {
@@ -485,6 +524,9 @@ void statementGenerateCode(Statement s) {
   char str[strlen(getValidString(s->sub1.s->code))+1];
   strcpy(str, getValidString(s->sub1.s->code));
   s->code = getAllocatedString(str);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void expressionStatementGenerateCode(Statement s) {
@@ -498,6 +540,9 @@ void expressionStatementGenerateCode(Statement s) {
   strcat(str, ";\n");
   strcat(str, post);
   s->code = getAllocatedString(str);
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void declStatementGenerateCode(Statement s){
@@ -514,6 +559,9 @@ void declStatementGenerateCode(Statement s){
      
   s->code = getAllocatedString(result);
 
+#ifdef CODETRACE
+  printf("Code: %s\n\n", s->code);
+#endif
 }
 
 void parameterGenerateCode(Parameter p) {
@@ -524,9 +572,9 @@ void passupExpressionCode(Expression e) {
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
-  #ifdef PRETRACE
-   printf("PASSING UP PRECODE %s \n", e->precode);
-  #endif
+#ifdef CODETRACE
+  printf("Passup Code: %s\n", e->code);
+#endif
 }
 
 void postfixIdentifierGenerateCode(Expression e) {
@@ -556,6 +604,9 @@ void postfixIdentifierGenerateCode(Expression e) {
   }
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+#ifdef CODETRACE
+  printf("PostfixIdentifier Code: %s\n", e->code);
+#endif
 }
 
 void postfixDecrementGenerateCode(Expression e) {
@@ -572,6 +623,9 @@ void postfixIncrementGenerateCode(Expression e) {
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(result);
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+#ifdef CODETRACE
+  printf("PostfixIncrement Code: %s\n", e->code);
+#endif
 }
 
 void postfixArgumentGenerateCode(Expression e) {
@@ -614,6 +668,9 @@ void postfixArgumentGenerateCode(Expression e) {
   e->precode = getAllocatedString(e->sub2.l ? e->sub2.l->precode : "");
   e->code = getAllocatedString(result);
   e->postcode = getAllocatedString(e->sub2.l ? e->sub2.l->postcode : "");
+#ifdef CODETRACE
+  printf("PostfixArgument Code: %s\n", e->code);
+#endif
 }
 
 void postfixBracketGenerateCode(Expression e) {
@@ -621,12 +678,12 @@ void postfixBracketGenerateCode(Expression e) {
 }
 
 void unaryExpressionGenerateCode(Expression e) {
-  #ifdef PRETRACE
-    printf("Where'd it go? %s", e->sub1.e->precode);
-  #endif
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(getValidString(e->sub1.e->code));
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+#ifdef CODETRACE
+  printf("UnaryExpression Code: %s\n", e->code);
+#endif
 }
 
 void castTypedExpressionGenerateCode(Expression e) {
@@ -652,12 +709,26 @@ void multExpressionGenerateCode(Expression e) {
   char *c3 = getValidString(e->sub2.e->code);
   int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
   char result[length];
-  strncpy(result, c1, length);
-  strncat(result, c2, length);
-  strncat(result, c3, length);
-  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
+  sprintf(result, "%s%s%s", c1, c2, c3);
   e->code = getAllocatedString(result);
-  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+
+  char *pre1 = getValidString(e->sub1.e->precode);
+  char *pre2 = getValidString(e->sub2.e->precode);
+  char *post1 = getValidString(e->sub1.e->postcode);
+  char *post2 = getValidString(e->sub2.e->postcode);
+
+  int prelen = strlen(pre1) + strlen(pre2) + 1;
+  char pre[prelen];
+  int postlen = strlen(post1) + strlen(post2) + 1;
+  char post[postlen];
+  
+  sprintf(pre, "%s%s", pre1, pre2);
+  sprintf(post, "%s%s", post1, post2);
+  e->precode = getAllocatedString(pre);
+  e->postcode = getAllocatedString(post);
+#ifdef CODETRACE
+  printf("MultExpression Code: %s\n", e->code);
+#endif
 }
 
 void addExpressionGenerateCode(Expression e) {
@@ -681,6 +752,7 @@ void addExpressionGenerateCode(Expression e) {
     strncpy(result, c1, length);
     strncat(result, c3, length);
     strncat(result, c2, length);
+
 
     e->code = getAllocatedString(result);
 
@@ -760,10 +832,6 @@ void addExpressionGenerateCode(Expression e) {
 
     const char *format = "%s%s%sint __knodetemp%s = strlen(%s) + strlen(%s);\nchar __knodetemp%s[__knodetemp%s];\nstrcpy(__knodetemp%s, %s);\nstrcat(__knodetemp%s, %s);\n";
 
-    //  print for debugging
-    //printf("%s\n", s1);
-    //printf("%s\n", s2);
-
     // the length of the precode
     int length = strlen(getValidString(e->sub1.e->precode)) + strlen(getValidString(e->sub2.e->precode)) + strlen(prestat) + strlen(s1) * 2 + strlen(s2) * 2 + strlen(k) * 3 + strlen(l) * 2 + strlen(format) + 1;
 
@@ -794,6 +862,9 @@ void addExpressionGenerateCode(Expression e) {
     e->postcode = getAllocatedString(newpost);
     //postcode, none
   }
+#ifdef CODETRACE
+  printf("AddExpression Code: %s\n", e->code);
+#endif
 }
 
 
@@ -830,6 +901,9 @@ void relatExpressionGenerateCode(Expression e) {
   e->code = getAllocatedString(result);
   e->postcode = getAllocatedString(e->sub1.e->postcode);
 
+#ifdef CODETRACE
+  printf("RelatExpression Code: %s\n", e->code);
+#endif
 }
 
 void eqExpressionGenerateCode(Expression e) {
@@ -848,6 +922,9 @@ void eqExpressionGenerateCode(Expression e) {
   e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
   e->code = getAllocatedString(result);
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+#ifdef CODETRACE
+  printf("eqExpression Code: %s\n", e->code);
+#endif
 }
 
 void condExpressionGenerateCode(Expression e) {
@@ -877,6 +954,9 @@ void condExpressionGenerateCode(Expression e) {
   e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
 
 
+#ifdef CODETRACE
+  printf("CondExpression Code: %s\n", e->code);
+#endif
 }
 
 void assignmentInitExpressionGenerateCode(Expression e) {
@@ -913,6 +993,9 @@ void assignmentExpressionGenerateCode(Expression e) {
   e->precode = getAllocatedString(pre);
   e->code = getAllocatedString(result);
   e->postcode = getAllocatedString(post);
+#ifdef CODETRACE
+  printf("AssignmentExpression Code: %s\n", e->code);
+#endif
 }
 
 void primaryExpressionGenerateCode(Expression e) {
@@ -944,6 +1027,23 @@ void primaryExpressionGenerateCode(Expression e) {
   }
   e->precode = getAllocatedString("");
   e->postcode = getAllocatedString("");
+#ifdef CODETRACE
+  printf("PrimaryExpression Code: %s\n", e->code);
+#endif
+}
+
+void primaryExpressionParenthesesGenerateCode(Expression e) {
+  e->precode = getAllocatedString(getValidString(e->sub1.e->precode));
+  e->postcode = getAllocatedString(getValidString(e->sub1.e->postcode));
+
+  int length = strlen(e->sub1.e->code) + 3;
+  char result[length];
+  sprintf(result, "(%s)", e->sub1.e->code);
+
+  e->code = getAllocatedString(result);
+#ifdef CODETRACE
+  printf("PrimaryExpressionParentheses Code: %s\n", e->code);
+#endif
 }
 
 void functionExpressionGenerateCode(Expression e) {
@@ -961,6 +1061,9 @@ void identifierGenerateCode(Identifier i) {
   else
     c = i->symbol;
   i->code = getAllocatedString(c); 
+#ifdef CODETRACE
+  printf("Identifier Code: %s\n\n", i->code);
+#endif
 }
 
 char *getAllocatedString(char *s) {

@@ -183,10 +183,6 @@ void parameterTypeCheck(Parameter p) {
 }
 
 void passupExpressionType(Expression e) {
-#ifdef PRETRACE
-  printf("Pass the buck at %p\n", e->sub1.e->tt);
-  printf("Passing from %d to %d\n", e->sub1.e->type, e->type);
-#endif
   e->tt = copyTypeCheckType(e->sub1.e->tt);
 }
 
@@ -214,9 +210,6 @@ void postfixBracketTypeCheck(Expression e) {
 }
 
 void unaryExpressionTypeCheck(Expression e) {
-#ifdef PRETRACE
-  printf("Pass the buck at %p\n", e->sub1.e->tt);
-#endif printf("Passing from %d to %d\n", e->sub1.e->type, e->type);
   e->tt = copyTypeCheckType(e->sub1.e->tt);
 }
 
@@ -317,10 +310,6 @@ void primaryExpressionTypeCheck(Expression e) {
       e->tt = copyTypeCheckType(e->sub1.e->tt);
       break;
     default:
-#ifdef PRETRACE
-      printf("Priamry expression type: %d\n", e->deriv.primary);
-      printf("Priamry expression tt address: %p\n", e->tt);
-#endif
       //do other things
       break;
   }

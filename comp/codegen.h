@@ -100,11 +100,11 @@ void edgeExpressionGenerateCode(Expression e);
 void assignmentExpressionGenerateCode(Expression e);
 
 void primaryExpressionGenerateCode(Expression e);
+void primaryExpressionParenthesesGenerateCode(Expression e);
 
 void functionExpressionGenerateCode(Expression e);
 
 void twoExpressionGenerateCode(Expression e);
-
 
 void identifierGenerateCode(Identifier i);
 

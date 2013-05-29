@@ -1,10 +1,9 @@
 CC = gcc
+# Use -DMEMTRACE to trace nodes as they are created, walked, and freed
+# Use -DCODETRACE to monitor the code as it is built to see what errors are
+# introducted at each step.
 CFLAGS = -g -Wall
 LDFLAGS = -g -Wall
-#CFLAGS = -g -Wall -DMEMTRACE $(INCLUDES)
-#LDFLAGS = -g -DMEMTRACE
-#CFLAGS = -g -Wall -DPRETRACE $(INCLUDES)
-#LDFLAGS = -g -DPRETRACE
 DEPENDS = comp/lex.yy.o comp/yacc.tab.o comp/absyn.o comp/symtable.o comp/walker.o comp/typecheck.o comp/codegen.o comp/scope.o comp/typechecktype.h
 COMPILER = klc
 PREPROCESSOR = klp
