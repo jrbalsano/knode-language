@@ -53,14 +53,20 @@ void declaratorGenerateCode(Declarator d) {
     char *c2 = "()\n";
     int length = strlen(c) + strlen(c2) + 1;
     char result[length];
-    strncpy(result, c, length);
-    strncat(result, c2, length);
+    sprintf(result, "%s%s", c, c2);
+    d->code = getAllocatedString(result);
+  }
+  else {
+    char *c1 = getValidString(d->name->code);
+    char *c2 = getValidString(d->p->code);
+    int length = strlen(c1) + strlen(c2) + 4;
+    char result[length];
+    sprintf(result, "%s(%s)\n", c1, c2);
     d->code = getAllocatedString(result);
   }
 #ifdef CODETRACE
   printf("Code: %s\n", d->code);
 #endif
-  //TODO: deal with d->p case (The case where the function has a parameter list)
 }
 
 void compoundStatementGenerateCode(CompoundStatement cs) {
@@ -191,7 +197,41 @@ void statementListGenerateCode(GrammarList g) {
 }
 
 void parameterListGenerateCode(GrammarList g) {
+  int b1 = 1024;
+  char *code = malloc(sizeof(char)*b1);
+  GrammarNode current = g->head;
+  code[0] = 0;
+  int i = 0;
+  while (current)
+  {
+    char *c = getValidString(((Expression)current->data)->code);
+    c = getValidString(c);
+    int n1;
+    n1 = strlen(code) + strlen(c) + 3;
+    while (n1>b1) {
+      b1 *= 2;
+      char *old = code;
+      code = malloc(sizeof(char)*b1);
+      strcpy(code, old);
+      free(old);
+    }
+    if (i == 0) {
+      strncpy(code, c, b1);
+    }
+    else {
+      strncat(code, ", ", b1);
+      strncat(code, c, b1);
+    }
+    
+    current = current->next;
+    i++;
+  }
 
+  g->code = getAllocatedString(code);
+  free(code);
+#ifdef CODETRACE
+  printf("Code: %s", g->code);
+#endif
 }
 
 void forStatementGenerateCode(Statement s) {
