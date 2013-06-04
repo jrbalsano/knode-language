@@ -49,8 +49,8 @@ void walkFunctionDefinition(FunctionDefinition f, Scope s) {
   }
   f->s = newScope(s);
   walkDeclarator(f->d, s);
-  walkCompoundStatement(f->cs, s);
   functionDefinitionTypeCheck(f);
+  walkCompoundStatement(f->cs, s);
   functionDefinitionGenerateCode(f);
 #ifdef MEMTRACE
   printf("Function definition walked at %p\n", f);
