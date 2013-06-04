@@ -76,7 +76,6 @@ FunctionDefinition getFunctionDefinition(Declarator d, CompoundStatement cs) {
   ret->type_name = none;
   ret->d = d;
   ret->cs = cs;
-  cs->type = function;
   return ret;
 }
 

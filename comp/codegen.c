@@ -74,7 +74,7 @@ void compoundStatementGenerateCode(CompoundStatement cs) {
   char *c2 = "{\n";
   char *c3 = "}\n";
   char *c4 = getValidString(cs->s->postcode);
-  char *c5 = cs->type == function ? "return 0;\n" : "";
+  char *c5 = cs->tt != NULL ? "return 0;\n" : "";
   int length = strlen(c1)+strlen(c2)+strlen(c3)+strlen(c4)+1;
   char result[length];
   sprintf(result, "%s%s%s%s%s", c2, c1, c4, c5, c3);
@@ -204,7 +204,7 @@ void parameterListGenerateCode(GrammarList g) {
   int i = 0;
   while (current)
   {
-    char *c = getValidString(((Expression)current->data)->code);
+    char *c = getValidString(((Parameter)(current->data))->code);
     c = getValidString(c);
     int n1;
     n1 = strlen(code) + strlen(c) + 3;
@@ -605,7 +605,16 @@ void declStatementGenerateCode(Statement s){
 }
 
 void parameterGenerateCode(Parameter p) {
+  char *c1 = getValidString(getTypnamString(p->type));
+  char *c2 = getValidString(p->i->code);
+  int length = strlen(c1) + strlen(c2) + 2;
+  char result[length];
+  sprintf(result, "%s%s", c1, c2);
+  p->code = getAllocatedString(result);
 
+#ifdef CODETRACE
+  printf("Code: %s\n", p->code);
+#endif
 }
 
 void passupExpressionCode(Expression e) {
