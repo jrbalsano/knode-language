@@ -138,9 +138,9 @@ parameterlist : parameterlist ',' parameterdeclaration {$$ = addBack($1,$3);}
   | parameterdeclaration {$$ = newParameterList($1)}
   ;
 parameterdeclaration : typename identifier { $$ = getTypedParameter($1, $2); }
-  | NODE identifier { $$ = getTypedParameter($1, $2); }
-  | DICT identifier { $$ = getTypedParameter($1, $2); }
-  | EDGE identifier { $$ = getTypedParameter($1, $2); }
+  | NODE identifier { $$ = getTypedParameter(NODE, $2); }
+  | DICT identifier { $$ = getTypedParameter(DICT, $2); }
+  | EDGE identifier { $$ = getTypedParameter(EDGE, $2); }
   ;
 identifier : IDENTIFIER { $$ = getIdentifier(yylval.sval); }
   ;
