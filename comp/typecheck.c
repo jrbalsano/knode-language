@@ -11,11 +11,12 @@ void functionDefinitionTypeCheck(FunctionDefinition f) {
   hold = tt;
   tt = addSymbolToScope(f->s->parent, f->d->name->symbol, tt);
   if(!tt) {
-    fprintf(stderr, "Error: Declaration of already declared variable `%s`\n", f->d->name->symbol);
-    printf("FunctionDefinition");
+    fprintf(stderr, "Error: Multiple definitions exist for function `%s`\n", f->d->name->symbol);
     free(hold);
     exit(1);
   }
+  f->tt = tt;
+  f->cs->tt = copyTypeCheckType(tt);
 }
 
 void declaratorTypeCheck(Declarator d) {
@@ -179,7 +180,37 @@ void declStatementTypeCheck(Statement s) {
 }
 
 void parameterTypeCheck(Parameter p) {
-
+  TypeCheckType tt;
+  switch(p->type) {
+    case INT:
+      tt = getTypeCheckType(int_);
+      break;
+    case DOUBLE:
+      tt = getTypeCheckType(double_);
+      break;
+    case CHAR:
+      tt = getTypeCheckType(char_);
+      break;
+    case BOOLEAN:
+      tt = getTypeCheckType(boolean_);
+      break;
+    case STRING:
+      tt = getTypeCheckType(string_);
+      break;
+    case NODE:
+      tt = getTypeCheckType(node_);
+      break;
+    case DICT:
+      tt = getTypeCheckType(dict_);
+      break;
+    case EDGE:
+      tt = getTypeCheckType(edge_);
+      break;
+    default:
+      printf("Unknown parameter type %d\n", p->type);
+      break;
+  }
+  p->tt = tt;
 }
 
 void passupExpressionType(Expression e) {
