@@ -1019,7 +1019,30 @@ void edgeExpressionGenerateCode(Expression e) {
 void assignmentExpressionGenerateCode(Expression e) {
   char *c1 = getValidString(e->sub1.e->code);
   char *c2 = testForSemicolon(getValidString(e->sub2.e->code));
-  char *c3 = " = ";
+  char *c3; 
+  switch(e->deriv.assign) {
+    case eq_assign:
+      c3 = " = ";
+      break;
+    case multeq:
+      c3 = " *= ";
+      break;
+    case diveq:
+      c3 = " /= ";
+      break;
+    case pluseq:
+      c3 = " += ";
+      break;
+    case minuseq:
+      c3 = " -= ";
+      break;
+    case modeq:
+      c3 = " %= ";
+      break;
+    default:
+      c3 = " = ";
+      break;
+  }
   char *c4 = ";";
   int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
   char result[length];

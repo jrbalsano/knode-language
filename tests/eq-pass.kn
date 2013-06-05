@@ -1,6 +1,8 @@
 main():
+  int x
+  x = 0
   if(4 ==5)
     print("here")
   else
     if(5 == 3)
-      5 += 3
+      x += 3
