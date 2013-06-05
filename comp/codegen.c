@@ -235,24 +235,14 @@ void parameterListGenerateCode(GrammarList g) {
 }
 
 void forStatementGenerateCode(Statement s) {
-  char *c1 = "for(";
-  char *c2 = getValidString(s->sub1.forloop.e1->code);
-  char *c3 = getValidString(s->sub1.forloop.e2->code);
-  char *c4 = getValidString(s->sub1.forloop.e3->code);
-  char *c5 = ")\n";
-  char *c6 = getValidString(s->sub2.cs->code);
+  char *c1 = getValidString(s->sub1.forloop.e1->code);
+  char *c2 = getValidString(s->sub1.forloop.e2->code);
+  char *c3 = getValidString(s->sub1.forloop.e3->code);
+  char *c4 = getValidString(s->sub2.cs->code);
   
-  /*problem: c8 likely has a semicolon at the end of it. the next line gets rid of it.*/
-  //c4[strlen(c4)-1]='\0';
-  
-  int length = strlen(c1) + strlen(c2) +strlen(c3) + strlen(c4) + strlen(c5) + strlen(c6) + 1;
+  int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 14;
   char result[length];
-  strncpy(result, c1, length);
-  strncat(result, c2, length);
-  strncat(result, c3, length);
-  strncat(result, c4, length);
-  strncat(result, c5, length);
-  strncat(result, c6, length);
+  sprintf(result, "for(%s; %s; %s)\n%s", c1, c2, c3, c4);
  
   s->code = getAllocatedString(result);
            
@@ -263,20 +253,11 @@ void forStatementGenerateCode(Statement s) {
 
 void whileStatementGenerateCode(Statement s) {
 
-  char *c1 = "while(";
-  char *c2 = getValidString(s->sub1.e->code);
-
-  //remove semicolon from end of c2
-  c2[strlen(c2)-1] = '\0';
-
-  char *c3 = ")\n";
-  char *c4 = getValidString(s->sub2.cs->code);
-  int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4);
+  char *c1 = getValidString(s->sub1.e->code);
+  char *c2 = getValidString(s->sub2.cs->code);
+  int length = strlen(c1) + strlen(c2) + 10;
   char result[length];
-  strncpy(result, c1, length);
-  strncat(result, c2, length);
-  strncat(result, c3, length);
-  strncat(result, c4, length);
+  sprintf(result, "while(%s)\n%s", c1, c2);
 
   s->code = getAllocatedString(result);
 #ifdef CODETRACE
@@ -571,7 +552,7 @@ void statementGenerateCode(Statement s) {
 
 void expressionStatementGenerateCode(Statement s) {
   char *pre = getValidString(s->sub1.e->precode);
-  char *code = testForSemicolon(getValidString(s->sub1.e->code));
+  char *code = getValidString(s->sub1.e->code);
   char *post = getValidString(s->sub1.e->postcode);
   int length = strlen(pre)+ strlen(code) + strlen(post) + 2;
   char str[length];
@@ -586,7 +567,7 @@ void expressionStatementGenerateCode(Statement s) {
 }
 
 void declStatementGenerateCode(Statement s){
-  char *c2 = testForSemicolon(getValidString(s->sub2.i->code));
+  char *c2 = getValidString(s->sub2.i->code);
   char *c3 = ";\n";
   char *c4 = "";
   char *c1 = getValidString(getTypnamString(s->sub1.typnam));
@@ -920,31 +901,29 @@ void addExpressionGenerateCode(Expression e) {
 void relatExpressionGenerateCode(Expression e) {
   char *c1 = getValidString(e->sub1.e->code);
   char *c2;
-  char *c3 = testForSemicolon(getValidString(e->sub2.e->code));
-  char *c4 = ";";
+  char *c3 = getValidString(e->sub2.e->code);
   switch(e->deriv.relat){
     case le:
-      c2 = "<=";
+      c2 = " <= ";
       break;
     case ge:
-      c2 = ">=";
+      c2 = " >= ";
       break;
     case less:
-      c2 = "<";
+      c2 = " < ";
       break;
     case greater:
-      c2 = ">";
+      c2 = " > ";
       break;
     case none:
       ;
   }
   
-  int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
+  int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
   char result[length];
   strncpy(result, c1, length);
   strncat(result, c2, length);
   strncat(result, c3, length);
-  strncat(result, c4, length);
 
   e->precode = getAllocatedString(e->sub1.e->precode);
   e->code = getAllocatedString(result);
@@ -1018,7 +997,7 @@ void edgeExpressionGenerateCode(Expression e) {
 
 void assignmentExpressionGenerateCode(Expression e) {
   char *c1 = getValidString(e->sub1.e->code);
-  char *c2 = testForSemicolon(getValidString(e->sub2.e->code));
+  char *c2 = getValidString(e->sub2.e->code);
   char *c3; 
   switch(e->deriv.assign) {
     case eq_assign:
@@ -1043,13 +1022,11 @@ void assignmentExpressionGenerateCode(Expression e) {
       c3 = " = ";
       break;
   }
-  char *c4 = ";";
-  int length = strlen(c1) + strlen(c2) + strlen(c3) + strlen(c4) + 1;
+  int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
   char result[length];
   strncpy(result, c1, length);
   strncat(result, c3, length);
   strncat(result, c2, length);
-  strncat(result, c4, length);
   char *pre1 = getValidString(e->sub1.e->precode);
   char *pre2 = getValidString(e->sub2.e->precode);
   int prelen = strlen(pre1) + strlen(pre2) + 1;
