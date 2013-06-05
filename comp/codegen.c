@@ -74,7 +74,7 @@ void compoundStatementGenerateCode(CompoundStatement cs) {
   char *c2 = "{\n";
   char *c3 = "}\n";
   char *c4 = getValidString(cs->s->postcode);
-  char *c5 = cs->tt != NULL ? "return 0;\n" : "";
+  char *c5 = cs->main ? "return 0;\n" : "";
   int length = strlen(c1)+strlen(c2)+strlen(c3)+strlen(c4)+1;
   char result[length];
   sprintf(result, "%s%s%s%s%s", c2, c1, c4, c5, c3);
@@ -108,7 +108,7 @@ void expressionListGenerateCode(GrammarList g) {
     int n3;
     n1 = strlen(code) + strlen(c) + 3;
     n2 = strlen(precode) + strlen(pre) + 3;
-    n2 = strlen(postcode) + strlen(post) + 3;
+    n3 = strlen(postcode) + strlen(post) + 3;
     while (n1>b1) {
       b1 *= 2;
       char *old = code;

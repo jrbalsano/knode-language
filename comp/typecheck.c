@@ -7,7 +7,14 @@ void translationUnitTypeCheck(TranslationUnit t) {
 void functionDefinitionTypeCheck(FunctionDefinition f) {
   TypeCheckType tt = NULL;
   TypeCheckType hold;
-  tt = copyTypeCheckType(f->d->tt);
+  if(f->type_name == none) {
+    tt = getTypeCheckType(void_);
+    tt->fn_sub = copyTypeCheckType(f->d->tt);
+  }
+  else {
+    tt = getTTFromType(f->type_name);
+    tt->fn_sub = copyTypeCheckType(f->d->tt);
+  }
   hold = tt;
   tt = addSymbolToScope(f->s->parent, f->d->name->symbol, tt);
   if(!tt) {
@@ -17,11 +24,15 @@ void functionDefinitionTypeCheck(FunctionDefinition f) {
   }
   f->tt = tt;
   f->cs->tt = copyTypeCheckType(tt);
+  if(!strcmp("main", f->d->name->symbol))
+    f->cs->main = 1;
 }
 
 void declaratorTypeCheck(Declarator d) {
-  //TODO: Fully implement this. Currently hacky
-  d->tt = getTypeCheckType(function_);
+  if(d->p)
+    d->tt = copyTypeCheckType(d->p->tt);
+  else
+    d->tt = NULL;
 }
 
 void compoundStatementTypeCheck(CompoundStatement cs) {
@@ -153,35 +164,7 @@ void expressionStatementTypeCheck(Statement s){
 void declStatementTypeCheck(Statement s) {
   TypeCheckType tt = NULL;
   TypeCheckType hold;
-  switch(s->sub1.typnam) {
-    case INT:
-      tt = getTypeCheckType(int_);
-      break;
-    case DOUBLE:
-      tt = getTypeCheckType(double_);
-      break;
-    case CHAR:
-      tt = getTypeCheckType(char_);
-      break;
-    case BOOLEAN:
-      tt = getTypeCheckType(boolean_);
-      break;
-    case STRING:
-      tt = getTypeCheckType(string_);
-      break;
-    case NODE:
-      tt = getTypeCheckType(node_);
-      break;
-    case DICT:
-      tt = getTypeCheckType(dict_);
-      break;
-    case EDGE:
-      tt = getTypeCheckType(edge_);
-      break;
-    default:
-      printf("Unknown token %d\n", s->sub1.typnam);
-      break;
-  }
+  tt = getTTFromType(s->sub1.typnam);
   hold = tt;
   tt = addSymbolToScope(s->s, s->sub2.i->symbol, tt);
   if(!tt) {
@@ -194,36 +177,7 @@ void declStatementTypeCheck(Statement s) {
 
 void parameterTypeCheck(Parameter p) {
   TypeCheckType tt;
-  switch(p->type) {
-    case INT:
-      tt = getTypeCheckType(int_);
-      break;
-    case DOUBLE:
-      tt = getTypeCheckType(double_);
-      break;
-    case CHAR:
-      tt = getTypeCheckType(char_);
-      break;
-    case BOOLEAN:
-      tt = getTypeCheckType(boolean_);
-      break;
-    case STRING:
-      tt = getTypeCheckType(string_);
-      break;
-    case NODE:
-      tt = getTypeCheckType(node_);
-      break;
-    case DICT:
-      tt = getTypeCheckType(dict_);
-      break;
-    case EDGE:
-      tt = getTypeCheckType(edge_);
-      break;
-    default:
-      printf("Unknown parameter type %d\n", p->type);
-      break;
-  }
-  p->tt = tt;
+  p->tt = getTTFromType(p->type);
   addSymbolToScope(p->s, p->i->symbol, tt);
 }
 
@@ -433,4 +387,38 @@ int castTypeMatch(TypeCheckType t1, TypeCheckType t2) {
     else
       return 0;
   }
+}
+
+TypeCheckType getTTFromType(int typename) {
+  TypeCheckType tt;
+  switch(typename) {
+    case INT:
+      tt = getTypeCheckType(int_);
+      break;
+    case DOUBLE:
+      tt = getTypeCheckType(double_);
+      break;
+    case CHAR:
+      tt = getTypeCheckType(char_);
+      break;
+    case BOOLEAN:
+      tt = getTypeCheckType(boolean_);
+      break;
+    case STRING:
+      tt = getTypeCheckType(string_);
+      break;
+    case NODE:
+      tt = getTypeCheckType(node_);
+      break;
+    case DICT:
+      tt = getTypeCheckType(dict_);
+      break;
+    case EDGE:
+      tt = getTypeCheckType(edge_);
+      break;
+    default:
+      printf("Unknown type %d\n", typename);
+      break;
+  }
+  return tt;
 }

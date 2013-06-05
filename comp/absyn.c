@@ -179,6 +179,7 @@ void freeDeclarator(Declarator d) {
 CompoundStatement newCompoundStatement(GrammarList sList) {
   CompoundStatement ret = (CompoundStatement)malloc(sizeof(struct compoundStatement_));
   ret->s = NULL;
+  ret->main = 0;
   ret->type = none;
   ret->code = NULL;
   ret->tt = NULL;

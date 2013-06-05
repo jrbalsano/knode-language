@@ -316,4 +316,11 @@ int castTypeMatch(TypeCheckType t1, TypeCheckType t2);
 
 /**Copies Type of tt recursively*/
 TypeCheckType copyTypeCheckType(TypeCheckType tt);
+
+/**
+ * Creates a new typechecktype based off of a single type
+ */
+TypeCheckType getTTFromType(int typename);
+
+
 #endif

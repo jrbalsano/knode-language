@@ -130,6 +130,7 @@ struct functionDefinition_ {
 };
 struct compoundStatement_ {
   char *code;
+  int main;
   enum {cs_none, cs_function=function} type;
   Scope s;
   TypeCheckType tt;
