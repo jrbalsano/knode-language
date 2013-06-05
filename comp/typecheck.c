@@ -37,7 +37,20 @@ void statementListTypeCheck(GrammarList g) {
 }
 
 void parameterListTypeCheck(GrammarList g) {
-
+  GrammarNode cur = g->head;
+  TypeCheckType last = NULL;
+  while(cur) {
+    Parameter p = (Parameter)cur->data;
+    if(g->tt) {
+      last->fn_sub = copyTypeCheckType(p->tt);
+      last = last->fn_sub;
+    }
+    else {
+      g->tt = copyTypeCheckType(p->tt);
+      last = g->tt;
+    }
+    cur = cur->next;
+  }
 }
 
 void forStatementTypeCheck(Statement s) {
@@ -211,6 +224,7 @@ void parameterTypeCheck(Parameter p) {
       break;
   }
   p->tt = tt;
+  addSymbolToScope(p->s, p->i->symbol, tt);
 }
 
 void passupExpressionType(Expression e) {
@@ -364,7 +378,7 @@ TypeCheckType copyTypeCheckType(TypeCheckType tt) {
   {
     return NULL;
   }
-  TypeCheckType ret= (TypeCheckType)malloc(sizeof(struct typeCheckType_));
+  TypeCheckType ret = (TypeCheckType)malloc(sizeof(struct typeCheckType_));
   ret->base = tt->base;
   ret->fn_sub = copyTypeCheckType(tt->fn_sub);
   ret->ar_sub = copyTypeCheckType(tt->ar_sub);
