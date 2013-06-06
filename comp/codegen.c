@@ -407,6 +407,8 @@ void nodeCreationGenerateCode(Statement s) {
   length = strlen(format) + strlen(c) + strlen(existing) + 1;
   char post[length];
   sprintf(post, format, c, existing);
+  if(s->s->postcode)
+    free(s->s->postcode);
   s->s->postcode = getAllocatedString(post);
 
   s->code = getAllocatedString(result); 
@@ -416,30 +418,21 @@ void nodeCreationGenerateCode(Statement s) {
 }
 
 void nodeAssignmentGenerateCode(Statement s) {
-  char *c1 = "SmartNode ";
-  char *c2 = getValidString(s->sub1.i->code);
-  char *c3 = " = ";
-  char *c4 = "newSmartNode();\n";
-  char *c5 = " = ";
-  char *c6 = getValidString(s->sub2.e->code);
-  char *c7 = ";\n";
-  int length = strlen(c1) + strlen(c2) + strlen(c2) + strlen(c3) + strlen(c4) + strlen(c6) + strlen(c7);
+  char *c1 = getValidString(s->sub1.i->code);
+  char *c2 = getValidString(s->sub2.e->code);
+  char *format = "SmartNode %s = copySmartNode(%s);\n";
+  int length = strlen(c1) + strlen(c2) + strlen(format);
   char result[length];
-  strcpy(result, c1);
-  strcat(result, c2);
-  strcat(result, c3);
-  strcat(result, c4);
-  strcat(result, c2);
-  strcat(result, c5);
-  strcat(result, c6);
-  strcat(result, c7);
+  sprintf(result, format, c1, c2);
   s->code = getAllocatedString(result);
 
-  char *format = "freeSmartNode(%s);\n%s";
+  format = "freeSmartNode(%s);\n%s";
   char *existing = getValidString(s->s->postcode);
-  length = strlen(format) + strlen(c2) + strlen(existing) + 1;
+  length = strlen(format) + strlen(c1) + strlen(existing) + 1;
   char post[length];
-  sprintf(post, format, c2, existing);
+  sprintf(post, format, c1, existing);
+  if(s->s->postcode)
+    free(s->s->postcode);
   s->s->postcode = getAllocatedString(post);
 #ifdef CODETRACE
   printf("Code: %s\n\n", s->code);
@@ -998,35 +991,54 @@ void edgeExpressionGenerateCode(Expression e) {
 void assignmentExpressionGenerateCode(Expression e) {
   char *c1 = getValidString(e->sub1.e->code);
   char *c2 = getValidString(e->sub2.e->code);
-  char *c3; 
-  switch(e->deriv.assign) {
-    case eq_assign:
-      c3 = " = ";
+  char *format;
+
+  // Determine if we need to use the copy methods instead of assignment.
+  int rType = e->sub2.e->tt->base;
+  switch(rType) {
+    case dict_:
+      format = "assginSmartDict(&%s, &%s)";
       break;
-    case multeq:
-      c3 = " *= ";
+    case edge_:
+      format = "assignSmartEdge(&%s, &%s)";
       break;
-    case diveq:
-      c3 = " /= ";
-      break;
-    case pluseq:
-      c3 = " += ";
-      break;
-    case minuseq:
-      c3 = " -= ";
-      break;
-    case modeq:
-      c3 = " %= ";
+    case node_:
+      format = "assignSmartNode(&%s, &%s)";
       break;
     default:
-      c3 = " = ";
+      // Determine operator
+      switch(e->deriv.assign) {
+        case eq_assign:
+          format = "%s = %s";
+          break;
+        case multeq:
+          format = "%s *= %s";
+          break;
+        case diveq:
+          format = "%s /= %s";
+          break;
+        case pluseq:
+          format = "%s += %s";
+          break;
+        case minuseq:
+          format = "%s -= %s";
+          break;
+        case modeq:
+          format = "%s %= %s";
+          break;
+        default:
+          format = "%s = %s";
+          break;
+      }
       break;
   }
-  int length = strlen(c1) + strlen(c2) + strlen(c3) + 1;
+
+
+  int length = strlen(c1) + strlen(c2) + strlen(format) + 1;
   char result[length];
-  strncpy(result, c1, length);
-  strncat(result, c3, length);
-  strncat(result, c2, length);
+
+  sprintf(result, format, c1, c2);
+
   char *pre1 = getValidString(e->sub1.e->precode);
   char *pre2 = getValidString(e->sub2.e->precode);
   int prelen = strlen(pre1) + strlen(pre2) + 1;

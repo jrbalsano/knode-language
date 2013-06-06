@@ -62,6 +62,8 @@ Dict getDict(SmartDict p);
 
 SmartDict copySmartDict(SmartDict p);
 
+SmartDict assignSmartDict(SmartDict *l, SmartDict *r);
+
 void freeSmartDict(SmartDict p);
 
 SmartNode newSmartNode();
@@ -70,6 +72,8 @@ Node getNode(SmartNode p);
 
 SmartNode copySmartNode(SmartNode p);
 
+SmartNode assignSmartNode(SmartNode *l, SmartNode *r);
+
 void freeSmartNode(SmartNode p);
 
 SmartEdge newSmartEdge();
@@ -77,6 +81,8 @@ SmartEdge newSmartEdge();
 Edge getEdge(SmartEdge p);
 
 SmartEdge copySmartEdge(SmartEdge p);
+
+SmartEdge assignSmartEdge(SmartEdge *l, SmartEdge *r);
 
 void freeSmartEdge(SmartEdge p);
 

@@ -49,6 +49,12 @@ SmartDict copySmartDict(SmartDict p) {
   return ret;
 }
 
+SmartDict assignSmartDict(SmartDict *l, SmartDict *r) {
+  freeSmartDict(*l);
+  *l = copySmartDict(*r);
+  return *l;
+}
+
 void freeSmartDict(SmartDict p) {
   if(--*(p->count) == 0) {
     free(p->count);
@@ -75,6 +81,12 @@ SmartNode copySmartNode(SmartNode p) {
   ret->pointer = p->pointer;
   (*(ret->count))++;
   return ret;
+}
+
+SmartNode assignSmartNode(SmartNode *l, SmartNode *r) {
+  freeSmartNode(*l);
+  *l = copySmartNode(*r);
+  return *l;
 }
 
 void freeSmartNode(SmartNode p) {
@@ -107,6 +119,12 @@ SmartEdge copySmartEdge(SmartEdge p) {
   ret->pointer = p->pointer;
   (*(ret->count))++;
   return ret;
+}
+
+SmartEdge assignSmartEdge(SmartEdge *l, SmartEdge *r) {
+  freeSmartEdge(*l);
+  *l = copySmartEdge(*r);
+  return *l;
 }
 
 void freeSmartEdge(SmartEdge p) {

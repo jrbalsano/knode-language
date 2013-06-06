@@ -281,7 +281,7 @@ void edgeExpressionTypeCheck(Expression e) {
 }
 
 void assignmentExpressionTypeCheck(Expression e) {
-
+  e->tt = copyTypeCheckType(e->sub1.e->tt);
 }
 
 void primaryExpressionTypeCheck(Expression e) {
