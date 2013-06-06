@@ -312,10 +312,6 @@ void walkExpression(Expression e, Scope s) {
         case arg:
           walkExpression(e->sub1.e, e->s);
           walkGrammarList(e->sub2.l, e->s);
-      /*    int *x = NULL;
-          int y = *x + 2;
-          printf("%d", y);
-        */
           postfixArgumentTypeCheck(e);
           postfixArgumentGenerateCode(e);          
           break;
@@ -327,8 +323,8 @@ void walkExpression(Expression e, Scope s) {
         case bracket:
           walkExpression(e->sub1.e, e->s);
           walkExpression(e->sub2.e, e->s);
-          postfixArgumentTypeCheck(e);
-          postfixArgumentGenerateCode(e);          
+          postfixBracketTypeCheck(e);
+          postfixBracketGenerateCode(e);          
           break;
         case 0:
           walkExpression(e->sub1.e, e->s);

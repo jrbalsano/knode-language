@@ -654,11 +654,9 @@ void postfixIncrementGenerateCode(Expression e) {
 void postfixArgumentGenerateCode(Expression e) {
   char *str = getValidString(e->sub1.e->code);
   char *str2 = getValidString(e->sub2.l ? e->sub2.l->code : NULL);
-  char *str3;// = ""; 
+  char *str3;
   char *str4 = "printf";
   char *str5 = "";
-/*  if(strcmp(str, str4)==0)
-     printf("%s is equal to printf and str2 = %s", str, str2);*/
   /**deal with printing things that might not be strings already*/
   if (strcmp(str, str4)==0 && strcmp(str2, str5)!=0){
     void *d = e->sub2.l->head->data; 
@@ -697,7 +695,20 @@ void postfixArgumentGenerateCode(Expression e) {
 }
 
 void postfixBracketGenerateCode(Expression e) {
+  char *c1 = getValidString(e->sub1.e->code);
+  char *c2 = getValidString(e->sub2.e->code);
+  char *format = "%s[%s]";
+  int length = strlen(c1) + strlen(c2) + strlen(format) + 1;
+  char result[length];
+  sprintf(result, format, c1, c2);
 
+  char *pre1 = getValidString(e->sub1.e->precode);
+  char *pre2 = getValidString(e->sub2.e->precode);
+  char *post1 = getValidString(e->sub1.e->postcode);
+  char *post2 = getValidString(e->sub2.e->postcode);
+  e->precode = getConcatenatedString(pre1, pre2);
+  e->code = getAllocatedString(result);
+  e->postcode = getConcatenatedString(post1, post2);
 }
 
 void unaryExpressionGenerateCode(Expression e) {
@@ -1138,6 +1149,13 @@ char *getValidString(char *s){
      return s;
   else
      return "";
+}
+
+char *getConcatenatedString(char *s1, char *s2) {
+  int length = strlen(s1) + strlen(s2) + 1;
+  char *ret = (char *)malloc(sizeof(char) * length);
+  sprintf(ret, "%s%s", s1, s2);
+  return ret;
 }
 
 char *getTypnamString(int typ){

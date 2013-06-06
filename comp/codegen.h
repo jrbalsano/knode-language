@@ -128,9 +128,15 @@ char *getAllocatedString(char *s);
 char *getValidString(char *s);
 
 /**
+ * Takes two strings and concatenates them, returning a new, malloced, string.
+ * Be careful with this one. Doesn't do any sort of checking. Make sure the
+ * strings you pass it are valid.
+ */
+char *getConcatenatedString(char *s1, char *s2);
+
+/**
  * Convenient way to get the typ from a typnam without having to re-write the switch every time.
 **/
-
 char *getTypnamString(int typ);
 
 /**
